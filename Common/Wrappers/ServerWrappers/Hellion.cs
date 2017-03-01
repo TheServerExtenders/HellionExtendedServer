@@ -66,6 +66,7 @@ namespace HellionExtendedServer.Common.Wrappers.ServerWrappers
 
         public Thread StartServer(Object args)
         {
+
             Console.WriteLine("Hellion Extended Server: Loading HELLION Dedicated.");
 
             Thread serverThread = new Thread(new ParameterizedThreadStart(this.ThreadStart));
@@ -73,14 +74,39 @@ namespace HellionExtendedServer.Common.Wrappers.ServerWrappers
             serverThread.IsBackground = true;
             serverThread.CurrentCulture = CultureInfo.InvariantCulture;
             serverThread.CurrentUICulture = CultureInfo.InvariantCulture;
-            serverThread.Start(args);
 
-            Console.WriteLine("Hellion Extended Server: Waiting for server....");
+            try
+            {
+                serverThread.Start(args);
+            }
+            catch (Exception ex)
+            {
 
-            Thread.Sleep(3000);
+                Console.WriteLine("[ERROR] Hellion Extended Server: " + ex.ToString());
+                return null;
+            }
 
-            m_isRunning = m_instance.Server.WorldInitialized;
-          
+            
+            Console.WriteLine("Hellion Extended Server: Waiting for server to start. This may take at least 10 seconds.");
+
+            try
+            {
+                // TODO: new way
+                Thread.Sleep(8000);
+
+                SpinWait.SpinUntil(() => m_instance.Server.WorldInitialized);
+
+                m_isRunning = m_instance.Server.WorldInitialized;
+            }
+            catch (NullReferenceException)
+            {
+                // keep waiting!
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[ERROR] Hellion Extended Server: " + ex.ToString());
+            }
+
             return serverThread;
         }
 

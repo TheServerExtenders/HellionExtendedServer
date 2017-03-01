@@ -87,15 +87,7 @@ namespace HellionExtendedServer
                 Match cmd2 = Regex.Match(cmd, @"^(/players)");
                 if (cmd2.Success)
                 {
-                    try
-                    {
-                        Console.WriteLine("Players Connected: " + ServerInstance.Instance.Server.AllPlayers.Count);
-                        
-                    }
-                    catch (ArgumentException)
-                    {
-                        Console.WriteLine("Missing message to send!");
-                    }
+                    Console.WriteLine("Players Connected: " + ServerInstance.Instance.Server.AllPlayers.Count);
                 }
             }
 

@@ -9,8 +9,11 @@ using System.Globalization;
 
 using ZeroGravity;
 
-namespace HellionExtendedServer.Common.Wrappers.ServerWrappers
+namespace HellionExtendedServer.ServerWrappers
 {
+    /// <summary>
+    /// This is the 
+    /// </summary>
     public class HELLION : ReflectionClassWrapper
     {
         #region Fields

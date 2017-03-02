@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 
-namespace HellionExtendedServer.Plugins
+namespace HellionExtendedServer.Common.Plugins
 {
     public abstract class PluginBase : IPlugin
     {

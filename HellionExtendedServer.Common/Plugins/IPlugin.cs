@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HellionExtendedServer.Plugins
+namespace HellionExtendedServer.Common.Plugins
 {
     public interface IPlugin
     {

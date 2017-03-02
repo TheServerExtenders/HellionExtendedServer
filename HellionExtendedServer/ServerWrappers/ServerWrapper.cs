@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
-namespace HellionExtendedServer.Common.Wrappers.ServerWrappers
+namespace HellionExtendedServer.ServerWrappers
 {
     public class ServerWrapper : ReflectionAssemblyWrapper
     {

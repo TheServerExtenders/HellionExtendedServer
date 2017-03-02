@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace HellionExtendedServer.Common.Wrappers
+namespace HellionExtendedServer.ServerWrappers
 {
     public class ReflectionAssemblyWrapper
     {

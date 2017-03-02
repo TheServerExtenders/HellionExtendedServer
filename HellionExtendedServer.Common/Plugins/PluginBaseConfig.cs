@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Xml;
 
-namespace HellionExtendedServer.Plugins
+namespace HellionExtendedServer.Common.Plugins
 {
     public delegate void ConfigEventHandler();
 

@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 
-using HellionExtendedServer.Common.Wrappers.ServerWrappers;
+using HellionExtendedServer.ServerWrappers;
 using HellionExtendedServer.Controllers;
 using ZeroGravity;
 
-namespace HellionExtendedServer.Common
+namespace HellionExtendedServer.Managers
 {
     public class ServerInstance
     {

@@ -4,7 +4,11 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace HellionExtendedServer.Plugins
+using System.Runtime;
+
+using HellionExtendedServer.Common.Plugins;
+
+namespace HellionExtendedServer.Managers
 {
     class PluginManager
     {

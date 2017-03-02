@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common;
 
 using ZeroGravity;
 using ZeroGravity.Math;
@@ -35,12 +30,21 @@ namespace HellionExtendedServer.Controllers
 
         private void TextChatMessageListener(NetworkData data)
         {
-            TextChatMessage textChatMessage = data as TextChatMessage;
-            Player player1 = Server.Instance.GetPlayer(textChatMessage.Sender);
-            textChatMessage.GUID = player1.FakeGuid;
-            textChatMessage.Name = player1.Name;
+            try
+            {
+                TextChatMessage textChatMessage = data as TextChatMessage;
+                Player player1 = Server.Instance.GetPlayer(textChatMessage.Sender);
+                textChatMessage.GUID = player1.FakeGuid;
+                textChatMessage.Name = player1.Name;
 
-            Console.WriteLine(textChatMessage.Name + ": " + textChatMessage.MessageText);
+                Console.WriteLine(textChatMessage.Name + ": " + textChatMessage.MessageText);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[ERROR] Hellion Extended Server[Chat]:" + ex.InnerException.ToString());
+                
+            }
+                        
         }
 
         public void MessageAllClients(string msg)

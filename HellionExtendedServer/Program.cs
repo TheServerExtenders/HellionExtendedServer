@@ -58,7 +58,7 @@ namespace HellionExtendedServer
 
             Thread uiThread = new Thread(LoadGUI);
             uiThread.SetApartmentState(ApartmentState.STA);
-            //uiThread.Start(); //form disabled for now
+            //uiThread.Start();
 
             Console.Title = String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", Version, "0.1.4");
 
@@ -124,12 +124,17 @@ namespace HellionExtendedServer
         [STAThread]
         static void LoadGUI()
         {
+            Console.WriteLine("Loading GUI (WIP)");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             if (m_form == null || m_form.IsDisposed)
-            	m_form = new Form1();
+            {
+                m_form = new Form1();
+            }
             else if (m_form.Visible)
-            	return;
+                return;
+
+            Application.Run(m_form);
         }
 
         private enum CtrlType

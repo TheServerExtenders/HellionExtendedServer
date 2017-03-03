@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 
@@ -42,27 +43,43 @@ namespace HellionExtendedServer.Managers
            
         }
 
+        private bool isSaving = false;
         public void Save()
         {
+
             if (!Server.IsRunning)
                 return;
+
+            if (isSaving)
+            {
+                Console.WriteLine("Save is already in progress!");
+                return;
+            }
              
             try
             {
-                Stopwatch saveTime = new Stopwatch();
-                saveTime.Start();
-                Console.WriteLine("Saving Universe...");
-                Persistence.Save();               
-                saveTime.Stop();   
-                            
-                Console.WriteLine("Universe Saved in "+ saveTime.Elapsed.Milliseconds+"ms to " 
-                    + String.Format(Persistence.PersistanceFileName, 
-                    DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss")));
+                new TaskFactory().StartNew(() => {
+
+                    isSaving = true;
+                    Stopwatch saveTime = new Stopwatch();
+                    saveTime.Start();
+                    Console.WriteLine("Saving Universe...");
+                    Persistence.Save();
+                    saveTime.Stop();
+
+                    Console.WriteLine("Universe Saved in " + saveTime.Elapsed.Milliseconds + "ms to "
+                        + String.Format(Persistence.PersistanceFileName,
+                        DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss")));
+                    isSaving = false;
+
+                });
+
+               
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Hellion Extended Server [SAVE ERROR] " + ex.ToString());
-
+                isSaving = false;
             }
         }
 

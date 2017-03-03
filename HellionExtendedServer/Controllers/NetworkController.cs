@@ -22,42 +22,74 @@ namespace HellionExtendedServer.Controllers
             networkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));
             Console.WriteLine("Chat Message Listener Added.");
 
+            networkController.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerSpawnRequestListener));
+            Console.WriteLine("Player Spawns Listener Added.");
+
             m_network = networkController;
             Console.WriteLine("Network Controller Loaded!");
 
             
         }
 
-        private void TextChatMessageListener(NetworkData data)
+        private void PlayerSpawnRequestListener(NetworkData data)
         {
             try
             {
-                TextChatMessage textChatMessage = data as TextChatMessage;
-                Player player1 = Server.Instance.GetPlayer(textChatMessage.Sender);
-                textChatMessage.GUID = player1.FakeGuid;
-                textChatMessage.Name = player1.Name;
+                PlayerSpawnRequest playerSpawnRequest = data as PlayerSpawnRequest;
 
-                Console.WriteLine(textChatMessage.Name + ": " + textChatMessage.MessageText);
+                if (playerSpawnRequest == null)
+                    return;
+
+                Player ply;
+                if (m_network.clientList.ContainsKey(playerSpawnRequest.Sender))
+                    ply = m_network.clientList[playerSpawnRequest.Sender].Player;
+                else
+                    return;
+              
+                Console.WriteLine(ply.Name + " spawned ("+ ply.SteamId +") ");
+                MessageAllClients(ply.Name + " has spawned!", false);
+              
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[ERROR] Hellion Extended Server[SpawnRequest]:" + ex.InnerException.ToString());
+                
+            }
+           
+        }
+
+        private void TextChatMessageListener(NetworkData data)
+        {
+            try
+            {              
+                TextChatMessage textChatMessage = data as TextChatMessage;
+                              
+                Console.WriteLine("(" +textChatMessage.Sender+ ")" + textChatMessage.Name + ": " + textChatMessage.MessageText);
+                                           
             }
             catch (Exception ex)
             {
                 Console.WriteLine("[ERROR] Hellion Extended Server[Chat]:" + ex.InnerException.ToString());
                 
-            }
-                        
+            }                      
         }
 
-        public void MessageAllClients(string msg)
+        public void MessageAllClients(string msg, bool sendAsServer = true)
         {
+            if (String.IsNullOrEmpty(msg))
+                return;
+
             byte[] guid = Guid.NewGuid().ToByteArray();
 
             TextChatMessage textChatMessage = new TextChatMessage();
 
             textChatMessage.GUID = BitConverter.ToInt64(guid, 0);
-            textChatMessage.Name = "Server";
+            textChatMessage.Name = (sendAsServer ? "Server :" : "");
             textChatMessage.MessageText = msg;
             m_network.SendToAllClients((NetworkData)textChatMessage, textChatMessage.Sender);
-            Console.WriteLine("Server: " + msg);
+            Console.WriteLine(textChatMessage.Name + ": " + msg);
         }
+
+        
     }
 }

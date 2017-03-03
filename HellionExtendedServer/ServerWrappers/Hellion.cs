@@ -90,7 +90,7 @@ namespace HellionExtendedServer.ServerWrappers
             }
 
             
-            Console.WriteLine("Hellion Extended Server: Waiting for server to start. This may take at least 10 seconds.");
+            Console.WriteLine("Hellion Extended Server: Waiting for server to start. This may take at least 10 seconds or longer depending on the size of the current save.");
 
             try
             {

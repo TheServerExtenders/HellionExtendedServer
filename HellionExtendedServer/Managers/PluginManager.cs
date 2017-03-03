@@ -1,31 +1,30 @@
-﻿using System;
+﻿using HellionExtendedServer.Common.Plugins;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-using System.Runtime;
-
-using HellionExtendedServer.Common.Plugins;
-
 namespace HellionExtendedServer.Managers
 {
-    class PluginManager
+    internal class PluginManager
     {
         #region Fields
+
         private List<PluginInfo> m_discoveredPlugins;
         private List<PluginInfo> m_loadedPlugins;
         private readonly Object _lockObj = new Object();
 
-        #endregion
+        #endregion Fields
 
         #region Properties
 
         public List<PluginInfo> LoadedPlugins { get { return m_loadedPlugins; } }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         public PluginManager()
         {
             m_discoveredPlugins = new List<PluginInfo>();
@@ -181,13 +180,13 @@ namespace HellionExtendedServer.Managers
                     }
                 }
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine("Failed to load assembly: " + library + " Error: " + ex.ToString());
             }
             return null;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

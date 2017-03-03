@@ -139,11 +139,15 @@ namespace HellionExtendedServer.ServerWrappers
 
                 m_server.MainLoop();                   
             }
+            catch(TypeInitializationException ex)
+            {
+                Console.WriteLine("[FATAL ERROR, REPORT THE FOLLOWING TO GITHUB ISSUES] HES: Could Not Initialize Server! : " + ex.ToString());
+            }
             catch (Exception ex)
             {
-                Console.WriteLine("HES: Server Start Exception: " + ex.ToString());
+                Console.WriteLine("HES: Server Start Exception: " + ex.Message);
             }
-            
+
         }
     }
 }

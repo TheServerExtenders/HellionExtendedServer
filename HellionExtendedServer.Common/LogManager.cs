@@ -17,4 +17,9 @@ namespace HellionExtendedServer.Common
             m_instance = this;
         }
     }
+
+    public class LogInstance
+    {
+
+    }
 }

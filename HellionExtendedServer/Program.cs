@@ -2,12 +2,15 @@
 using System.Windows.Forms;
 using System.Threading;
 using System.Reflection;
+using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
-
-using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Controllers;
+
+using ZeroGravity;
 
 namespace HellionExtendedServer
 {
@@ -17,6 +20,7 @@ namespace HellionExtendedServer
         private static HES m_instance;
         private static Form1 m_form;
         private static ServerInstance m_serverInstance;
+        private static HES.EventHandler _handler;
 
         public static String BuildBranch { get { return "Master Branch"; } }
         public static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
@@ -24,20 +28,41 @@ namespace HellionExtendedServer
 
         public static HES Instance { get { return m_instance; } }
 
+        [DllImport("Kernel32")]
+        private static extern bool SetConsoleCtrlHandler(HES.EventHandler handler, bool add);
+        private delegate bool EventHandler(HES.CtrlType sig);
+
+        private static bool Handler(HES.CtrlType sig)
+        {
+            if (sig == HES.CtrlType.CTRL_C_EVENT || sig == HES.CtrlType.CTRL_BREAK_EVENT || (sig == HES.CtrlType.CTRL_LOGOFF_EVENT || sig == HES.CtrlType.CTRL_SHUTDOWN_EVENT) || sig == HES.CtrlType.CTRL_CLOSE_EVENT)
+            {
+                Console.WriteLine("SHUTTING DOWN SERVER");
+
+                    Server.IsRunning = false;
+                    if (Server.PersistenceSaveInterval > 0.0)
+                        Server.SavePersistenceDataOnShutdown = true;
+                    Server.MainLoopEnded.WaitOne(5000);
+                Console.WriteLine("CLOSING HELLION EXTENDED SERVER");
+            }
+            return false;
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
+            HES._handler += new HES.EventHandler(HES.Handler);
+            HES.SetConsoleCtrlHandler(HES._handler, true);
 
             Thread uiThread = new Thread(LoadGUI);
             uiThread.SetApartmentState(ApartmentState.STA);
             //uiThread.Start(); //form disabled for now
 
-            Console.Title = "HES ( HELLION EXTENDED SERVER V0.1 ) ";
+            Console.Title = String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", Version, "0.1.4");
 
-            Console.WriteLine("Hellion Extended Server V0.1 starting...");
+            Console.WriteLine("Hellion Extended Server Initialized.");
 
             HES program = new HES(args);
             program.Run(args);
@@ -74,19 +99,21 @@ namespace HellionExtendedServer
                 {
                     try
                     {
-                        Console.WriteLine("Current commands are;");
-                        Console.WriteLine("/help - this page ;)");
+                        PrintHelp();
                     }
-                    catch (ArgumentException)
-                    {
-                        Console.WriteLine("Missing message to send!");
-                    }
+                    catch (ArgumentException) { }
                 }
 
                 Match cmd2 = Regex.Match(cmd, @"^(/players)");
                 if (cmd2.Success)
                 {
-                    Console.WriteLine("Players Connected: " + ServerInstance.Instance.Server.AllPlayers.Count);
+                    Console.WriteLine("Players Connected: " + ServerInstance.Instance.Server.NetworkController.CurrentOnlinePlayers());
+                }
+
+                Match cmd3 = Regex.Match(cmd, @"^(/save)");
+                if (cmd3.Success)
+                {
+                    ServerInstance.Instance.Save();  
                 }
             }
 
@@ -103,6 +130,26 @@ namespace HellionExtendedServer
             	m_form = new Form1();
             else if (m_form.Visible)
             	return;
+        }
+
+        private enum CtrlType
+        {
+            CTRL_C_EVENT = 0,
+            CTRL_BREAK_EVENT = 1,
+            CTRL_CLOSE_EVENT = 2,
+            CTRL_LOGOFF_EVENT = 5,
+            CTRL_SHUTDOWN_EVENT = 6,
+        }
+
+        public static void PrintHelp()
+        {
+            Console.WriteLine("-------------------------HELP--------------------------------");
+            Console.WriteLine("Type directly into the console to chat with online players");
+            Console.WriteLine("Current commands are;" + Environment.NewLine);
+            Console.WriteLine("/help - this page ;)");
+            Console.WriteLine("/players - returns the current amount of online players");
+            Console.WriteLine("/save - forces a universe save");
+            Console.WriteLine("-------------------------------------------------------------");
         }
 
     }

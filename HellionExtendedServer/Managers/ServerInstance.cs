@@ -42,6 +42,30 @@ namespace HellionExtendedServer.Managers
            
         }
 
+        public void Save()
+        {
+            if (!Server.IsRunning)
+                return;
+             
+            try
+            {
+                Stopwatch saveTime = new Stopwatch();
+                saveTime.Start();
+                Console.WriteLine("Saving Universe...");
+                Persistence.Save();               
+                saveTime.Stop();   
+                            
+                Console.WriteLine("Universe Saved in "+ saveTime.Elapsed.Milliseconds+"ms to " 
+                    + String.Format(Persistence.PersistanceFileName, 
+                    DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss")));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Hellion Extended Server [SAVE ERROR] " + ex.ToString());
+
+            }
+        }
+
         public void Start()
         {
             String[] serverArgs = new String[]
@@ -75,6 +99,8 @@ namespace HellionExtendedServer.Managers
             
 
             Console.WriteLine("Ready for connections!");
+
+            HES.PrintHelp();
         }
 
         public void Stop()

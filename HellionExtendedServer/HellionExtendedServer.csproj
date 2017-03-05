@@ -107,7 +107,7 @@
       <HintPath>GameLibraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>GameLibraries\NLog.dll</HintPath>
+      <HintPath>..\GameLibraries\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -122,14 +122,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HttpServer.cs" />
     <Compile Include="Managers\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />
     <Compile Include="Controllers\NetworkController.cs" />
-    <Compile Include="Form1.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>

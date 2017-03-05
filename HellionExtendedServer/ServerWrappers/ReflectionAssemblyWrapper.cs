@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reflection;
 
-// Helper class to ease reflecting of the server
-
 namespace HellionExtendedServer.ServerWrappers
 {
     public class ReflectionAssemblyWrapper

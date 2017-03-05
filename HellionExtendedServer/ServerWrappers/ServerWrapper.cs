@@ -1,25 +1,25 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Reflection;
 
 namespace HellionExtendedServer.ServerWrappers
 {
     public class ServerWrapper : ReflectionAssemblyWrapper
     {
         #region Fields
-
         private const string ServerNamespace = "ZeroGravity";
 
         private static HELLION m_server;
-
-        #endregion Fields
+        #endregion
 
         #region Properties
-
         public static HELLION HellionDedi { get { return m_server; } }
-
-        #endregion Properties
+        #endregion
 
         #region Methods
-
         public ServerWrapper(Assembly serverAssembly)
             : base(serverAssembly)
         {
@@ -30,7 +30,6 @@ namespace HellionExtendedServer.ServerWrappers
         {
             m_server.Init();
         }
-
-        #endregion Methods
+        #endregion
     }
 }

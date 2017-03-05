@@ -1,23 +1,21 @@
-﻿using HellionExtendedServer.Common.Plugins;
-using System;
+﻿using System;
 using System.Reflection;
+
+using HellionExtendedServer.Common.Plugins;
 
 namespace HellionExtendedServer.Managers
 {
     public class PluginInfo
     {
         #region Fields
-
         internal Assembly Assembly;
         public String Directory;
         public Guid Guid;
         public IPlugin MainClass;
         public Type MainClassType;
-
-        #endregion Fields
+        #endregion
 
         #region Methods
-
         static public Boolean operator ==(PluginInfo obj1, PluginInfo obj2)
         {
             // If both are null, or both are same instance, return true.
@@ -58,7 +56,6 @@ namespace HellionExtendedServer.Managers
             }
             return value;
         }
-
-        #endregion Methods
+        #endregion
     }
 }

@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,14 +24,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationVersion>0.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -94,11 +94,13 @@
   <ItemGroup>
     <Reference Include="BulletSharp, Version=2.83.7.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HellionExtendedServer\HellionExtendedServer\bin\x64\Server\BulletSharp.dll</HintPath>
+      <HintPath>..\GameLibraries\BulletSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HELLION_Dedicated, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HellionExtendedServer\HellionExtendedServer\bin\x64\Server\HELLION_Dedicated.exe</HintPath>
+      <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -120,11 +122,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\LogManager.cs" />
-    <Compile Include="Common\ServerInstance.cs" />
-    <Compile Include="Common\Wrappers\ReflectionAssemblyWrapper.cs" />
-    <Compile Include="Common\Wrappers\ServerWrappers\Hellion.cs" />
-    <Compile Include="Common\Wrappers\ServerWrappers\ServerWrapper.cs" />
+    <Compile Include="Managers\PlayerManager.cs" />
+    <Compile Include="Managers\PluginInfo.cs" />
+    <Compile Include="Managers\ServerInstance.cs" />
+    <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
+    <Compile Include="ServerWrappers\Hellion.cs" />
+    <Compile Include="ServerWrappers\ServerWrapper.cs" />
     <Compile Include="Controllers\NetworkController.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -132,11 +135,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Plugins\IPlugin.cs" />
-    <Compile Include="Plugins\PluginBaseConfig.cs" />
-    <Compile Include="Plugins\PluginBasecs.cs" />
-    <Compile Include="Plugins\PluginInfo.cs" />
-    <Compile Include="Plugins\PluginManager.cs" />
+    <Compile Include="Managers\PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -152,6 +151,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -178,7 +184,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\HellionExtendedServer.Common\HellionExtendedServer.Common.csproj">
+      <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
+      <Name>HellionExtendedServer.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

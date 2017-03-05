@@ -37,44 +37,12 @@ namespace HellionExtendedServer.Controllers
             networkController.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerSpawnRequestListener));
             Console.WriteLine("Player Spawns Listener Added.");
 
-            // [IN TEST] Could be used to detect when the player is physicly in the server
-            networkController.EventSystem.AddListener(typeof(ZeroGravity.Network.PlayersOnServerRequest), new EventSystem.NetworkDataDelegate(this.PlayerOnServerListener));
-            Console.WriteLine("Player On Server Listener Added.");
-
             m_network = networkController;
             Console.WriteLine("Network Controller Loaded!");
         }
 
         #region Event Handlers
-
-        /// <summary>
-        /// This method is invoked when the event is fired
-        /// </summary>
-        /// <param name="data"> the network data object</param>
-        private void PlayerOnServerListener(NetworkData data)
-        {
-            try
-            {
-                PlayersOnServerRequest playerOnServerRequest = data as PlayersOnServerRequest;
-
-                if (playerOnServerRequest == null)
-                    return;
-
-                Player ply;
-                if (m_network.clientList.ContainsKey(playerOnServerRequest.Sender))
-                    ply = m_network.clientList[playerOnServerRequest.Sender].Player;
-                else
-                    return;
-
-                MessageAllClients(string.Format("Be welcome {0} on {1} !", playerOnServerRequest.Sender, Server.Instance.ServerName));
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[ERROR] Hellion Extended Server[SpawnRequest]:" + ex.InnerException.ToString());
-            }
-        }
-
+        
         /// <summary>
         /// This method is invoked when the event is fired
         /// </summary>

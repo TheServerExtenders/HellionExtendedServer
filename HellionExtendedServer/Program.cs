@@ -124,7 +124,8 @@ namespace HellionExtendedServer
 
                     if (command == "-all")
                     {
-                        Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId------- | -------Connected-------"));
+                        Console.WriteLine(string.Format("{0} players already played in the server since its launching.", ServerInstance.Instance.Server.AllPlayers.Count));
+                        Console.WriteLine(string.Format("\t---------Pseudo--------- | -------SteamId------- | ---Connected---"));
                         foreach (var player in ServerInstance.Instance.Server.AllPlayers)
                         {
                             Console.WriteLine(string.Format("\t {0} \t {1} \t {2}", player.Name, player.SteamId, NetworkController.Instance.ClientList.Values.Contains(NetworkController.Instance.GetClient(player))));
@@ -136,7 +137,21 @@ namespace HellionExtendedServer
                 Match cmd3 = Regex.Match(cmd, @"^(/save)");
                 if (cmd3.Success)
                 {
+                    if(cmd.Length > 5)
+                        command = cmd.Substring(5);
+                    if (command == "-show")
+                    {
+                        Console.WriteLine("Dedicated Server is saving the game...");
+                        NetworkController.Instance.MessageAllClients("Dedicated Server is saving the game...");
+                    }
+                        
                     ServerInstance.Instance.Save();
+
+                    if (command == "-show")
+                    {
+                        Console.WriteLine("Dedicated Server is saving the game...");
+                        NetworkController.Instance.MessageAllClients("Save finished...");
+                    }
                     correct = true;
                 }
 
@@ -195,7 +210,9 @@ namespace HellionExtendedServer
             Console.WriteLine("/help - this page ;)");
             Console.WriteLine("/players -count - returns the current amount of online players");
             Console.WriteLine("/players -list - returns the full list of connected players");
+            Console.WriteLine("/players -all - returns the full list of players who was already one time in the server");
             Console.WriteLine("/save - forces a universe save");
+            Console.WriteLine("/save -show - forces a universe save and show the saving to players");
             Console.WriteLine("/send (name) text - send a message to the specified player");
             Console.WriteLine("-------------------------------------------------------------");
         }

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using ZeroGravity;
 using HellionExtendedServer.Managers;
+using System.Net.Sockets;
 
 namespace HellionExtendedServer.ServerWrappers
 {
@@ -16,9 +17,10 @@ namespace HellionExtendedServer.ServerWrappers
 
         private Boolean m_isRunning;
         private MethodInfo m_entryPoint;
-        private ReflectionProperty m_instanceProperty;
+        private MethodInfo m_closeSocketListeners;
         private HELLION m_instance;
         private Server m_server;
+        private Thread serverThread;
 
         #endregion Fields
 
@@ -51,21 +53,46 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.ToString());
+                Log.Instance.Fatal(ex.ToString());
             }
 
             try
             {
-                m_instanceProperty = new ReflectionProperty("Instance", ClassName, m_classType);
+                m_closeSocketListeners = Assembly.GetType("ZeroGravity.Network.NetworkController").GetMethod("OnApplicationQuit", 
+                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.ToString());
-            }
+                Log.Instance.Fatal(ex.ToString());
+            }           
         }
 
         public void StopServer()
         {
+            try
+            {
+                Log.Instance.Info("Hellion Extended Server: Shutting down server...");
+
+                m_closeSocketListeners.Invoke(Server.Instance.NetworkController, null);
+
+                Server.IsRunning = false;
+                if (Server.PersistenceSaveInterval > 0.0)
+                {
+                    ServerInstance.Instance.Save();
+                    Log.Instance.Info("Saving Universe");
+                }
+
+                Dbg.Destroy();
+                Server.MainLoopEnded.WaitOne(5000);
+                
+                Log.Instance.Info("Hellion Extended Server: Server Successfully shutdown.");
+            }
+            catch (Exception ex)
+            {
+
+                Log.Instance.Error("[Error] Hellion Extended Server: Server Failed to shutdown: " + ex.ToString());
+            }
+            
         }
 
         /// <summary>
@@ -77,7 +104,7 @@ namespace HellionExtendedServer.ServerWrappers
         {
             Log.Instance.Info("Hellion Extended Server: Loading HELLION Dedicated.");
 
-            Thread serverThread = new Thread(new ParameterizedThreadStart(this.ThreadStart));
+            serverThread = new Thread(new ParameterizedThreadStart(this.ThreadStart));
 
             serverThread.IsBackground = true;
             serverThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -116,7 +143,7 @@ namespace HellionExtendedServer.ServerWrappers
 
             // The server is now running, set the running field to true
             m_isRunning = m_instance.Server.WorldInitialized;
-
+         
             return serverThread;
         }
 
@@ -149,9 +176,6 @@ namespace HellionExtendedServer.ServerWrappers
                 Server.Properties = new ZeroGravity.Properties(Server.ConfigDir + "GameServer.ini");
 
                 m_server = new Server();
-
-                Dbg.OutputDir = Server.ConfigDir;
-                Dbg.Initialize();
 
                 m_server.MainLoop();
             }

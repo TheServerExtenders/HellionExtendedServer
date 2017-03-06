@@ -116,7 +116,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUI\Components\GameServerIni.cs" />
+    <Compile Include="Components\GameServerIni.cs" />
+    <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Managers\Plugins\PluginInfo.cs" />

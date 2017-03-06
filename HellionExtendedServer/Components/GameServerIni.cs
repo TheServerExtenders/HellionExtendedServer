@@ -6,7 +6,7 @@ using ZeroGravity;
 using HellionExtendedServer.Managers;
 using System.Collections.Generic;
 
-namespace HellionExtendedServer.GUI.Components
+namespace HellionExtendedServer.Components
 {
     public class GameServerIni
     {
@@ -247,7 +247,17 @@ namespace HellionExtendedServer.GUI.Components
             shipDespawnDistressChance = 0.05;
             spawnRandomShipsCount = 0;
 
-            
+            SetSettings();           
+        }
+
+        private void SetSettings()
+        {
+            object obj = ServerInstance.Instance.Config;
+
+            foreach (PropertyInfo prop in obj.GetType().GetProperties())
+            {
+                Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
+            }
         }
 
         public void Save()
@@ -256,10 +266,11 @@ namespace HellionExtendedServer.GUI.Components
             {
                 if (File.Exists(FileName))
                 {
+                    SetSettings();
+
                     using (StreamWriter file = new StreamWriter(FileName))
                         foreach (var entry in Settings)
-                            file.WriteLine("{0}={1}", entry.Key, entry.Value);
-
+                            file.WriteLine("{0}={1}", entry.Key, entry.Value);                                                                           
                 }
                 else
                 {

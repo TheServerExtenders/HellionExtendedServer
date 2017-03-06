@@ -31,7 +31,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.serverconfig_properties = new System.Windows.Forms.PropertyGrid();
             this.server_config_debugmode = new System.Windows.Forms.CheckBox();
             this.server_config_setdefaults = new System.Windows.Forms.Button();
             this.server_config_cancel = new System.Windows.Forms.Button();
@@ -79,7 +79,7 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.propertyGrid1);
+            this.splitContainer1.Panel1.Controls.Add(this.serverconfig_properties);
             // 
             // splitContainer1.Panel2
             // 
@@ -94,18 +94,17 @@
             this.splitContainer1.SplitterDistance = 366;
             this.splitContainer1.TabIndex = 3;
             // 
-            // propertyGrid1
+            // serverconfig_properties
             // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(746, 366);
-            this.propertyGrid1.TabIndex = 0;
+            this.serverconfig_properties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serverconfig_properties.Location = new System.Drawing.Point(0, 0);
+            this.serverconfig_properties.Name = "serverconfig_properties";
+            this.serverconfig_properties.Size = new System.Drawing.Size(746, 366);
+            this.serverconfig_properties.TabIndex = 0;
             // 
             // server_config_debugmode
             // 
             this.server_config_debugmode.AutoSize = true;
-            this.server_config_debugmode.Enabled = false;
             this.server_config_debugmode.Location = new System.Drawing.Point(202, 9);
             this.server_config_debugmode.Name = "server_config_debugmode";
             this.server_config_debugmode.Size = new System.Drawing.Size(88, 17);
@@ -147,7 +146,6 @@
             // server_config_autostart
             // 
             this.server_config_autostart.AutoSize = true;
-            this.server_config_autostart.Enabled = false;
             this.server_config_autostart.Location = new System.Drawing.Point(85, 9);
             this.server_config_autostart.Name = "server_config_autostart";
             this.server_config_autostart.Size = new System.Drawing.Size(111, 17);
@@ -158,7 +156,6 @@
             // 
             // server_config_stopserver
             // 
-            this.server_config_stopserver.Enabled = false;
             this.server_config_stopserver.Location = new System.Drawing.Point(3, 31);
             this.server_config_stopserver.Name = "server_config_stopserver";
             this.server_config_stopserver.Size = new System.Drawing.Size(75, 23);
@@ -169,7 +166,6 @@
             // 
             // server_config_startserver
             // 
-            this.server_config_startserver.Enabled = false;
             this.server_config_startserver.Location = new System.Drawing.Point(3, 4);
             this.server_config_startserver.Name = "server_config_startserver";
             this.server_config_startserver.Size = new System.Drawing.Size(75, 23);
@@ -212,7 +208,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.PropertyGrid serverconfig_properties;
         private System.Windows.Forms.CheckBox server_config_autostart;
         private System.Windows.Forms.Button server_config_stopserver;
         private System.Windows.Forms.Button server_config_startserver;

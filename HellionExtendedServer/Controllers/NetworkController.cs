@@ -71,8 +71,7 @@ namespace HellionExtendedServer.Controllers
                 else
                     return;
 
-                MessageAllClients(string.Format("Welcome {0} on {1} !", playerOnServerRequest.Sender, Server.Instance.ServerName));
-
+                MessageAllClients(string.Format("Welcome {0} on {1} !", ply.Name, Server.Instance.ServerName));
             }
             catch (Exception ex)
             {
@@ -138,7 +137,7 @@ namespace HellionExtendedServer.Controllers
         /// <param name="printToConsole"> prints the message to the console</param>
         public void MessageAllClients(string msg, bool sendAsServer = true, bool printToConsole = true)
         {
-            if (String.IsNullOrEmpty(msg))
+            if (String.IsNullOrEmpty(msg) || ClientList.Count == 0)
                 return;
 
             byte[] guid = Guid.NewGuid().ToByteArray();
@@ -206,11 +205,11 @@ namespace HellionExtendedServer.Controllers
             if (name == "")
                 return null;
 
-            Dictionary<long, Player>.ValueCollection players = HES.CurrentServer.AllPlayers;
-
-            foreach (var player in players)
-                if (player.Name == name)
-                    return player;
+            foreach (var item in ClientList)
+            {
+                if (item.Value.Player.Name == name)
+                    return item.Value.Player;
+            }
 
             return null;
         }
@@ -233,6 +232,26 @@ namespace HellionExtendedServer.Controllers
             }
 
             return null;
+        }
+
+        public bool PlayerConnected(string name, out Player player)
+        {
+            player = null;
+            foreach (var item in ClientList)
+            {
+                if (item.Value.Player.Name == name)
+                {
+                    player = item.Value.Player;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool PlayerConnected(string name)
+        {
+            Player ply = null;
+            return PlayerConnected(name, out ply);
         }
 
         #endregion Methods

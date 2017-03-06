@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace HellionExtendedServer.Managers
+namespace HellionExtendedServer.Managers.Plugins
 {
     internal class PluginManager
     {

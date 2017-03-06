@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace HellionExtendedServer.Managers
+namespace HellionExtendedServer.Managers.Plugins
 {
     public class PluginInfo
     {

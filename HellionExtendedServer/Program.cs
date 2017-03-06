@@ -41,20 +41,24 @@ namespace HellionExtendedServer
             HES._handler += new HES.EventHandler(HES.Handler);
             HES.SetConsoleCtrlHandler(HES._handler, true);
 
-            // the GUI thread
-            Thread uiThread = new Thread(LoadGUI);
-            uiThread.SetApartmentState(ApartmentState.STA);
-            //uiThread.Start(); Disabled for now!
-
+            //SetupGUI();
             Console.Title = String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", Version, "0.1.5");
 
-            Console.WriteLine("Hellion Extended Server Initialized.");
+            Log.Instance.Info("Hellion Extended Server Initialized.");
 
             HES program = new HES(args);
             program.Run(args);
         }
 
         #region Methods
+
+        private static void SetupGUI()
+        {
+            Thread uiThread = new Thread(LoadGUI);
+            uiThread.SetApartmentState(ApartmentState.STA);
+            uiThread.Start();
+        }
+
 
         public HES(string[] args)
         {
@@ -140,6 +144,13 @@ namespace HellionExtendedServer
                     correct = true;
                 }
 
+                Match cmd5 = Regex.Match(cmd, @"^(/opengui)");
+                if (cmd5.Success)
+                {
+                    LoadGUI();
+                    correct = true;
+                }
+
                 // I add it to send a private message to a player (it's really usefull for adminsitrators)
                 Match cmd4 = Regex.Match(cmd, @"^(/send)");
                 if (cmd4.Success && cmd.Length > 5)
@@ -174,30 +185,34 @@ namespace HellionExtendedServer
         [STAThread]
         private static void LoadGUI()
         {
-            Console.WriteLine("Loading GUI (WIP)");
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            if (m_form == null || m_form.IsDisposed)
+            if (true)
             {
-                m_form = new Form1();
-            }
-            else if (m_form.Visible)
-                return;
+                Console.WriteLine("Loading GUI (WIP)");
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                if (m_form == null || m_form.IsDisposed)
+                {
+                    m_form = new Form1();
+                }
+                else if (m_form.Visible)
+                    return;
 
-            Application.Run(m_form);
+                Application.Run(m_form);
+            }
+
         }
 
         public static void PrintHelp()
         {
-            Console.WriteLine("-------------------------HELP--------------------------------");
-            Console.WriteLine("Type directly into the console to chat with online players");
-            Console.WriteLine("Current commands are;" + Environment.NewLine);
-            Console.WriteLine("/help - this page ;)");
-            Console.WriteLine("/players -count - returns the current amount of online players");
-            Console.WriteLine("/players -list - returns the full list of connected players");
-            Console.WriteLine("/save - forces a universe save");
-            Console.WriteLine("/send (name) text - send a message to the specified player");
-            Console.WriteLine("-------------------------------------------------------------");
+            Log.Instance.Warn("-------------------------HELP--------------------------------");
+            Log.Instance.Warn("Type directly into the console to chat with online players");
+            Log.Instance.Warn("Current commands are;" + Environment.NewLine);
+            Log.Instance.Warn("/help - this page ;)");
+            Log.Instance.Warn("/players -count - returns the current amount of online players");
+            Log.Instance.Warn("/players -list - returns the full list of connected players");
+            Log.Instance.Warn("/save - forces a universe save");
+            Log.Instance.Warn("/send (name) text - send a message to the specified player");
+            Log.Instance.Warn("-------------------------------------------------------------");
         }
 
         #endregion Methods
@@ -222,7 +237,7 @@ namespace HellionExtendedServer
         {
             if (sig == HES.CtrlType.CTRL_C_EVENT || sig == HES.CtrlType.CTRL_BREAK_EVENT || (sig == HES.CtrlType.CTRL_LOGOFF_EVENT || sig == HES.CtrlType.CTRL_SHUTDOWN_EVENT) || sig == HES.CtrlType.CTRL_CLOSE_EVENT)
             {
-                Console.WriteLine("SHUTTING DOWN SERVER");
+                Log.Instance.Info("SHUTTING DOWN SERVER");
 
                 Server.IsRunning = false;
                 if (Server.PersistenceSaveInterval > 0.0)

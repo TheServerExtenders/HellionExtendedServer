@@ -14,7 +14,7 @@ namespace HellionExtendedServer.Common.Plugins
         protected String m_version;
         protected String m_directory;
 
-        protected LogInstance m_log;
+        //protected LogInstance m_log;
         protected PluginBaseConfig m_config;
         #endregion
 
@@ -24,7 +24,7 @@ namespace HellionExtendedServer.Common.Plugins
         public virtual String Version { get { return m_version; } }
         public virtual String Directory { get { return m_directory; } }
 
-        public virtual LogInstance PluginLog { get { return m_log; } }
+        //public virtual LogInstance PluginLog { get { return m_log; } }
         public virtual PluginBaseConfig Config { get { return m_config; } }
         #endregion
 

@@ -71,7 +71,7 @@ namespace HellionExtendedServer.Controllers
                 else
                     return;
 
-                MessageAllClients(string.Format("Welcome {0} on {1} !", playerOnServerRequest.Sender, Server.Instance.ServerName));
+                MessageAllClients(string.Format("Welcome {0} on {1} !", ply.Name, Server.Instance.ServerName));
 
             }
             catch (Exception ex)

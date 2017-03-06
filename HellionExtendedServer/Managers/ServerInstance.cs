@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ZeroGravity;
+using HellionExtendedServer.GUI.Components;
 
 namespace HellionExtendedServer.Managers
 {
@@ -20,6 +21,7 @@ namespace HellionExtendedServer.Managers
         private DateTime m_launchedTime;
         private Server m_server;
         private ServerWrapper m_serverWrapper;
+        private GameServerIni m_gameServerIni;
 
         private static ServerInstance m_serverInstance;
 
@@ -33,6 +35,8 @@ namespace HellionExtendedServer.Managers
         public Boolean IsRunning { get { return ServerWrapper.HellionDedi.IsRunning; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
+        public GameServerIni Config { get { return m_gameServerIni; } }
+        
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
 
@@ -47,6 +51,9 @@ namespace HellionExtendedServer.Managers
 
             m_assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe"));
             m_serverWrapper = new ServerWrapper(m_assembly);
+
+            m_gameServerIni = new GameServerIni();
+
         }
 
         #region Methods
@@ -77,7 +84,7 @@ namespace HellionExtendedServer.Managers
                     Persistence.Save();
                     saveTime.Stop();
 
-                    Console.WriteLine("Universe Saved in " + saveTime.Elapsed.Milliseconds + "ms to "
+                    Log.Instance.Info("Universe Saved in " + saveTime.Elapsed.Milliseconds + "ms to "
                         + String.Format(Persistence.PersistanceFileName,
                         DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss")));
                     isSaving = false;
@@ -85,7 +92,7 @@ namespace HellionExtendedServer.Managers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Hellion Extended Server [SAVE ERROR] " + ex.ToString());
+                Log.Instance.Error("Hellion Extended Server [SAVE ERROR] " + ex.ToString());
                 isSaving = false;
             }
         }
@@ -110,7 +117,7 @@ namespace HellionExtendedServer.Managers
 
             if (IsRunning)
             {
-                Console.WriteLine("Hellion Extended Server: World Initialized!");
+                Log.Instance.Info("Hellion Extended Server: World Initialized!");
 
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -123,7 +130,7 @@ namespace HellionExtendedServer.Managers
 
             new NetworkController(m_server.NetworkController);
 
-            Console.WriteLine("Ready for connections!");
+            Log.Instance.Info("Ready for connections!");
 
             HES.PrintHelp();
         }

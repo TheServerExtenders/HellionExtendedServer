@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using ZeroGravity;
+using HellionExtendedServer.Managers;
 
 namespace HellionExtendedServer.ServerWrappers
 {
@@ -74,7 +75,7 @@ namespace HellionExtendedServer.ServerWrappers
         /// <returns>the thread!</returns>
         public Thread StartServer(Object args)
         {
-            Console.WriteLine("Hellion Extended Server: Loading HELLION Dedicated.");
+            Log.Instance.Info("Hellion Extended Server: Loading HELLION Dedicated.");
 
             Thread serverThread = new Thread(new ParameterizedThreadStart(this.ThreadStart));
 
@@ -89,11 +90,11 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[ERROR] Hellion Extended Server[ServerThread]: " + ex.ToString());
+                Log.Instance.Fatal("[ERROR] Hellion Extended Server[ServerThread]: " + ex.ToString());
                 return null;
             }
 
-            Console.WriteLine("Hellion Extended Server: Waiting for server to start. This may take at least 10 seconds or longer depending on the size of the current save.");
+            Log.Instance.Warn("Hellion Extended Server: Waiting for server to start. This may take at least 10 seconds or longer depending on the size of the current save.");
 
             try
             {
@@ -109,7 +110,7 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[ERROR] Hellion Extended Server: " + ex.ToString());
+                Log.Instance.Fatal("[ERROR] Hellion Extended Server: " + ex.ToString());
                 return null;
             }
 
@@ -131,7 +132,7 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Unhandled Exception caused server to crash. Exception: " + ex.ToString());
+                Log.Instance.Fatal("Unhandled Exception caused server to crash. Exception: " + ex.ToString());
             }
             m_isRunning = false;
         }
@@ -156,11 +157,11 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (TypeInitializationException ex)
             {
-                Console.WriteLine("[FATAL ERROR] REPORT THE FOLLOWING TO GITHUB ISSUES] HES: Could Not Initialize Server! : " + ex.ToString());
+                Log.Instance.Fatal("[FATAL ERROR] REPORT THE FOLLOWING TO GITHUB ISSUES] HES: Could Not Initialize Server! : " + ex.ToString());
             }
             catch (Exception ex)
             {
-                Console.WriteLine("HES: Server Start Exception: " + ex.Message);
+                Log.Instance.Fatal("HES: Server Start Exception: " + ex.Message);
             }
         }
 

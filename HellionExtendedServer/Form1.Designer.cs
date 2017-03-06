@@ -30,12 +30,15 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.server_config_debugmode = new System.Windows.Forms.CheckBox();
+            this.server_config_setdefaults = new System.Windows.Forms.Button();
+            this.server_config_cancel = new System.Windows.Forms.Button();
+            this.server_config_save = new System.Windows.Forms.Button();
+            this.server_config_autostart = new System.Windows.Forms.CheckBox();
+            this.server_config_stopserver = new System.Windows.Forms.Button();
+            this.server_config_startserver = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -48,7 +51,6 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -68,24 +70,6 @@
             this.tabPage1.Text = "Server";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(752, 453);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Plugins";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(746, 366);
-            this.propertyGrid1.TabIndex = 0;
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -99,40 +83,100 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.checkBox1);
-            this.splitContainer1.Panel2.Controls.Add(this.button2);
-            this.splitContainer1.Panel2.Controls.Add(this.button1);
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_debugmode);
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_setdefaults);
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_cancel);
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_save);
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_autostart);
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_stopserver);
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_startserver);
             this.splitContainer1.Size = new System.Drawing.Size(746, 425);
             this.splitContainer1.SplitterDistance = 366;
             this.splitContainer1.TabIndex = 3;
             // 
-            // checkBox1
+            // propertyGrid1
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(85, 7);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(111, 17);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "Auto-Start on load";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(746, 366);
+            this.propertyGrid1.TabIndex = 0;
             // 
-            // button2
+            // server_config_debugmode
             // 
-            this.button2.Location = new System.Drawing.Point(3, 31);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Stop Server";
-            this.button2.UseVisualStyleBackColor = true;
+            this.server_config_debugmode.AutoSize = true;
+            this.server_config_debugmode.Enabled = false;
+            this.server_config_debugmode.Location = new System.Drawing.Point(202, 9);
+            this.server_config_debugmode.Name = "server_config_debugmode";
+            this.server_config_debugmode.Size = new System.Drawing.Size(88, 17);
+            this.server_config_debugmode.TabIndex = 5;
+            this.server_config_debugmode.Text = "Debug Mode";
+            this.server_config_debugmode.UseVisualStyleBackColor = true;
+            this.server_config_debugmode.CheckedChanged += new System.EventHandler(this.server_config_debugmode_CheckedChanged);
             // 
-            // button1
+            // server_config_setdefaults
             // 
-            this.button1.Location = new System.Drawing.Point(3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Start Server";
-            this.button1.UseVisualStyleBackColor = true;
+            this.server_config_setdefaults.Location = new System.Drawing.Point(488, 6);
+            this.server_config_setdefaults.Name = "server_config_setdefaults";
+            this.server_config_setdefaults.Size = new System.Drawing.Size(115, 23);
+            this.server_config_setdefaults.TabIndex = 4;
+            this.server_config_setdefaults.Text = "Set Config Defaults";
+            this.server_config_setdefaults.UseVisualStyleBackColor = true;
+            this.server_config_setdefaults.Click += new System.EventHandler(this.server_config_setdefaults_Click);
+            // 
+            // server_config_cancel
+            // 
+            this.server_config_cancel.Location = new System.Drawing.Point(666, 31);
+            this.server_config_cancel.Name = "server_config_cancel";
+            this.server_config_cancel.Size = new System.Drawing.Size(75, 23);
+            this.server_config_cancel.TabIndex = 3;
+            this.server_config_cancel.Text = "Cancel";
+            this.server_config_cancel.UseVisualStyleBackColor = true;
+            this.server_config_cancel.Click += new System.EventHandler(this.server_config_cancel_Click);
+            // 
+            // server_config_save
+            // 
+            this.server_config_save.Location = new System.Drawing.Point(666, 5);
+            this.server_config_save.Name = "server_config_save";
+            this.server_config_save.Size = new System.Drawing.Size(75, 23);
+            this.server_config_save.TabIndex = 1;
+            this.server_config_save.Text = "Save";
+            this.server_config_save.UseVisualStyleBackColor = true;
+            this.server_config_save.Click += new System.EventHandler(this.server_config_save_Click);
+            // 
+            // server_config_autostart
+            // 
+            this.server_config_autostart.AutoSize = true;
+            this.server_config_autostart.Enabled = false;
+            this.server_config_autostart.Location = new System.Drawing.Point(85, 9);
+            this.server_config_autostart.Name = "server_config_autostart";
+            this.server_config_autostart.Size = new System.Drawing.Size(111, 17);
+            this.server_config_autostart.TabIndex = 2;
+            this.server_config_autostart.Text = "Auto-Start on load";
+            this.server_config_autostart.UseVisualStyleBackColor = true;
+            this.server_config_autostart.CheckedChanged += new System.EventHandler(this.server_config_autostart_CheckedChanged);
+            // 
+            // server_config_stopserver
+            // 
+            this.server_config_stopserver.Enabled = false;
+            this.server_config_stopserver.Location = new System.Drawing.Point(3, 31);
+            this.server_config_stopserver.Name = "server_config_stopserver";
+            this.server_config_stopserver.Size = new System.Drawing.Size(75, 23);
+            this.server_config_stopserver.TabIndex = 1;
+            this.server_config_stopserver.Text = "Stop Server";
+            this.server_config_stopserver.UseVisualStyleBackColor = true;
+            this.server_config_stopserver.Click += new System.EventHandler(this.server_config_stopserver_Click);
+            // 
+            // server_config_startserver
+            // 
+            this.server_config_startserver.Enabled = false;
+            this.server_config_startserver.Location = new System.Drawing.Point(3, 4);
+            this.server_config_startserver.Name = "server_config_startserver";
+            this.server_config_startserver.Size = new System.Drawing.Size(75, 23);
+            this.server_config_startserver.TabIndex = 0;
+            this.server_config_startserver.Text = "Start Server";
+            this.server_config_startserver.UseVisualStyleBackColor = true;
+            this.server_config_startserver.Click += new System.EventHandler(this.server_config_startserver_Click);
             // 
             // statusStrip1
             // 
@@ -149,7 +193,8 @@
             this.ClientSize = new System.Drawing.Size(760, 479);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
-            this.Text = "Hellion Extended Server";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+            this.Text = "Hellion Extended Server GUI";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -168,11 +213,14 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox server_config_autostart;
+        private System.Windows.Forms.Button server_config_stopserver;
+        private System.Windows.Forms.Button server_config_startserver;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Button server_config_setdefaults;
+        private System.Windows.Forms.Button server_config_cancel;
+        private System.Windows.Forms.Button server_config_save;
+        private System.Windows.Forms.CheckBox server_config_debugmode;
     }
 }
 

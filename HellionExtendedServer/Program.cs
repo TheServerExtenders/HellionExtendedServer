@@ -186,7 +186,7 @@ namespace HellionExtendedServer
                                 text += arg + " ";
                         }
 
-                        if (NetworkController.Instance.PlayerConnected(args[3]))
+                        if (NetworkController.Instance.ConnectedPlayer(args[3]))
                         {
                             Console.WriteLine("Server > " + args[3] + " : " + text);
                             NetworkController.Instance.MessageToClient(text, "Server", args[3]);
@@ -205,7 +205,7 @@ namespace HellionExtendedServer
                     {
                         ZeroGravity.Objects.Player ply = null;
 
-                        if (NetworkController.Instance.PlayerConnected(args[3], out ply))
+                        if (NetworkController.Instance.ConnectedPlayer(args[3], out ply))
                         {
                             try
                             {

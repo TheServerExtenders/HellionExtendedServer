@@ -9,14 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HellionExtendedServer.Managers;
 
-using HellionExtendedServer.Components;
-using HellionExtendedServer.GUI.Objects;
-
 namespace HellionExtendedServer
 {
     public partial class Form1 : Form
     {
-
         public Form1()
         {
             InitializeComponent();
@@ -32,8 +28,23 @@ namespace HellionExtendedServer
 
         private void server_config_save_Click(object sender, EventArgs e)
         {
-            ServerInstance.Instance.Config.Save();
-            statusStrip1.Text = "HES Config Saved.";
+            if (ServerInstance.Instance.Config.Save())
+            {
+                StatusBar.Text = "Config Saved.";
+            }else
+            {
+                DialogResult result = MessageBox.Show("GameServer.Ini does not exist. Would you like to create one ?", 
+                    "Server Settings Error", 
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1  );               
+                if(result == DialogResult.Yes)
+                {
+                    ServerInstance.Instance.Config.LoadDefaults();
+                    ServerInstance.Instance.Config.Save(true, false);
+                    serverconfig_properties.Refresh();
+                    StatusBar.Text = "Config Defaults saved to GameServer.Ini. Change the settings then Save!";
+                }
+            }
+            
         }
 
         private void server_config_cancel_Click(object sender, EventArgs e)
@@ -46,14 +57,13 @@ namespace HellionExtendedServer
         {
             ServerInstance.Instance.Config.LoadDefaults();
             serverconfig_properties.Refresh();
-            statusStrip1.Text = "HES Config Defaults Loaded.";
+            StatusBar.Text = "Config Defaults Loaded.";
         }
-
 
         private void server_config_startserver_Click(object sender, EventArgs e)
         {
             ServerInstance.Instance.Start();
-            statusStrip1.Text = "HES Server Started";
+            StatusBar.Text = "Server Started";
         }
 
         private void server_config_stopserver_Click(object sender, EventArgs e)
@@ -61,10 +71,9 @@ namespace HellionExtendedServer
             if (ZeroGravity.Server.IsRunning)
             {
                 ServerInstance.Instance.Stop();
-                statusStrip1.Text = "HES Server Stopped";
+                StatusBar.Text = "Server Stopped";
             }
         }
-
 
         private void server_config_autostart_CheckedChanged(object sender, EventArgs e)
         {
@@ -75,7 +84,7 @@ namespace HellionExtendedServer
 
         private void Default_SettingsSaving(object sender, CancelEventArgs e)
         {
-            statusStrip1.Text = "HES Settings Saved";
+            StatusBar.Text = "GUI Settings Changed";
         }
 
 

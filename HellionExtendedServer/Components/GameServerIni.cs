@@ -17,7 +17,6 @@ namespace HellionExtendedServer.Components
         #region Fields
         private static string serverName;
         private static string serverPass;
-        private static bool isLocal;
         private static int statusPort;
         private static int clientPort;
         private static int maxPlayers;
@@ -47,16 +46,6 @@ namespace HellionExtendedServer.Components
         {
             get { return maxSaveFileCount; }
             set { maxSaveFileCount = value; }
-        }
-
-        [ReadOnly(false)]
-        [Description("(?) Is the server local?.")]
-        [Category("Settings")]
-        [DisplayName("Local")]
-        public bool local
-        {
-            get { return isLocal; }
-            set { isLocal = value; }
         }
 
         [ReadOnly(false)]
@@ -232,7 +221,6 @@ namespace HellionExtendedServer.Components
         {
             serverName = "Hellion Dedicated Server";
             serverPass = "";
-            isLocal = false;
             statusPort = 5970;
             clientPort = 5969;
             maxPlayers = 20;
@@ -250,6 +238,7 @@ namespace HellionExtendedServer.Components
             SetSettings();           
         }
 
+
         private void SetSettings()
         {
             object obj = ServerInstance.Instance.Config;
@@ -260,29 +249,58 @@ namespace HellionExtendedServer.Components
             }
         }
 
-        public void Save()
+        public void BackupIni()
+        {
+            try
+            {                
+                
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("HES: Could not backup GameServer.Ini properly[BackupIniLines]: " + ex.ToString());
+            }
+        }
+
+
+        public bool Save(bool ignoreFileExists = false, bool backupIni = true)
         {
             try
             {
-                if (File.Exists(FileName))
+                var fileExists = File.Exists(FileName);
+
+                if (ignoreFileExists)
+                    fileExists = true;
+
+                if (fileExists)
                 {
+                    if (backupIni)
+                        if (!File.Exists(FileName + "hesbackup"))
+                            File.Copy(FileName, FileName + "hesbackup");
+                        
                     SetSettings();
 
                     using (StreamWriter file = new StreamWriter(FileName))
                         foreach (var entry in Settings)
-                            file.WriteLine("{0}={1}", entry.Key, entry.Value);                                                                           
+                            file.WriteLine("{0}={1}", entry.Key, entry.Value);
+
+                    return true;
                 }
                 else
                 {
-                    Log.Instance.Error("GAMESERVER.INI Does not exist!");
+                    Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: GAMESERVER.INI Does not exist!");
+                    return false;                
                 }
+            }
+            catch (IOException)
+            {
+                Log.Instance.Warn("Could not save GameServer.Ini as the file is in use.");
             }
             catch (Exception ex)
             {
                 Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: Could not save config settings. EX: " + ex.ToString());                
             }
 
-           
+            return true;
         }
 
         public void Load()
@@ -307,7 +325,7 @@ namespace HellionExtendedServer.Components
                 }
                 else
                 {
-                    Log.Instance.Error("GameServer.Ini wasn't found!");
+                    Log.Instance.Warn("GameServer.Ini wasn't found! Creating a new one based on Defaults. ");
                 }
             }
             catch (Exception ex)

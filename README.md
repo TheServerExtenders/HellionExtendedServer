@@ -1,30 +1,47 @@
 # HellionExtendedServer
 An Extended Dedicated Server for Hellion http://www.playhellion.com 
 
-THIS IS A WORK IN PROGRESS.
+[![Build status](https://ci.appveyor.com/api/projects/status/v79i035u5iwr5w5a/branch/master?svg=true)](https://ci.appveyor.com/project/generalwrex/hellionextendedserver/branch/master)
 
-MINIMAL FUNCTIONALITY
+Steam Discussion: 
+http://steamcommunity.com/app/588210/discussions/0/133258593382366911/
+
+Hellion Forum Topic:
+https://www.playhellion.com/forum/discussion/132/program-hellion-extended-server-hes-a-dedicated-server-extender
+
+THIS IS A WORK IN PROGRESS.
 
 It's very minimalistic right now, 
 you can chat with people on the server by just typing into the command prompt
 You can read the chat from all players that talk.
 
-INSTALLING
+# INSTALLING
 
-Just drop the 3 files from the zip archive into your Hellion Dedicated Server directory
+Just drop the 5 files from the zip archive into your Hellion Dedicated Server directory
 
-     HellionServerExtender.exe
-     HellionServerExtender.exe.config
+     HellionExtendedServer.exe
+     HellionExtendedServer.exe.config
+     HellionExtendedServer.Common.dll
      NLog.dll
+     NLog.config
+     
 
-To start the server, just run HellionServerExtender.exe ( make sure the HellionServerExtender.exe.config file exists)
-
+To start the server, just run HellionServerExtender.exe ( make sure the files above exist with HellionExtendedServer.exe)
 
 
 commands start with /
 
-     /players - returns the amount of players on the server
+     /players -list - returns the full list of connected players
+     /players -count - returns the current amount of online players
+     /players -all - returns every player that has ever been on the server. And if they're online.
      /help - will have help soon
+     /save - forces a universe save
+     /save -send - forces a universe save, and tells connected players
+     /send (name) text - send a message to the specified player
 
 
 If you would like to help, fork or message me! 
+
+# Contributors
+Generalwrex
+TheCaptain

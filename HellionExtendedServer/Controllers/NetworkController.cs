@@ -66,9 +66,7 @@ namespace HellionExtendedServer.Controllers
                     return;
 
                 Player ply;
-                if (m_network.clientList.ContainsKey(playerOnServerRequest.Sender))
-                    ply = m_network.clientList[playerOnServerRequest.Sender].Player;
-                else
+                if (ConnectedPlayer(playerOnServerRequest.Sender, out ply))
                     return;
 
                 MessageAllClients(string.Format("Welcome {0} on {1} !", playerOnServerRequest.Sender, Server.Instance.ServerName));
@@ -94,9 +92,7 @@ namespace HellionExtendedServer.Controllers
                     return;
 
                 Player ply;
-                if (m_network.clientList.ContainsKey(playerSpawnRequest.Sender))
-                    ply = m_network.clientList[playerSpawnRequest.Sender].Player;
-                else
+                if (ConnectedPlayer(playerSpawnRequest.Sender, out ply))
                     return;
 
                 chatlogger.Info(ply.Name + " spawned (" + ply.SteamId + ") ");
@@ -162,7 +158,7 @@ namespace HellionExtendedServer.Controllers
         /// <param name="ReceiverName">Name or steamid of the receiver</param>
         /// <param name="steamId">True if the receiverName is the steamID</param>
         /// <returns></returns>
-        public void MessageToClient(string msg, string SenderName, string ReceiverName, bool steamId = false)
+        public void MessageToClient(string msg, string SenderName, string ReceiverName)
         {
             if (String.IsNullOrEmpty(msg))
                 return;
@@ -175,44 +171,17 @@ namespace HellionExtendedServer.Controllers
             textChatMessage.Name = (SenderName);
             textChatMessage.MessageText = msg;
 
-            Player receiver = FindPlayer(ReceiverName, steamId);
-            if (receiver != null)
+            Player receiver = null;
+            if (ConnectedPlayer(ReceiverName, out receiver))
             {
                 Client recClient = GetClient(receiver);
-                if (receiver != null)
-                {
-                    m_network.SendToGameClient(recClient.ClientGUID, (NetworkData)textChatMessage);
-                    chatlogger.Info(textChatMessage.Name + "->" + ReceiverName + ": " + msg);
-                }
-                else
-                {
-                    Console.WriteLine("This player is not connected.");
-                }
+                m_network.SendToGameClient(recClient.ClientGUID, (NetworkData)textChatMessage);
+                chatlogger.Info(textChatMessage.Name + "->" + ReceiverName + ": " + msg);
             }
             else
             {
-                Console.WriteLine("This player don't exist.");
+                Console.WriteLine("This player is not connected.");
             }
-        }
-
-        /// <summary>
-        /// This method allow to get a specific player with his ingame name or steamID
-        /// </summary>
-        /// <param name="name">Name or steamID (steamId=true requiered)</param>
-        /// <param name="steamId">True if name is the steamID</param>
-        /// <returns></returns>
-        public Player FindPlayer(string name, bool steamId = false)
-        {
-            if (name == "")
-                return null;
-
-            Dictionary<long, Player>.ValueCollection players = HES.CurrentServer.AllPlayers;
-
-            foreach (var player in players)
-                if (player.Name == name)
-                    return player;
-
-            return null;
         }
 
         /// <summary>
@@ -234,6 +203,41 @@ namespace HellionExtendedServer.Controllers
 
             return null;
         }
+
+        #region ConnectedPlayer part
+
+        public bool ConnectedPlayer(string name, out Player player)
+        {
+            player = null;
+            foreach (var item in ClientList)
+            {
+                if (item.Value.Player.Name == name)
+                {
+                    player = item.Value.Player;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool ConnectedPlayer(long senderId, out Player player)
+        {
+            player = null;
+            if(ClientList.ContainsKey(senderId))
+            {
+                player = ClientList[senderId].Player;
+                return true;
+            }
+            return false;
+        }
+
+        public bool ConnectedPlayer(string name)
+        {
+            Player ply = null;
+            return ConnectedPlayer(name, out ply);
+        }
+
+        #endregion
 
         #endregion Methods
     }

@@ -38,21 +38,23 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
+                  
             // Setup the handler for closing HES properly and saving
             HES._handler += new HES.EventHandler(HES.Handler);
             HES.SetConsoleCtrlHandler(HES._handler, true);
 
             //SetupGUI();
             Console.Title = String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", Version, "0.1.5");
+          
+            Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
-            Log.Instance.Info("Hellion Extended Server Initialized.");
+            SetupGUI();
 
             HES program = new HES(args);
             program.Run(args);
         }
 
         #region Methods
-
         private static void SetupGUI()
         {
             Thread uiThread = new Thread(LoadGUI);
@@ -60,11 +62,10 @@ namespace HellionExtendedServer
             uiThread.Start();
         }
 
+
         public HES(string[] args)
         {
             m_instance = this;
-
-            m_serverInstance = new ServerInstance();
         }
 
         /// <summary>
@@ -74,7 +75,17 @@ namespace HellionExtendedServer
         /// <param name="args"></param>
         private void Run(string[] args)
         {
-            ServerInstance.Instance.Start();
+            m_serverInstance = new ServerInstance();
+            m_serverInstance.Config = new Components.GameServerIni();
+            m_serverInstance.Config.Load();
+
+            foreach(string arg in args)
+            {
+                if (arg.Contains("-autostart"))
+                    ServerInstance.Instance.Start();
+            }
+
+            //ServerInstance.Instance.Start();
 
             ReadConsoleCommands();
         }
@@ -213,6 +224,27 @@ namespace HellionExtendedServer
                     }
                 }
 
+                if (args[1] == "start")
+                {
+                    if (!Server.IsRunning)
+                        ServerInstance.Instance.Start();
+
+                    correct = true;
+                }
+
+                if (args[1] == "stop")
+                {
+                    if (Server.IsRunning)
+                        ServerInstance.Instance.Stop();
+
+                    correct = true;
+                }
+
+                if (args[1] == "opengui")
+                {
+                    LoadGUI();
+                    correct = true;
+                }
 
                 if (!correct)
                 {
@@ -231,7 +263,7 @@ namespace HellionExtendedServer
         {
             if (true)
             {
-                Console.WriteLine("Loading GUI (WIP)");
+                Console.WriteLine("(WIP)Loading GUI...");
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 if (m_form == null || m_form.IsDisposed)
@@ -252,10 +284,13 @@ namespace HellionExtendedServer
             Log.Instance.Warn("Type directly into the console to chat with online players");
             Log.Instance.Warn("Current commands are;" + Environment.NewLine);
             Log.Instance.Warn("/help - this page ;)");
+            Log.Instance.Warn("/save - forces a universe save");
+            Log.Instance.Warn("/start - start the server");
+            Log.Instance.Warn("/stop - stop the server");
+            Log.Instance.Warn("/opengui - open the gui");
             Log.Instance.Warn("/players -count - returns the current amount of online players");
             Log.Instance.Warn("/players -list - returns the full list of connected players");
             Log.Instance.Warn("/players -all - returns every player that has ever been on the server. And if they're online.");
-            Log.Instance.Warn("/save - forces a universe save");
             Log.Instance.Warn("/send (name) text - send a message to the specified player");
             Log.Instance.Warn("/kick (name) - kick the specified player from the server");
             Log.Instance.Warn("-------------------------------------------------------------");
@@ -283,13 +318,11 @@ namespace HellionExtendedServer
         {
             if (sig == HES.CtrlType.CTRL_C_EVENT || sig == HES.CtrlType.CTRL_BREAK_EVENT || (sig == HES.CtrlType.CTRL_LOGOFF_EVENT || sig == HES.CtrlType.CTRL_SHUTDOWN_EVENT) || sig == HES.CtrlType.CTRL_CLOSE_EVENT)
             {
-                Log.Instance.Info("SHUTTING DOWN SERVER");
-
-                Server.IsRunning = false;
-                if (Server.PersistenceSaveInterval > 0.0)
-                    Server.SavePersistenceDataOnShutdown = true;
-                Server.MainLoopEnded.WaitOne(5000);
-                Console.WriteLine("CLOSING HELLION EXTENDED SERVER");
+                if (Server.IsRunning)
+                {
+                    ServerInstance.Instance.Stop();
+                    Console.WriteLine("CLOSING HELLION EXTENDED SERVER");
+                }               
             }
             return false;
         }

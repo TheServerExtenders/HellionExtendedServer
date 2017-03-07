@@ -7,7 +7,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ZeroGravity;
-using HellionExtendedServer.GUI.Components;
+using HellionExtendedServer.Components;
+using System.Net.Sockets;
+using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers
 {
@@ -35,7 +37,7 @@ namespace HellionExtendedServer.Managers
         public Boolean IsRunning { get { return ServerWrapper.HellionDedi.IsRunning; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
-        public GameServerIni Config { get { return m_gameServerIni; } }
+        public GameServerIni Config { get { return m_gameServerIni; } set { m_gameServerIni = value; } }
         
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
@@ -44,6 +46,7 @@ namespace HellionExtendedServer.Managers
 
         public ServerInstance()
         {
+                       
             m_launchedTime = DateTime.MinValue;
 
             m_serverThread = null;
@@ -52,7 +55,7 @@ namespace HellionExtendedServer.Managers
             m_assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe"));
             m_serverWrapper = new ServerWrapper(m_assembly);
 
-            m_gameServerIni = new GameServerIni();
+            
 
         }
 
@@ -97,11 +100,25 @@ namespace HellionExtendedServer.Managers
             }
         }
 
+        public void Test()
+        {
+
+           foreach( SpaceObjectVessel vessel in m_server.AllVessels)
+            {
+                Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ",vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(),vessel.Velocity, vessel.AngularVelocity));
+                
+            }
+
+        }
+
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
         public void Start()
         {
+            if (Server.IsRunning)
+                return;
+
             String[] serverArgs = new String[]
                 {
                     "",
@@ -129,13 +146,12 @@ namespace HellionExtendedServer.Managers
             }
 
             new NetworkController(m_server.NetworkController);
-
+            
             Log.Instance.Info("Ready for connections!");
 
             HES.PrintHelp();
         }
 
-        //TODO - Make this actually work ;)
         public void Stop()
         {
             ServerWrapper.HellionDedi.StopServer();

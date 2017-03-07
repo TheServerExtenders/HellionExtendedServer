@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 using ZeroGravity;
@@ -65,8 +66,6 @@ namespace HellionExtendedServer
         public HES(string[] args)
         {
             m_instance = this;
-
-            
         }
 
         /// <summary>
@@ -104,65 +103,136 @@ namespace HellionExtendedServer
             }
             else
             {
-                //This correct bool is used 
-                bool correct = false;
-                string command = "";
-
-                Match cmd1 = Regex.Match(cmd, @"^(/help)");
-                if (cmd1.Success)
+                string[] arguments = Regex.Split(cmd, @"^/([a-z]+) (\([a-zA-Z\(\)\[\]. ]+\))|([a-zA-Z\-]+)");
+                List<string> args = new List<string>();
+                int i = 1;
+                foreach (var arg in arguments)
                 {
-                    PrintHelp();
+                    if (arg != "" && arg != " ")
+                        args.Add(arg);
+                    i++;
+                }
+                arguments = null;
+                bool correct = false;
+
+                //Command /help
+                if (args[1] == "help")
+                {
+                    try
+                    {
+                        PrintHelp();
+                    }
+                    catch (ArgumentException) { }
                     correct = true;
                 }
 
                 //Differents args for /players command to display the count, the full list of players (disconnected and disconnected) and the list of connected players.
-                Match cmd2 = Regex.Match(cmd, @"^(/players)");
-                if (cmd2.Success && cmd.Length > 9)
+                if (args[1] == "players" && args.Count > 2)
                 {
-                    correct = true;
-                    Console.WriteLine();
-                    command = cmd.Substring(9);
-                    if (command == "-count")
+                    if (args[2] == "-count")
+                    {
                         Console.WriteLine("Players Connected: " + ServerInstance.Instance.Server.NetworkController.CurrentOnlinePlayers() + "/" + ServerInstance.Instance.Server.MaxPlayers);
-
-                    if (command == "-list")
+                        correct = true;
+                    }
+                    else if (args[2] == "-list")
                     {
                         Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId-------"));
                         foreach (var client in NetworkController.Instance.ClientList)
                         {
                             Console.WriteLine(string.Format("\t {0} \t {1}", client.Value.Player.Name, client.Value.Player.SteamId));
                         }
+                        correct = true;
                     }
-
-                    if (command == "-all")
+                    else if (args[2] == "-all")
                     {
+                        Console.WriteLine(string.Format("{0} players already played in the server since its launching.", ServerInstance.Instance.Server.AllPlayers.Count));
                         Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId------- | -------Connected-------"));
                         foreach (var player in ServerInstance.Instance.Server.AllPlayers)
                         {
                             Console.WriteLine(string.Format("\t {0} \t {1} \t {2}", player.Name, player.SteamId, NetworkController.Instance.ClientList.Values.Contains(NetworkController.Instance.GetClient(player))));
                         }
+                        correct = true;
                     }
+
                     Console.WriteLine();
                 }
 
-                Match cmd3 = Regex.Match(cmd, @"^(/save)");
-                if (cmd3.Success)
+                if (args[1] == "save")
                 {
                     ServerInstance.Instance.Save();
                     correct = true;
+
+                    if (args.Count > 2 && args[3] == "-show")
+                    {
+                        NetworkController.Instance.MessageAllClients("Dedicated Server is saving the game...");
+                    }
                 }
 
-                Match cmd6 = Regex.Match(cmd, @"^(/start)");
-                if (cmd6.Success)
+                if (args[1] == "opengui")
                 {
-                    if(!Server.IsRunning)
+                    LoadGUI();
+                    correct = true;
+                }
+
+                if (args[1] == "send" && args.Count > 2)
+                {
+                    correct = true;
+                    string text = "";
+                    if (args.Count > 3 && args[3].Contains("(") && args[3].Contains(")"))
+                    {
+                        foreach (var arg in args)
+                        {
+                            if (args.IndexOf(arg) > 2)
+                                text += arg + " ";
+                        }
+
+                        if (NetworkController.Instance.PlayerConnected(args[3]))
+                        {
+                            Console.WriteLine("Server > " + args[3] + " : " + text);
+                            NetworkController.Instance.MessageToClient(text, "Server", args[3]);
+                        }
+                        else
+                            Console.WriteLine("This player is not connected");
+                    }
+                    else
+                        Console.WriteLine("No player name specified");
+                }
+
+                if (args[1] == "kick" && args.Count > 2)
+                {
+                    correct = true;
+                    if (args[3].Contains("(") && args[3].Contains(")"))
+                    {
+                        ZeroGravity.Objects.Player ply = null;
+
+                        if (NetworkController.Instance.PlayerConnected(args[3], out ply))
+                        {
+                            try
+                            {
+                                ply.DiconnectFromNetworkContoller();
+                                Console.WriteLine(string.Format("{0} was kicked from the server.", ply.Name));
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Instance.Error("Hellion Extended Server [KICK ERROR] " + ex.ToString());
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine(args[3] + " is not connected");
+                        }
+                    }
+                }
+
+                if (args[1] == "start")
+                {
+                    if (!Server.IsRunning)
                         ServerInstance.Instance.Start();
 
                     correct = true;
                 }
 
-                Match cmd7 = Regex.Match(cmd, @"^(/stop)");
-                if (cmd7.Success)
+                if (args[1] == "stop")
                 {
                     if (Server.IsRunning)
                         ServerInstance.Instance.Stop();
@@ -170,35 +240,15 @@ namespace HellionExtendedServer
                     correct = true;
                 }
 
-                Match cmd5 = Regex.Match(cmd, @"^(/opengui)");
-                if (cmd5.Success)
+                if (args[1] == "opengui")
                 {
                     LoadGUI();
                     correct = true;
                 }
 
-                // I add it to send a private message to a player (it's really usefull for adminsitrators)
-                Match cmd4 = Regex.Match(cmd, @"^(/send)");
-                if (cmd4.Success && cmd.Length > 5)
+                if (!correct)
                 {
-                    correct = true;
-                    command = cmd.Substring(5);
-                    string target = "";
-                    string text = "";
-                    if (command.Contains("(") && command.Contains("("))
-                    {
-                        target = command.Substring(command.IndexOf('(') + 1, command.IndexOf(')') - 2);
-
-                        if (command.Length > command.IndexOf(')') + 1)
-                        {
-                            text = command.Substring(command.IndexOf(')') + 2);
-                        }
-
-                        Console.WriteLine("Server > " + target + " : " + text);
-                        NetworkController.Instance.MessageToClient(text, "Server", target);
-                    }
-                    else
-                        Console.WriteLine("No player name specified");
+                    Console.WriteLine("Bas synthax ! Use /help to watch all valid commands");
                 }
             }
 
@@ -234,10 +284,15 @@ namespace HellionExtendedServer
             Log.Instance.Warn("Type directly into the console to chat with online players");
             Log.Instance.Warn("Current commands are;" + Environment.NewLine);
             Log.Instance.Warn("/help - this page ;)");
+            Log.Instance.Warn("/save - forces a universe save");
+            Log.Instance.Warn("/start - start the server");
+            Log.Instance.Warn("/stop - stop the server");
+            Log.Instance.Warn("/opengui - open the gui");
             Log.Instance.Warn("/players -count - returns the current amount of online players");
             Log.Instance.Warn("/players -list - returns the full list of connected players");
-            Log.Instance.Warn("/save - forces a universe save");
+            Log.Instance.Warn("/players -all - returns every player that has ever been on the server. And if they're online.");
             Log.Instance.Warn("/send (name) text - send a message to the specified player");
+            Log.Instance.Warn("/kick (name) - kick the specified player from the server");
             Log.Instance.Warn("-------------------------------------------------------------");
         }
 

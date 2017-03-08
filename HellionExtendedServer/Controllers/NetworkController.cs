@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using ZeroGravity;
 using ZeroGravity.Helpers;
@@ -36,18 +37,18 @@ namespace HellionExtendedServer.Controllers
 
             // Hook into the Chat Message event and add in ours along side the original
             networkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));
-            Log.Instance.Info("Chat Message Listener Added.");
+            Log.Instance.Info(HES.Localization.Sentences["ChatMsgListener"]);
 
             // Hook into the player spawn event and add in ours as well!
             networkController.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerSpawnRequestListener));
-            Log.Instance.Info("Player Spawns Listener Added.");
+            Log.Instance.Info(HES.Localization.Sentences["PlayerSpawnListener"]);
 
             // [IN TEST] Could be used to detect when the player is physicly in the server
             networkController.EventSystem.AddListener(typeof(PlayersOnServerRequest), new EventSystem.NetworkDataDelegate(this.PlayerOnServerListener));
-            Log.Instance.Info("Player On Server Listener Added.");
+            Log.Instance.Info(HES.Localization.Sentences["PlayerOnServerListener"]);
 
             m_network = networkController;
-            Log.Instance.Info("Network Controller Loaded!");
+            Log.Instance.Info(HES.Localization.Sentences["NetControlerLoaded"]);
         }
 
         #region Event Handlers
@@ -66,17 +67,17 @@ namespace HellionExtendedServer.Controllers
                     return;
 
                 Player ply;
-                if (m_network.clientList.ContainsKey(playerOnServerRequest.Sender))
-                    ply = m_network.clientList[playerOnServerRequest.Sender].Player;
-                else
+                if (ConnectedPlayer(playerOnServerRequest.Sender, out ply))
                     return;
 
-                MessageAllClients(string.Format("Welcome {0} on {1} !", playerOnServerRequest.Sender, Server.Instance.ServerName));
+                
+                Console.WriteLine(string.Format(HES.Localization.Sentences["NewPlayer"],ClientList[playerOnServerRequest.Sender].Player.Name));
+                MessageAllClients(string.Format(HES.Localization.Sentences["Welcome"], ClientList[playerOnServerRequest.Sender].Player.Name, Server.Instance.ServerName));
 
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("[ERROR] Hellion Extended Server[SpawnRequest]:" + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [ON SERVER ERROR] : " + ex.InnerException.ToString());
             }
         }
 
@@ -94,17 +95,15 @@ namespace HellionExtendedServer.Controllers
                     return;
 
                 Player ply;
-                if (m_network.clientList.ContainsKey(playerSpawnRequest.Sender))
-                    ply = m_network.clientList[playerSpawnRequest.Sender].Player;
-                else
+                if (ConnectedPlayer(playerSpawnRequest.Sender, out ply))
                     return;
 
-                chatlogger.Info(ply.Name + " spawned (" + ply.SteamId + ") ");
-                MessageAllClients(ply.Name + " has spawned!", false, false);
+                chatlogger.Info(string.Format(HES.Localization.Sentences["PlayerSpawnLog"], ply.Name, ply.SteamId));
+                MessageAllClients(string.Format(HES.Localization.Sentences["PlayerSpawnChat"], ply.Name), false, false);
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("[ERROR] Hellion Extended Server[SpawnRequest]:" + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST ERROR] : " + ex.InnerException.ToString());
             }
         }
 
@@ -122,7 +121,7 @@ namespace HellionExtendedServer.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("[ERROR] Hellion Extended Server[Chat]:" + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [MSG REQUEST ERROR] : " + ex.InnerException.ToString());
             }
         }
 
@@ -146,12 +145,19 @@ namespace HellionExtendedServer.Controllers
             TextChatMessage textChatMessage = new TextChatMessage();
 
             textChatMessage.GUID = BitConverter.ToInt64(guid, 0);
-            textChatMessage.Name = (sendAsServer ? "Server: " : "");
+            textChatMessage.Name = (sendAsServer ? "Server" : "");
             textChatMessage.MessageText = msg;
-            m_network.SendToAllClients((NetworkData)textChatMessage, textChatMessage.Sender);
+            try
+            {
+                m_network.SendToAllClients((NetworkData)textChatMessage, textChatMessage.Sender);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Warn(HES.Localization.Sentences["PlayerNotConnected"]);
+            }
 
             if (printToConsole)
-                chatlogger.Info(textChatMessage.Name + ": " + msg);
+                chatlogger.Info(textChatMessage.Name + " : " + msg);
         }
 
         /// <summary>
@@ -162,7 +168,7 @@ namespace HellionExtendedServer.Controllers
         /// <param name="ReceiverName">Name or steamid of the receiver</param>
         /// <param name="steamId">True if the receiverName is the steamID</param>
         /// <returns></returns>
-        public void MessageToClient(string msg, string SenderName, string ReceiverName, bool steamId = false)
+        public void MessageToClient(string msg, string SenderName, string ReceiverName)
         {
             if (String.IsNullOrEmpty(msg))
                 return;
@@ -175,44 +181,17 @@ namespace HellionExtendedServer.Controllers
             textChatMessage.Name = (SenderName);
             textChatMessage.MessageText = msg;
 
-            Player receiver = FindPlayer(ReceiverName, steamId);
-            if (receiver != null)
+            Player receiver = null;
+            if (ConnectedPlayer(ReceiverName, out receiver))
             {
                 Client recClient = GetClient(receiver);
-                if (receiver != null)
-                {
-                    m_network.SendToGameClient(recClient.ClientGUID, (NetworkData)textChatMessage);
-                    chatlogger.Info(textChatMessage.Name + "->" + ReceiverName + ": " + msg);
-                }
-                else
-                {
-                    Console.WriteLine("This player is not connected.");
-                }
+                m_network.SendToGameClient(recClient.ClientGUID, (NetworkData)textChatMessage);
+                chatlogger.Info(textChatMessage.Name + "->" + ReceiverName + ": " + msg);
             }
             else
             {
-                Console.WriteLine("This player don't exist.");
+                Console.WriteLine(HES.Localization.Sentences["PlayerNotConnected"]);
             }
-        }
-
-        /// <summary>
-        /// This method allow to get a specific player with his ingame name or steamID
-        /// </summary>
-        /// <param name="name">Name or steamID (steamId=true requiered)</param>
-        /// <param name="steamId">True if name is the steamID</param>
-        /// <returns></returns>
-        public Player FindPlayer(string name, bool steamId = false)
-        {
-            if (name == "")
-                return null;
-
-            Dictionary<long, Player>.ValueCollection players = HES.CurrentServer.AllPlayers;
-
-            foreach (var player in players)
-                if (player.Name == name)
-                    return player;
-
-            return null;
         }
 
         /// <summary>
@@ -234,6 +213,41 @@ namespace HellionExtendedServer.Controllers
 
             return null;
         }
+
+        #region ConnectedPlayer part
+
+        public bool ConnectedPlayer(string name, out Player player)
+        {
+            player = null;
+            foreach (var item in ClientList)
+            {
+                if (item.Value.Player.Name == name)
+                {
+                    player = item.Value.Player;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool ConnectedPlayer(long senderId, out Player player)
+        {
+            player = null;
+            if(ClientList.ContainsKey(senderId))
+            {
+                player = ClientList[senderId].Player;
+                return true;
+            }
+            return false;
+        }
+
+        public bool ConnectedPlayer(string name)
+        {
+            Player ply = null;
+            return ConnectedPlayer(name, out ply);
+        }
+
+        #endregion
 
         #endregion Methods
     }

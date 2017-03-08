@@ -7,7 +7,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ZeroGravity;
-using HellionExtendedServer.GUI.Components;
+using HellionExtendedServer.Components;
+using System.Net.Sockets;
+using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers
 {
@@ -35,7 +37,7 @@ namespace HellionExtendedServer.Managers
         public Boolean IsRunning { get { return ServerWrapper.HellionDedi.IsRunning; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
-        public GameServerIni Config { get { return m_gameServerIni; } }
+        public GameServerIni Config { get { return m_gameServerIni; } set { m_gameServerIni = value; } }
         
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
@@ -44,6 +46,7 @@ namespace HellionExtendedServer.Managers
 
         public ServerInstance()
         {
+                       
             m_launchedTime = DateTime.MinValue;
 
             m_serverThread = null;
@@ -51,9 +54,6 @@ namespace HellionExtendedServer.Managers
 
             m_assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe"));
             m_serverWrapper = new ServerWrapper(m_assembly);
-
-            m_gameServerIni = new GameServerIni();
-
         }
 
         #region Methods
@@ -62,31 +62,38 @@ namespace HellionExtendedServer.Managers
         /// Saves the server on demand when ran, will not let it save while saving
         /// Starts the save in a different thread to avoid locking up HES
         /// </summary>
-        public void Save()
+        public void Save(bool showToPLayer=false)
         {
             if (!Server.IsRunning)
                 return;
 
             if (isSaving)
             {
-                Console.WriteLine("Save is already in progress!");
+                Console.WriteLine(HES.Localization.Sentences["SaveAlreadyInProgress"]);
                 return;
             }
 
+
             try
             {
+                if (showToPLayer)
+                {
+                    NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavingUniverse"], false, false);
+                    NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavedUniverse"], false, false);
+                }
+
                 new TaskFactory().StartNew(() =>
                 {
                     isSaving = true;
                     Stopwatch saveTime = new Stopwatch();
                     saveTime.Start();
-                    Console.WriteLine("Saving Universe...");
+                    Console.WriteLine(HES.Localization.Sentences["SavingUniverse"]);
+
                     Persistence.Save();
                     saveTime.Stop();
 
-                    Log.Instance.Info("Universe Saved in " + saveTime.Elapsed.Milliseconds + "ms to "
-                        + String.Format(Persistence.PersistanceFileName,
-                        DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss")));
+                    Log.Instance.Info(string.Format(HES.Localization.Sentences["SavedUniverseTime"],saveTime.Elapsed.Milliseconds,String.Format(Persistence.PersistanceFileName,
+                        DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss"))));
                     isSaving = false;
                 });
             }
@@ -97,11 +104,25 @@ namespace HellionExtendedServer.Managers
             }
         }
 
+        public void Test()
+        {
+
+           foreach( SpaceObjectVessel vessel in m_server.AllVessels)
+            {
+                Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ",vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(),vessel.Velocity, vessel.AngularVelocity));
+                
+            }
+
+        }
+
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
         public void Start()
         {
+            if (Server.IsRunning)
+                return;
+
             String[] serverArgs = new String[]
                 {
                     "",
@@ -117,7 +138,7 @@ namespace HellionExtendedServer.Managers
 
             if (IsRunning)
             {
-                Log.Instance.Info("Hellion Extended Server: World Initialized!");
+                Log.Instance.Info(HES.Localization.Sentences["WorldInit"]);
 
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -125,17 +146,16 @@ namespace HellionExtendedServer.Managers
                 stopwatch.Stop();
                 long num = (long)(1000.0 / stopwatch.Elapsed.TotalMilliseconds);
 
-                Console.WriteLine(string.Format("==============================================================================\r\n\tServer name: {5}\r\n\tServer ID: {1}\r\n\tStart date: {0}\r\n\tServer ticks: {2}{4}\r\n\tMax server ticks (not precise): {3}\r\n==============================================================================", (object)DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (object)(Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat((object)Server.NetworkController.ServerID)), 64, (object)num, (object)(64 > num ? " WARNING: Server ticks is larger than max tick" : ""), (object)Server.ServerName));
+                Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], (object)DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (object)(Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat((object)Server.NetworkController.ServerID)), 64, (object)num, (object)(64 > num ? " WARNING: Server ticks is larger than max tick" : ""), (object)Server.ServerName));
             }
 
             new NetworkController(m_server.NetworkController);
-
-            Log.Instance.Info("Ready for connections!");
+            
+            Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 
             HES.PrintHelp();
         }
 
-        //TODO - Make this actually work ;)
         public void Stop()
         {
             ServerWrapper.HellionDedi.StopServer();

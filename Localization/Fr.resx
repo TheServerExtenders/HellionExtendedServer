@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="version" xml:space="preserve">
+    <value>0.03</value>
+  </data>
+  <data name="Initialization" xml:space="preserve">
+    <value>Hellion Extended Server v{0} initialisé.</value>
+  </data>
+  <data name="PlayersConnected" xml:space="preserve">
+    <value>{0}/{1} joueurs connectés actuellement.</value>
+  </data>
+  <data name="AllPlayers" xml:space="preserve">
+    <value>{0} se sont déjà connected sur ce serveur depuis son lancement.</value>
+  </data>
+  <data name="PlayerNotConnected" xml:space="preserve">
+    <value>Ce joueur n'est pas connecté.</value>
+  </data>
+  <data name="NoPlayerName" xml:space="preserve">
+    <value>Pas de pseudo de joueur spécifié.</value>
+  </data>
+  <data name="PlayerKicked" xml:space="preserve">
+    <value>{0} a était éjecté du serveur.</value>
+  </data>
+  <data name="BadSynthax" xml:space="preserve">
+    <value>Synthaxe incorrect ! Tapez /help pour afficher les commandes disponibles.</value>
+  </data>
+  <data name="LoadingGUI" xml:space="preserve">
+    <value>(WIP) Chargement de l'interface...</value>
+  </data>
+  <data name="DescHelp" xml:space="preserve">
+    <value>Tapez directement dans la console pour parler aux joueurs.
+Les commandes disponibles sont : 
+</value>
+  </data>
+  <data name="HelpCommand" xml:space="preserve">
+    <value>/help - Cette page ;)</value>
+  </data>
+  <data name="SaveCommand" xml:space="preserve">
+    <value>/save - Force la sauvegarde du serveur.</value>
+  </data>
+  <data name="StartCommand" xml:space="preserve">
+    <value>/start - Démarre le serveur.</value>
+  </data>
+  <data name="StopCommand" xml:space="preserve">
+    <value>/stop - Arrêter le serveur.</value>
+  </data>
+  <data name="OpenGUICommand" xml:space="preserve">
+    <value>/opengui - open the gui</value>
+  </data>
+  <data name="PlayersCommand" xml:space="preserve">
+    <value>/players  _______
+                -count - Affiche le nombre de joueurs connectés.
+                -list - Affiche la liste des joueurs connectés
+                -all - Affiche la lsite de tout les joueurs qui se sont déjà connectés sur le serveur.</value>
+  </data>
+  <data name="MsgCommand" xml:space="preserve">
+    <value>/msg (pseudo) message - Envoyer un message privé à un joueur spécifique.</value>
+  </data>
+  <data name="KickCommand" xml:space="preserve">
+    <value>/kick (pseudo) - Kicker un joueur spécifique.</value>
+  </data>
+  <data name="Closing" xml:space="preserve">
+    <value>Fermeture de l'extender.</value>
+  </data>
+  <data name="ChatMsgListener" xml:space="preserve">
+    <value>Chat Message Listener Added.</value>
+  </data>
+  <data name="FailedInitPlugin" xml:space="preserve">
+    <value>Failed initialization of Plugin {0}. Uncaught Exception: {1}</value>
+  </data>
+  <data name="FailedLoadAssembly" xml:space="preserve">
+    <value>Failed to load assembly : {0} : {1}</value>
+  </data>
+  <data name="FailedShutdownPlugin" xml:space="preserve">
+    <value>Uncaught Exception in Plugin {0}. Exception: {1}</value>
+  </data>
+  <data name="InitializationPlugin" xml:space="preserve">
+    <value>Initialization of Plugin {0} failed. Could not find a public, parameterless constructor for {0}</value>
+  </data>
+  <data name="InitializingPlugin" xml:space="preserve">
+    <value>Initializing Plugin : {0}</value>
+  </data>
+  <data name="LoadingDedicated" xml:space="preserve">
+    <value>Loading HELLION Dedicated...</value>
+  </data>
+  <data name="NetControlerLoaded" xml:space="preserve">
+    <value>Network Controller Loaded!</value>
+  </data>
+  <data name="NewPlayer" xml:space="preserve">
+    <value>A new player is arrived : {0}</value>
+  </data>
+  <data name="PlayerOnServerListener" xml:space="preserve">
+    <value>Player On Server Listener Added.</value>
+  </data>
+  <data name="PlayerSpawnChat" xml:space="preserve">
+    <value>{0} has spawned !</value>
+  </data>
+  <data name="PlayerSpawnListener" xml:space="preserve">
+    <value>Player Spawns Listener Added.</value>
+  </data>
+  <data name="PlayerSpawnLog" xml:space="preserve">
+    <value>{0} spawned ({1})</value>
+  </data>
+  <data name="ReadyForConnections" xml:space="preserve">
+    <value>Ready for connections !</value>
+  </data>
+  <data name="SaveAlreadyInProgress" xml:space="preserve">
+    <value>Save is already in progress!</value>
+  </data>
+  <data name="SavedUniverse" xml:space="preserve">
+    <value>Universe saved</value>
+  </data>
+  <data name="SavedUniverseTime" xml:space="preserve">
+    <value>Universe Saved in {0}ms to {1}</value>
+  </data>
+  <data name="SavingUniverse" xml:space="preserve">
+    <value>Saving Universe...</value>
+  </data>
+  <data name="ServerDesc" xml:space="preserve">
+    <value>==============================================================================\r\n\tServer name: {5}\r\n\tServer ID: {1}\r\n\tStart date: {0}\r\n\tServer ticks: {2}{4}\r\n\tMax server ticks (not precise): {3}\r\n==============================================================================</value>
+  </data>
+  <data name="ShutdownPlugin" xml:space="preserve">
+    <value>Shutting down Plugin {0}</value>
+  </data>
+  <data name="ShuttingDown" xml:space="preserve">
+    <value>Shutting down server...</value>
+  </data>
+  <data name="SuccessShutdown" xml:space="preserve">
+    <value>Server Successfully shutdown.</value>
+  </data>
+  <data name="WaitingStart" xml:space="preserve">
+    <value>Waiting for server to start. This may take at least 10 seconds or longer depending on the size of the current save.</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome {0} on {1} !</value>
+  </data>
+  <data name="WorldInit" xml:space="preserve">
+    <value>World Initialized !</value>
+  </data>
+</root>

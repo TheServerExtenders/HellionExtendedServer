@@ -117,8 +117,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Components\GameServerIni.cs" />
-    <Compile Include="Managers\CommandManager.cs" />
+    <Compile Include="Managers\Commands\Command.cs" />
+    <Compile Include="Managers\Commands\CommandManager.cs" />
+    <Compile Include="Managers\Commands\Vanilla Commands\Test.cs" />
     <Compile Include="Managers\LogManager.cs" />
+    <Compile Include="Managers\Plugins\IPlugin.cs" />
+    <Compile Include="Managers\Plugins\PluginBase.cs" />
+    <Compile Include="Managers\Plugins\PluginBaseConfig.cs" />
+    <Compile Include="Managers\Plugins\PluginHelper.cs" />
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
@@ -181,13 +187,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Plugins\TestPlugin\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\HellionExtendedServer.Common\HellionExtendedServer.Common.csproj">
       <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
       <Name>HellionExtendedServer.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Managers\Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

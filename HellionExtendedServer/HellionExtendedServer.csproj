@@ -91,6 +91,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>hesicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BulletSharp, Version=2.83.7.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -116,10 +119,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUI\Components\GameServerIni.cs" />
+    <Compile Include="Components\GameServerIni.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
+    <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="Managers\Commands\CommandManager.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Test.cs" />
+    <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Managers\Plugins\IPlugin.cs" />
     <Compile Include="Managers\Plugins\PluginBase.cs" />
@@ -153,6 +158,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="hesicon.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -194,6 +200,9 @@
       <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
       <Name>HellionExtendedServer.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Managers\Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

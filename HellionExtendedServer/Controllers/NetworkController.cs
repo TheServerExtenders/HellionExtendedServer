@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using ZeroGravity;
 using ZeroGravity.Helpers;
@@ -36,18 +37,18 @@ namespace HellionExtendedServer.Controllers
 
             // Hook into the Chat Message event and add in ours along side the original
             networkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));
-            Log.Instance.Info("Chat Message Listener Added.");
+            Log.Instance.Info(HES.Localization.Sentences["ChatMsgListener"]);
 
             // Hook into the player spawn event and add in ours as well!
             networkController.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerSpawnRequestListener));
-            Log.Instance.Info("Player Spawns Listener Added.");
+            Log.Instance.Info(HES.Localization.Sentences["PlayerSpawnListener"]);
 
             // [IN TEST] Could be used to detect when the player is physicly in the server
             networkController.EventSystem.AddListener(typeof(PlayersOnServerRequest), new EventSystem.NetworkDataDelegate(this.PlayerOnServerListener));
-            Log.Instance.Info("Player On Server Listener Added.");
+            Log.Instance.Info(HES.Localization.Sentences["PlayerOnServerListener"]);
 
             m_network = networkController;
-            Log.Instance.Info("Network Controller Loaded!");
+            Log.Instance.Info(HES.Localization.Sentences["NetControlerLoaded"]);
         }
 
         #region Event Handlers
@@ -69,12 +70,14 @@ namespace HellionExtendedServer.Controllers
                 if (ConnectedPlayer(playerOnServerRequest.Sender, out ply))
                     return;
 
-                MessageAllClients(string.Format("Welcome {0} on {1} !", playerOnServerRequest.Sender, Server.Instance.ServerName));
+                
+                Console.WriteLine(string.Format(HES.Localization.Sentences["NewPlayer"],ClientList[playerOnServerRequest.Sender].Player.Name));
+                MessageAllClients(string.Format(HES.Localization.Sentences["Welcome"], ClientList[playerOnServerRequest.Sender].Player.Name, Server.Instance.ServerName));
 
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("[ERROR] Hellion Extended Server[SpawnRequest]:" + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [ON SERVER ERROR] : " + ex.InnerException.ToString());
             }
         }
 
@@ -95,12 +98,12 @@ namespace HellionExtendedServer.Controllers
                 if (ConnectedPlayer(playerSpawnRequest.Sender, out ply))
                     return;
 
-                chatlogger.Info(ply.Name + " spawned (" + ply.SteamId + ") ");
-                MessageAllClients(ply.Name + " has spawned!", false, false);
+                chatlogger.Info(string.Format(HES.Localization.Sentences["PlayerSpawnLog"], ply.Name, ply.SteamId));
+                MessageAllClients(string.Format(HES.Localization.Sentences["PlayerSpawnChat"], ply.Name), false, false);
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("[ERROR] Hellion Extended Server[SpawnRequest]:" + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST ERROR] : " + ex.InnerException.ToString());
             }
         }
 
@@ -118,7 +121,7 @@ namespace HellionExtendedServer.Controllers
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("[ERROR] Hellion Extended Server[Chat]:" + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [MSG REQUEST ERROR] : " + ex.InnerException.ToString());
             }
         }
 
@@ -142,12 +145,19 @@ namespace HellionExtendedServer.Controllers
             TextChatMessage textChatMessage = new TextChatMessage();
 
             textChatMessage.GUID = BitConverter.ToInt64(guid, 0);
-            textChatMessage.Name = (sendAsServer ? "Server: " : "");
+            textChatMessage.Name = (sendAsServer ? "Server" : "");
             textChatMessage.MessageText = msg;
-            m_network.SendToAllClients((NetworkData)textChatMessage, textChatMessage.Sender);
+            try
+            {
+                m_network.SendToAllClients((NetworkData)textChatMessage, textChatMessage.Sender);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Warn(HES.Localization.Sentences["PlayerNotConnected"]);
+            }
 
             if (printToConsole)
-                chatlogger.Info(textChatMessage.Name + ": " + msg);
+                chatlogger.Info(textChatMessage.Name + " : " + msg);
         }
 
         /// <summary>
@@ -180,7 +190,7 @@ namespace HellionExtendedServer.Controllers
             }
             else
             {
-                Console.WriteLine("This player is not connected.");
+                Console.WriteLine(HES.Localization.Sentences["PlayerNotConnected"]);
             }
         }
 

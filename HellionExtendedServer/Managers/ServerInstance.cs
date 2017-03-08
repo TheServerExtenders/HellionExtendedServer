@@ -54,9 +54,6 @@ namespace HellionExtendedServer.Managers
 
             m_assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe"));
             m_serverWrapper = new ServerWrapper(m_assembly);
-
-            
-
         }
 
         #region Methods
@@ -65,31 +62,38 @@ namespace HellionExtendedServer.Managers
         /// Saves the server on demand when ran, will not let it save while saving
         /// Starts the save in a different thread to avoid locking up HES
         /// </summary>
-        public void Save()
+        public void Save(bool showToPLayer=false)
         {
             if (!Server.IsRunning)
                 return;
 
             if (isSaving)
             {
-                Console.WriteLine("Save is already in progress!");
+                Console.WriteLine(HES.Localization.Sentences["SaveAlreadyInProgress"]);
                 return;
             }
 
+
             try
             {
+                if (showToPLayer)
+                {
+                    NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavingUniverse"], false, false);
+                    NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavedUniverse"], false, false);
+                }
+
                 new TaskFactory().StartNew(() =>
                 {
                     isSaving = true;
                     Stopwatch saveTime = new Stopwatch();
                     saveTime.Start();
-                    Console.WriteLine("Saving Universe...");
+                    Console.WriteLine(HES.Localization.Sentences["SavingUniverse"]);
+
                     Persistence.Save();
                     saveTime.Stop();
 
-                    Log.Instance.Info("Universe Saved in " + saveTime.Elapsed.Milliseconds + "ms to "
-                        + String.Format(Persistence.PersistanceFileName,
-                        DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss")));
+                    Log.Instance.Info(string.Format(HES.Localization.Sentences["SavedUniverseTime"],saveTime.Elapsed.Milliseconds,String.Format(Persistence.PersistanceFileName,
+                        DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss"))));
                     isSaving = false;
                 });
             }
@@ -134,7 +138,7 @@ namespace HellionExtendedServer.Managers
 
             if (IsRunning)
             {
-                Log.Instance.Info("Hellion Extended Server: World Initialized!");
+                Log.Instance.Info(HES.Localization.Sentences["WorldInit"]);
 
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -142,12 +146,12 @@ namespace HellionExtendedServer.Managers
                 stopwatch.Stop();
                 long num = (long)(1000.0 / stopwatch.Elapsed.TotalMilliseconds);
 
-                Console.WriteLine(string.Format("==============================================================================\r\n\tServer name: {5}\r\n\tServer ID: {1}\r\n\tStart date: {0}\r\n\tServer ticks: {2}{4}\r\n\tMax server ticks (not precise): {3}\r\n==============================================================================", (object)DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (object)(Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat((object)Server.NetworkController.ServerID)), 64, (object)num, (object)(64 > num ? " WARNING: Server ticks is larger than max tick" : ""), (object)Server.ServerName));
+                Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], (object)DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (object)(Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat((object)Server.NetworkController.ServerID)), 64, (object)num, (object)(64 > num ? " WARNING: Server ticks is larger than max tick" : ""), (object)Server.ServerName));
             }
 
             new NetworkController(m_server.NetworkController);
             
-            Log.Instance.Info("Ready for connections!");
+            Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 
             HES.PrintHelp();
         }

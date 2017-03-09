@@ -63,13 +63,11 @@
   <ItemGroup>
     <Compile Include="Components\GameServerIni.cs" />
     <Compile Include="LogManager.cs" />
-    <Compile Include="Plugins\IPlugin.cs" />
-    <Compile Include="Plugins\PluginBaseConfig.cs" />
-    <Compile Include="Plugins\PluginBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="API\" />
+    <Folder Include="Plugins\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">

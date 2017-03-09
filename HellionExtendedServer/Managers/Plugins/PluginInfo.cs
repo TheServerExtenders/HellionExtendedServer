@@ -1,6 +1,8 @@
 ﻿using HellionExtendedServer.Common.Plugins;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using HellionExtendedServer.Managers.Commands;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -11,10 +13,15 @@ namespace HellionExtendedServer.Managers.Plugins
         internal Assembly Assembly;
         public String Directory;
         public Guid Guid;
-        public IPlugin MainClass;
+        public PluginBase MainClass;
+        public Dictionary<String, Command> CommandList;
+        public List<Type> FoundCommands;
         public Type MainClassType;
 
         #endregion Fields
+
+         //TODO load Plugin's Commands Now!
+
 
         #region Methods
 

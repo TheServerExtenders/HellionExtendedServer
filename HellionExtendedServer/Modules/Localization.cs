@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Resources;
 
-namespace HellionExtendedServer
+namespace HellionExtendedServer.Modules
 {
     public class Localization
     {

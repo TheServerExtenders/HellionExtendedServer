@@ -5,15 +5,15 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using HellionExtendedServer.Common;
 
-namespace HellionExtendedServer
+namespace HellionExtendedServer.Modules
 {
-    public class UpdateManager
+    public class Update
     {
         public Release m_Release;
 
         private static string LatestReleaseURL = @"https://api.github.com/repos/generalwrex/HellionExtendedServer/releases/latest";
 
-        public UpdateManager()
+        public Update()
         {
             ServicePointManager.DefaultConnectionLimit = 4;
         }

@@ -1,7 +1,7 @@
 ﻿using HellionExtendedServer.Common;
 using System.IO;
 
-namespace HellionExtendedServer
+namespace HellionExtendedServer.Modules
 {
     public class Config
     {

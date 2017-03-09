@@ -2,6 +2,7 @@
 using HellionExtendedServer.Controllers;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Common;
+using HellionExtendedServer.Modules;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

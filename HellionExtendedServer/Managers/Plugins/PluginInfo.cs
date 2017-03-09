@@ -1,8 +1,6 @@
 ﻿using HellionExtendedServer.Common.Plugins;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using HellionExtendedServer.Managers.Commands;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -21,8 +19,6 @@ namespace HellionExtendedServer.Managers.Plugins
         #endregion Fields
 
          //TODO load Plugin's Commands Now!
-
-
         #region Methods
 
         static public Boolean operator ==(PluginInfo obj1, PluginInfo obj2)

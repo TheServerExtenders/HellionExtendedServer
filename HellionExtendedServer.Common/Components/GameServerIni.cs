@@ -2,14 +2,14 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.IO;
-using ZeroGravity;
-using HellionExtendedServer.Managers;
 using System.Collections.Generic;
+using HellionExtendedServer.Common;
 
-namespace HellionExtendedServer.GUI.Components
+namespace HellionExtendedServer.Common.Components
 {
     public class GameServerIni
     {
+        private GameServerIni m_instance;
 
         public string FileName = "GameServer.ini";
         public Dictionary<string, string> Settings = new Dictionary<string, string>();
@@ -17,7 +17,6 @@ namespace HellionExtendedServer.GUI.Components
         #region Fields
         private static string serverName;
         private static string serverPass;
-        private static bool isLocal;
         private static int statusPort;
         private static int clientPort;
         private static int maxPlayers;
@@ -35,7 +34,7 @@ namespace HellionExtendedServer.GUI.Components
 
         public GameServerIni()
         {
-           
+            m_instance = this;
         }
 
         #region ServerConfig Properties
@@ -47,16 +46,6 @@ namespace HellionExtendedServer.GUI.Components
         {
             get { return maxSaveFileCount; }
             set { maxSaveFileCount = value; }
-        }
-
-        [ReadOnly(false)]
-        [Description("(?) Is the server local?.")]
-        [Category("Settings")]
-        [DisplayName("Local")]
-        public bool local
-        {
-            get { return isLocal; }
-            set { isLocal = value; }
         }
 
         [ReadOnly(false)]
@@ -93,10 +82,10 @@ namespace HellionExtendedServer.GUI.Components
         [Description("(?) How many random ships to spawn. (Default 0)")]
         [Category("Settings")]
         [DisplayName("Spawn Random Ships Count")]
-        public double spawn_random_ships_count
+        public int spawn_random_ships_count
         {
-            get { return shipDespawnDistressChance; }
-            set { shipDespawnDistressChance = value; }
+            get { return spawnRandomShipsCount; }
+            set { spawnRandomShipsCount = value; }
         }
 
         [ReadOnly(false)]
@@ -232,7 +221,6 @@ namespace HellionExtendedServer.GUI.Components
         {
             serverName = "Hellion Dedicated Server";
             serverPass = "";
-            isLocal = false;
             statusPort = 5970;
             clientPort = 5969;
             maxPlayers = 20;
@@ -247,31 +235,59 @@ namespace HellionExtendedServer.GUI.Components
             shipDespawnDistressChance = 0.05;
             spawnRandomShipsCount = 0;
 
-            
+            SetSettings();           
         }
 
-        public void Save()
+
+        private void SetSettings()
+        {
+            object obj = m_instance;
+
+            foreach (PropertyInfo prop in obj.GetType().GetProperties())
+            {
+                Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
+            }
+        }
+
+        public bool Save(bool ignoreFileExists = false, bool backupIni = true)
         {
             try
             {
-                if (File.Exists(FileName))
+                var fileExists = File.Exists(FileName);
+
+                if (ignoreFileExists)
+                    fileExists = true;
+
+                if (fileExists)
                 {
+                    if (backupIni)
+                        if (!File.Exists(FileName + "hesbackup"))
+                            File.Copy(FileName, FileName + "hesbackup");
+                        
+                    SetSettings();
+
                     using (StreamWriter file = new StreamWriter(FileName))
                         foreach (var entry in Settings)
                             file.WriteLine("{0}={1}", entry.Key, entry.Value);
 
+                    return true;
                 }
                 else
                 {
-                    Log.Instance.Error("GAMESERVER.INI Does not exist!");
+                    Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: GAMESERVER.INI Does not exist!");
+                    return false;                
                 }
+            }
+            catch (IOException)
+            {
+                Log.Instance.Warn("Could not save GameServer.Ini as the file is in use.");
             }
             catch (Exception ex)
             {
                 Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: Could not save config settings. EX: " + ex.ToString());                
             }
 
-           
+            return true;
         }
 
         public void Load()
@@ -296,7 +312,7 @@ namespace HellionExtendedServer.GUI.Components
                 }
                 else
                 {
-                    Log.Instance.Error("GameServer.Ini wasn't found!");
+                    Log.Instance.Warn("GameServer.Ini wasn't found! Creating a new one based on Defaults. ");
                 }
             }
             catch (Exception ex)

@@ -1,15 +1,13 @@
 ﻿using HellionExtendedServer.Common.Plugins;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using HellionExtendedServer.Managers.Commands;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
-    public class PluginManager
+    internal class PluginManager
     {
         #region Fields
 
@@ -45,7 +43,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
         public void InitializePlugin(PluginInfo Plugin)
         {
-            Console.WriteLine(String.Format("Initializing Plugin: {0}", Plugin.Assembly.GetName().Name));
+            Console.WriteLine(string.Format(HES.Localization.Sentences["InitializingPlugin"], Plugin.Assembly.GetName().Name));
             bool PluginInitialized = false;
 
             if (Plugin.Directory == null)
@@ -64,21 +62,17 @@ namespace HellionExtendedServer.Managers.Plugins
                     }
                     catch (MissingMethodException)
                     {
-                        Console.WriteLine(
-                            String.Format(
-                                "Initialization of Plugin {0} failed. Could not find a public, parameterless constructor for {0}",
-                                Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["InitializationPlugin"], Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(String.Format("Failed2 initialzation of Plugin {0}. Uncaught Exception: {1}",
-                            Plugin.Assembly.GetName().Name, ex.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(String.Format("Failed initialzation of Plugin {0}. Uncaught Exception: {1}", Plugin.Assembly.GetName().Name, ex.ToString()));
+                Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
             }
 
             if (PluginInitialized && Plugin.MainClass.Enabled)
@@ -111,7 +105,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
         public void ShutdownPlugin(PluginInfo Plugin)
         {
-            Console.WriteLine(String.Format("Shutting down Plugin {0}", Plugin.Assembly.GetName().Name));
+            Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"], Plugin.Assembly.GetName().Name));
             lock (_lockObj)
             {
                 try
@@ -124,7 +118,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(String.Format("Uncaught Exception in Plugin {0}. Exception: {1}", Plugin.Assembly.GetName().Name, ex.ToString()));
+                    Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                 }
                 m_loadedPlugins.Remove(Plugin);
                 m_discoveredPlugins.Remove(Plugin);
@@ -162,7 +156,6 @@ namespace HellionExtendedServer.Managers.Plugins
             List<PluginInfo> foundPlugins = new List<PluginInfo>();
 
             //TODO create Plugin Folder if it does not exist
-
             String modPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             String[] subDirectories = Directory.GetDirectories(modPath);
 

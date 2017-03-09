@@ -11,7 +11,11 @@ namespace HellionExtendedServer.Managers.Plugins
         internal Assembly Assembly;
         public String Directory;
         public Guid Guid;
-        public IPlugin MainClass;
+
+        public PluginBase MainClass;
+        public Dictionary<String, Command> CommandList;
+        public List<Type> FoundCommands = new List<Type>();
+
         public Type MainClassType;
 
         #endregion Fields

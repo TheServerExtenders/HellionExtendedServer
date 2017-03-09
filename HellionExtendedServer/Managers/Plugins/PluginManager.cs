@@ -1,15 +1,13 @@
 ﻿using HellionExtendedServer.Common.Plugins;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using HellionExtendedServer.Managers.Commands;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
-    public class PluginManager
+    internal class PluginManager
     {
         #region Fields
 
@@ -52,7 +50,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
             try
             {
-                Plugin.MainClass = (PluginBase)Activator.CreateInstance(Plugin.MainClassType);
+                Plugin.MainClass = (IPlugin)Activator.CreateInstance(Plugin.MainClassType);
                 if (Plugin.MainClass != null)
                 {
                     try
@@ -62,19 +60,12 @@ namespace HellionExtendedServer.Managers.Plugins
                     }
                     catch (MissingMethodException)
                     {
-                      Console.WriteLine(string.Format(HES.Localization.Sentences["InitializationPlugin"], Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["InitializationPlugin"], Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
                     }
                     catch (Exception ex)
                     {
-                      Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                     }
-
-                }
-                //Commands
-                foreach(Type CommandType in Plugin.FoundCommands)
-                {
-                    Command commandclass = (Command) Activator.CreateInstance(CommandType, new object[] {ServerInstance.Instance.Server});
-                    ServerInstance.Instance.CommandManager.AddCommand(commandclass);
                 }
             }
             catch (Exception ex)
@@ -113,7 +104,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 {
                     if (Plugin.MainClass != null)
                     {
-                        Plugin.MainClass.DisablePlugin();
+                        Plugin.MainClass.Shutdown();
                     }
                     Plugin.MainClass = null;
                 }
@@ -126,37 +117,9 @@ namespace HellionExtendedServer.Managers.Plugins
             }
         }
 
-        public void ShutdownPlugin(String Plugin)
-        {
-            lock (_lockObj)
-            {
-                foreach (PluginInfo Plugininfo in m_discoveredPlugins)
-                {
-                    PluginBase pb = Plugininfo.MainClass;
-                    if (pb == null)
-                    {
-                        Console.WriteLine("Error 131!");
-                        return;
-                    }
-                    if (pb.Name.ToLower() == Plugin)
-                    {
-                        Console.WriteLine(String.Format("Shutting down Plugin {0}", Plugininfo.Assembly.GetName().Name));
-                        pb.DisablePlugin();
-                        m_loadedPlugins.Remove(Plugininfo);
-                        m_discoveredPlugins.Remove(Plugininfo);
-                        return;
-                    }
-
-                }
-
-            }
-        }
-
         public List<PluginInfo> FindAllPlugins()
         {
             List<PluginInfo> foundPlugins = new List<PluginInfo>();
-
-            //TODO create Plugin Folder if it does not exist
 
             String modPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             String[] subDirectories = Directory.GetDirectories(modPath);
@@ -202,31 +165,20 @@ namespace HellionExtendedServer.Managers.Plugins
                 libraryAssembly = Assembly.Load(bytes);
                 Guid guid = new Guid(((GuidAttribute)libraryAssembly.GetCustomAttributes(typeof(GuidAttribute), true)[0]).Value);
 
-
-                bool plug = true;
                 PluginInfo Plugin = new PluginInfo();
                 Plugin.Guid = guid;
                 Plugin.Assembly = libraryAssembly;
-
-                Command[] CommandList;
 
                 Type[] PluginTypes = libraryAssembly.GetExportedTypes();
 
                 foreach (Type PluginType in PluginTypes)
                 {
-                    if (PluginType.BaseType == typeof(Command))
-                    {
-                        Plugin.FoundCommands.Add(PluginType);
-                        continue;
-                    }
-                    if (PluginType.GetInterface(typeof(IPlugin).FullName) != null && plug)
+                    if (PluginType.GetInterface(typeof(IPlugin).FullName) != null)
                     {
                         Plugin.MainClassType = PluginType;
-                        plug = false;
-                        continue;
+                        return Plugin;
                     }
                 }
-                 return Plugin;
             }
             catch (Exception ex)
             {

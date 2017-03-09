@@ -36,6 +36,7 @@ namespace HellionExtendedServer.Managers.Plugins
         public void InitializeAllPlugins()
         {
             m_discoveredPlugins = FindAllPlugins();
+            Console.WriteLine(String.Format("Found {0} Plugins!",m_discoveredPlugins.Count));
             foreach (PluginInfo Plugin in m_discoveredPlugins)
             {
                 InitializePlugin(Plugin);
@@ -53,6 +54,7 @@ namespace HellionExtendedServer.Managers.Plugins
             try
             {
                 Plugin.MainClass = (PluginBase)Activator.CreateInstance(Plugin.MainClassType);
+                
                 if (Plugin.MainClass != null)
                 {
                     try
@@ -70,22 +72,22 @@ namespace HellionExtendedServer.Managers.Plugins
                     }
 
                 }
-                //Commands
-                foreach(Type CommandType in Plugin.FoundCommands)
-                {
-                    Command commandclass = (Command) Activator.CreateInstance(CommandType, new object[] {ServerInstance.Instance.Server});
-                    ServerInstance.Instance.CommandManager.AddCommand(commandclass);
-                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
             }
 
-            if (PluginInitialized)
+            if (PluginInitialized && Plugin.MainClass.Enabled)
             {
                 lock (_lockObj)
                 {
+                    //Commands
+                    foreach (Type CommandType in Plugin.FoundCommands)
+                    {
+                        Command c = (Command)Activator.CreateInstance(CommandType, new object[] { ServerInstance.Instance.Server });
+                        ServerInstance.Instance.CommandManager.AddCommand(c);
+                    }
                     m_loadedPlugins.Add(Plugin);
                 }
             }
@@ -138,7 +140,7 @@ namespace HellionExtendedServer.Managers.Plugins
                         Console.WriteLine("Error 131!");
                         return;
                     }
-                    if (pb.Name.ToLower() == Plugin)
+                    if (pb.GetName.ToLower() == Plugin)
                     {
                         Console.WriteLine(String.Format("Shutting down Plugin {0}", Plugininfo.Assembly.GetName().Name));
                         pb.DisablePlugin();
@@ -198,14 +200,15 @@ namespace HellionExtendedServer.Managers.Plugins
             Assembly libraryAssembly;
             try
             {
+                Console.WriteLine("Loading Plugin Located at "+library);
                 bytes = File.ReadAllBytes(library);
                 libraryAssembly = Assembly.Load(bytes);
-                Guid guid = new Guid(((GuidAttribute)libraryAssembly.GetCustomAttributes(typeof(GuidAttribute), true)[0]).Value);
-
-
+                //Bug Guid is Glitched Right Now
+                //Guid guid = new Guid(((GuidAttribute)libraryAssembly.GetCustomAttributes(typeof(GuidAttribute), true)[0]).Value);
+                
                 bool plug = true;
                 PluginInfo Plugin = new PluginInfo();
-                Plugin.Guid = guid;
+                //Plugin.Guid = guid;
                 Plugin.Assembly = libraryAssembly;
 
                 Command[] CommandList;

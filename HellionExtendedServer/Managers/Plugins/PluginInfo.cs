@@ -15,7 +15,7 @@ namespace HellionExtendedServer.Managers.Plugins
         public Guid Guid;
         public PluginBase MainClass;
         public Dictionary<String, Command> CommandList;
-        public List<Type> FoundCommands;
+        public List<Type> FoundCommands = new List<Type>();
         public Type MainClassType;
 
         #endregion Fields

@@ -91,6 +91,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>hesicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BulletSharp, Version=2.83.7.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -116,14 +119,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Include="GUI\Components\GameServerIni.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
-    <Compile Include="Managers\Commands\CommandAttribute.cs" />
     <Compile Include="Managers\Commands\CommandManager.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Test.cs" />
+=======
+    <Compile Include="Components\GameServerIni.cs" />
+    <Compile Include="GUI\Objects\Vessel.cs" />
+    <Compile Include="Managers\CommandManager.cs" />
+>>>>>>> dev
     <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Managers\Plugins\IPlugin.cs" />
-    <Compile Include="Managers\Plugins\PluginAttribute.cs" />
     <Compile Include="Managers\Plugins\PluginBase.cs" />
     <Compile Include="Managers\Plugins\PluginBaseConfig.cs" />
     <Compile Include="Managers\Plugins\PluginHelper.cs" />
@@ -155,6 +162,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="hesicon.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

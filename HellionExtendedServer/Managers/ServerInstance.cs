@@ -28,14 +28,14 @@ namespace HellionExtendedServer.Managers
         private Server m_server;
         private ServerWrapper m_serverWrapper;
         private GameServerIni m_gameServerIni;
-        private PluginManager m_pluginManager;
+        private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
 
         private static ServerInstance m_serverInstance;
 
         private bool isSaving = false;
 
-        #endregion Fields
+        #endregion Fieldss
 
         #region Properties
 

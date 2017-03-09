@@ -68,24 +68,9 @@ namespace HellionExtendedServer.Managers.Commands
         public Command(Server svr)
         {
             server = svr;
-            
-            //Console Commands skip this part becuase Plugins Are not loaded yet
-            if (ServerInstance.Instance.PluginManager != null)
-            {
-                //Search for Plugin
-                foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins)
-                {
-                    Console.WriteLine(pi.MainClass.GetName.ToLower()+ "-----" + PluginName.ToLower());
-                    if (pi.MainClass.GetName.ToLower() == PluginName.ToLower())
-                    {
-                        Console.WriteLine("--||||---");
-                        GetPlugin = pi.MainClass;
-                        break;
-                    }
-                    Console.WriteLine("-----");
-                }
-            }
-            Console.WriteLine("---]]]]]]--");
+
+            ReloadPlugin();
+
             c_plugin_helper = new PluginHelper(svr);
         }
 
@@ -94,6 +79,23 @@ namespace HellionExtendedServer.Managers.Commands
 
         }
 
+        public void ReloadPlugin()
+        {
+            //Console Commands skip this part becuase Plugins Are not loaded yet
+            if (ServerInstance.Instance.PluginManager != null)
+            {
+                //Search for Plugin
+                foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins)
+                {
+                    //Console.WriteLine(pi.MainClass.GetName.ToLower() + "-----" + PluginName.ToLower());
+                    if (pi.MainClass.GetName.ToLower() == PluginName.ToLower())
+                    {
+                        GetPlugin = pi.MainClass;
+                        break;
+                    }
+                }
+            }
+        }
         public void ConsolerunCommand(string[] args)
         {
 

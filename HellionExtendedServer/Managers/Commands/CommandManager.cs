@@ -34,6 +34,7 @@ namespace HellionExtendedServer.Managers.Commands
                 cmdclass.UsageMessage = pluginAttribute.Usage;
                 cmdclass.Permissions = pluginAttribute.Permission;
                 cmdclass.PluginName = pluginAttribute.Plugin;
+                cmdclass.ReloadPlugin();
             }
             else //MAYBE if (cmdclass.Permissions == null || cmdclass.Command_Name == null || cmdclass.Description == null || cmdclass.UsageMessage == null)//Skip Console Commands!
             {
@@ -62,10 +63,18 @@ namespace HellionExtendedServer.Managers.Commands
             Console.WriteLine(String.Format("Handeling String /{0} with arge: {1}", cmd, args.ToString()));
             //TODO check Permmissions
             if (!commandDictionary.ContainsKey(cmd)) return;
-            Console.WriteLine("Command FOund and Executing!");
             Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server});
             if (c == null) return;
-            Console.WriteLine("Command Class Creation Sucess!");
+            CommandAttribute pluginAttribute = Attribute.GetCustomAttribute(c.GetType(), typeof(CommandAttribute), true) as CommandAttribute;
+            if (pluginAttribute != null)
+            {
+                c.Command_Name = pluginAttribute.CommandName;
+                c.Description = pluginAttribute.Description;
+                c.UsageMessage = pluginAttribute.Usage;
+                c.Permissions = pluginAttribute.Permission;
+                c.PluginName = pluginAttribute.Plugin;
+                c.ReloadPlugin();
+            }
             //TODO Send error!
             c.runCommand(sender, args);
         }

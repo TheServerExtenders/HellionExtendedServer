@@ -103,13 +103,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip.Reduced">
-      <HintPath>..\packages\RedCell.Update\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\GameLibraries\NLog.dll</HintPath>
     </Reference>
@@ -126,39 +119,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
+    <Compile Include="GUI\Components\GameServerIni.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
-    <Compile Include="GUI\Objects\Vessel.cs" />
-    <Compile Include="Managers\Commands\CommandAttribute.cs" />
     <Compile Include="Managers\Commands\CommandManager.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Test.cs" />
+=======
+    <Compile Include="Components\GameServerIni.cs" />
+    <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="Managers\CommandManager.cs" />
+>>>>>>> dev
     <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Managers\Plugins\IPlugin.cs" />
-    <Compile Include="Managers\Plugins\PluginInfo.cs" />
-    <Compile Include="Managers\Plugins\PluginAttribute.cs" />
     <Compile Include="Managers\Plugins\PluginBase.cs" />
     <Compile Include="Managers\Plugins\PluginBaseConfig.cs" />
     <Compile Include="Managers\Plugins\PluginHelper.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="Localization.cs" />   
+    <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
-    <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />
     <Compile Include="Controllers\NetworkController.cs" />
-    <Compile Include="HESGui.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HESGui.Designer.cs">
-      <DependentUpon>HESGui.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Managers\Plugins\PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Managers\UpdateManager.cs" />
-    <EmbeddedResource Include="HESGui.resx">
-      <DependentUpon>HESGui.cs</DependentUpon>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -171,6 +163,13 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="hesicon.ico" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -205,9 +204,6 @@
       <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
       <Name>HellionExtendedServer.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Managers\Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

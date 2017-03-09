@@ -1,11 +1,11 @@
-﻿using HellionExtendedServer.Managers;
+﻿using HellionExtendedServer.Common;
 using System.IO;
 
-namespace HellionExtendedServer.Components
+namespace HellionExtendedServer
 {
     public class Config
     {
-        public static string FileName = "HES.cfg";
+        public static string FileName = "Hes/Config.cfg";
         private bool m_debugMode = false;
         public Config.Language CurrentLanguage = Config.Language.English;
 
@@ -44,8 +44,8 @@ namespace HellionExtendedServer.Components
         {
             File.WriteAllLines(Config.FileName, new string[2]
             {
-        "debugmode=" + this.m_debugMode.ToString(),
-        "language=" + this.CurrentLanguage.ToString()
+                "debugmode=" + this.m_debugMode.ToString(),
+                "language=" + this.CurrentLanguage.ToString()
             });
             this.Load();
         }

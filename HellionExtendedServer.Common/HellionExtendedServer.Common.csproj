@@ -48,6 +48,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\GameLibraries\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\GameServerIni.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\PluginBaseConfig.cs" />
@@ -66,6 +70,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="API\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NLog.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,7 @@
-﻿using HellionExtendedServer.Components;
+﻿using HellionExtendedServer.Common.Components;
 using HellionExtendedServer.Controllers;
 using HellionExtendedServer.Managers;
+using HellionExtendedServer.Common;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,32 +11,42 @@ using System.Threading;
 using System.Windows.Forms;
 using ZeroGravity;
 using ZeroGravity.Objects;
+
 using static ZeroGravity.Network.NetworkController;
+
 
 namespace HellionExtendedServer
 {
     public class HES
     {
+        
+
+        public static string GameVersion = "0.1.5";
+        public static string BuildBranch = "Dev";
+
         #region Fields
 
         private static HES m_instance;
         private static Config m_config;
         private static Localization m_localization;
-        private static Form1 m_form;
+        private static HESGui m_form;
         private static ServerInstance m_serverInstance;
         private static EventHandler _handler;
+        private static Boolean m_useGui = true;
+        private static Thread uiThread;
 
         #endregion Fields
 
         #region Properties
 
-        public static String BuildBranch { get { return "Master Branch"; } }
         public static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
-        public static String VersionString { get { return Version.ToString(3) + " " + BuildBranch; } }
+        public static String VersionString { get { return Version.ToString(4) + " Branch: " + BuildBranch; } }
         public static HES Instance { get { return m_instance; } }
         public static Config Config { get { return m_config; } }
         public static Localization Localization { get { return m_localization; } }
         public static Server CurrentServer { get { return m_serverInstance.Server; } }
+
+        public static String WindowTitle { get { return String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", VersionString, GameVersion); } }
 
         #endregion Properties
 
@@ -45,22 +56,22 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
-                  
             // Setup the handler for closing HES properly and saving
             _handler += new EventHandler(Handler);
             SetConsoleCtrlHandler(_handler, true);
 
-            //SetupGUI();
-            Console.Title = String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", Version, "0.1.5");
+            Console.Title = WindowTitle;
           
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
+            //Init the log for HES
+            new Log();
+
             m_config = new Config();
             m_config.Load();
+
             m_localization = new Localization();
             m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
-
-            //SetupGUI();
 
             HES program = new HES(args);
             program.Run(args);
@@ -69,17 +80,19 @@ namespace HellionExtendedServer
         #region Methods
         private static void SetupGUI()
         {
-            Thread uiThread = new Thread(LoadGUI);
+            if (uiThread != null)
+                return;
+
+            uiThread = new Thread(LoadGUI);
             uiThread.SetApartmentState(ApartmentState.STA);
             uiThread.Start();
+
         }
 
 
         public HES(string[] args)
         {
-            m_instance = this;
-
-            
+            m_instance = this;          
         }
 
         /// <summary>
@@ -90,22 +103,44 @@ namespace HellionExtendedServer
         private void Run(string[] args)
         {
             m_serverInstance = new ServerInstance();
-            m_serverInstance.Config = new Components.GameServerIni();
+            m_serverInstance.Config = new GameServerIni();
             m_serverInstance.Config.Load();
 
-            foreach(string arg in args)
+
+            bool autoStart = false;
+            foreach (string arg in args)
             {
-                if (arg.Contains("-autostart"))
-                    ServerInstance.Instance.Start();
+
+                if (arg.Equals("-nogui"))
+                {
+                    m_useGui = false;
+
+                    if(!m_form.Visible)
+                        Log.Instance.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
+                }
+
+                if (arg.Equals("-autostart") | Properties.Settings.Default.AutoStart)
+                {
+                    autoStart = true;
+                    Log.Instance.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
+                }
+
             }
 
-            //ServerInstance.Instance.Start();
+            if (m_useGui)            
+                SetupGUI();
+                                                     
+            Log.Instance.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
 
+            if (autoStart)   
+                ServerInstance.Instance.Start();
+            
             ReadConsoleCommands();
         }
 
+
         /// <summary>
-        /// This contains the regex for console commands
+        /// This contains the console commands
         /// </summary>
         public void ReadConsoleCommands()
         {
@@ -131,18 +166,12 @@ namespace HellionExtendedServer
 
                 if (stringList[1] == "help")
                 {
-                    try
-                    {
-                        HES.PrintHelp();
-                    }
-                    catch (ArgumentException ex)
-                    {
-                    }
+                    HES.PrintHelp();
                     flag = true;
                 }
 
-
-                if (stringList[1] == "players" && stringList.Count > 2)
+                //Different args for /players command to display the count, the full list of players (disconnected and disconnected) and the list of connected players.
+                if (stringList[1] == "players" && stringList.Count > 2 & Server.IsRunning)
                 {
                     if (stringList[2] == "-count")
                     {
@@ -172,7 +201,7 @@ namespace HellionExtendedServer
                 }
 
 
-                if (stringList[1] == "save")
+                if (stringList[1] == "save" & Server.IsRunning)
                 {
                     if (stringList.Count > 2 && stringList[2] == "-show")
                         ServerInstance.Instance.Save(true);
@@ -181,15 +210,7 @@ namespace HellionExtendedServer
                     flag = true;
                 }
 
-
-                if (stringList[1] == "opengui")
-                {
-                    HES.LoadGUI();
-                    flag = true;
-                }
-
-
-                if (stringList[1] == "msg" && stringList.Count > 2)
+                if (stringList[1] == "msg" && stringList.Count > 2 & Server.IsRunning)
                 {
                     flag = true;
                     string msg = "";
@@ -238,26 +259,26 @@ namespace HellionExtendedServer
 
                 if (stringList[1] == "start")
                 {
-                    if (Server.IsRunning)
+                    if (!Server.IsRunning)
                         ServerInstance.Instance.Start();
                     flag = true;
                 }
 
                 if (stringList[1] == "stop")
                 {
-                    if ((bool)Server.IsRunning)
+                    if (Server.IsRunning)
                         ServerInstance.Instance.Stop();
                     flag = true;
                 }
 
                 if (stringList[1] == "opengui")
                 {
-                    HES.LoadGUI();
+                    SetupGUI();
                     flag = true;
                 }
 
                 if (!flag)
-                    Console.WriteLine(HES.m_localization.Sentences["BadSynthax"]);
+                    Console.WriteLine(HES.m_localization.Sentences["BadSyntax"]);
             }
 
             ReadConsoleCommands();
@@ -269,23 +290,24 @@ namespace HellionExtendedServer
         [STAThread]
         private static void LoadGUI()
         {
-            if (true)
+            Console.WriteLine(HES.m_localization.Sentences["LoadingGUI"]);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            if (m_form == null || m_form.IsDisposed)
             {
-                Console.WriteLine(HES.m_localization.Sentences["LoadingGUI"]);
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                if (m_form == null || m_form.IsDisposed)
-                {
-                    m_form = new Form1();
-                }
-                else if (m_form.Visible)
-                    return;
-
-                Application.Run(m_form);
+                m_form = new HESGui();
             }
+            else if (m_form.Visible)
+                return;
+              
+            Application.Run(m_form);
 
+            m_form.Text = WindowTitle + " GUI";
+
+            Application.Run(m_form);
         }
-
+      
         public static void PrintHelp()
         {
             Log.Instance.Warn("------------------------------------------------------------");

@@ -1,4 +1,4 @@
-﻿using HellionExtendedServer.Managers;
+﻿using HellionExtendedServer.Common;
 using NLog;
 using System;
 using System.Collections;
@@ -110,7 +110,7 @@ namespace HellionExtendedServer.Controllers
             {
                 m_network.SendToAllClients(textChatMessage, (textChatMessage).Sender);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Log.Instance.Warn(HES.Localization.Sentences["PlayerNotConnected"]);
             }

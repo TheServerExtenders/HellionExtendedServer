@@ -2,14 +2,14 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.IO;
-using ZeroGravity;
-using HellionExtendedServer.Managers;
 using System.Collections.Generic;
+using HellionExtendedServer.Common;
 
-namespace HellionExtendedServer.Components
+namespace HellionExtendedServer.Common.Components
 {
     public class GameServerIni
     {
+        private GameServerIni m_instance;
 
         public string FileName = "GameServer.ini";
         public Dictionary<string, string> Settings = new Dictionary<string, string>();
@@ -34,7 +34,7 @@ namespace HellionExtendedServer.Components
 
         public GameServerIni()
         {
-           
+            m_instance = this;
         }
 
         #region ServerConfig Properties
@@ -82,10 +82,10 @@ namespace HellionExtendedServer.Components
         [Description("(?) How many random ships to spawn. (Default 0)")]
         [Category("Settings")]
         [DisplayName("Spawn Random Ships Count")]
-        public double spawn_random_ships_count
+        public int spawn_random_ships_count
         {
-            get { return shipDespawnDistressChance; }
-            set { shipDespawnDistressChance = value; }
+            get { return spawnRandomShipsCount; }
+            set { spawnRandomShipsCount = value; }
         }
 
         [ReadOnly(false)]
@@ -241,26 +241,13 @@ namespace HellionExtendedServer.Components
 
         private void SetSettings()
         {
-            object obj = ServerInstance.Instance.Config;
+            object obj = m_instance;
 
             foreach (PropertyInfo prop in obj.GetType().GetProperties())
             {
                 Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
             }
         }
-
-        public void BackupIni()
-        {
-            try
-            {                
-                
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Error("HES: Could not backup GameServer.Ini properly[BackupIniLines]: " + ex.ToString());
-            }
-        }
-
 
         public bool Save(bool ignoreFileExists = false, bool backupIni = true)
         {

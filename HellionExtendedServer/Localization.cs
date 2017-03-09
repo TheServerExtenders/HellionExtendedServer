@@ -1,15 +1,15 @@
-﻿using HellionExtendedServer.Managers;
+﻿using HellionExtendedServer.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Resources;
 
-namespace HellionExtendedServer.Components
+namespace HellionExtendedServer
 {
     public class Localization
     {
-        public static string PathFolder = "./Localization/";
+        public static string PathFolder = "./Hes/localization/";
         public static string Version = "0.03";
         private Dictionary<string, string> m_sentences = new Dictionary<string, string>();
 
@@ -63,7 +63,7 @@ namespace HellionExtendedServer.Components
                 resXresourceWriter.AddResource("PlayerNotConnected", "This player is not connected");
                 resXresourceWriter.AddResource("NoPlayerName", "No player name specified");
                 resXresourceWriter.AddResource("PlayerKicked", "{0} was kicked from the server.");
-                resXresourceWriter.AddResource("BadSynthax", "Bad synthax ! Use / help to watch all valid commands");
+                resXresourceWriter.AddResource("BadSyntax", "Bad synthax ! Use / help to watch all valid commands");
                 resXresourceWriter.AddResource("LoadingGUI", "(WIP)Loading GUI...");
                 resXresourceWriter.AddResource("DescHelp", "Type directly into the console to chat with online players." + Environment.NewLine + "Current commands are : " + Environment.NewLine);
                 resXresourceWriter.AddResource("HelpCommand", "/help - this page ;)");

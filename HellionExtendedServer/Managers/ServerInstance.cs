@@ -7,9 +7,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ZeroGravity;
-using HellionExtendedServer.Components;
-using System.Net.Sockets;
+using HellionExtendedServer.Common.Components;
 using ZeroGravity.Objects;
+using HellionExtendedServer.Common;
 
 namespace HellionExtendedServer.Managers
 {
@@ -104,6 +104,7 @@ namespace HellionExtendedServer.Managers
             }
         }
 
+        // Test method, please don't change ;)
         public void Test()
         {
 
@@ -118,8 +119,11 @@ namespace HellionExtendedServer.Managers
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
-        public void Start()
+        public void Start(int wait = 0)
         {
+            if (wait > 0)
+                Thread.Sleep(wait);
+
             if (Server.IsRunning)
                 return;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HellionExtendedServer.Common;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -11,9 +12,9 @@ using HellionExtendedServer.Managers;
 
 namespace HellionExtendedServer
 {
-    public partial class Form1 : Form
+    public partial class HESGui : Form
     {
-        public Form1()
+        public HESGui()
         {
             InitializeComponent();
 

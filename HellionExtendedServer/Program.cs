@@ -37,21 +37,23 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
+                  
             // Setup the handler for closing HES properly and saving
             HES._handler += new HES.EventHandler(HES.Handler);
             HES.SetConsoleCtrlHandler(HES._handler, true);
 
             //SetupGUI();
             Console.Title = String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", Version, "0.1.5");
+          
+            Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
-            Log.Instance.Info("Hellion Extended Server Initialized.");
+            SetupGUI();
 
             HES program = new HES(args);
             program.Run(args);
         }
 
         #region Methods
-
         private static void SetupGUI()
         {
             Thread uiThread = new Thread(LoadGUI);
@@ -64,7 +66,7 @@ namespace HellionExtendedServer
         {
             m_instance = this;
 
-            m_serverInstance = new ServerInstance();
+            
         }
 
         /// <summary>
@@ -74,7 +76,17 @@ namespace HellionExtendedServer
         /// <param name="args"></param>
         private void Run(string[] args)
         {
-            ServerInstance.Instance.Start();
+            m_serverInstance = new ServerInstance();
+            m_serverInstance.Config = new Components.GameServerIni();
+            m_serverInstance.Config.Load();
+
+            foreach(string arg in args)
+            {
+                if (arg.Contains("-autostart"))
+                    ServerInstance.Instance.Start();
+            }
+
+            //ServerInstance.Instance.Start();
 
             ReadConsoleCommands();
         }
@@ -99,11 +111,7 @@ namespace HellionExtendedServer
                 Match cmd1 = Regex.Match(cmd, @"^(/help)");
                 if (cmd1.Success)
                 {
-                    try
-                    {
-                        PrintHelp();
-                    }
-                    catch (ArgumentException) { }
+                    PrintHelp();
                     correct = true;
                 }
 
@@ -141,6 +149,24 @@ namespace HellionExtendedServer
                 if (cmd3.Success)
                 {
                     ServerInstance.Instance.Save();
+                    correct = true;
+                }
+
+                Match cmd6 = Regex.Match(cmd, @"^(/start)");
+                if (cmd6.Success)
+                {
+                    if(!Server.IsRunning)
+                        ServerInstance.Instance.Start();
+
+                    correct = true;
+                }
+
+                Match cmd7 = Regex.Match(cmd, @"^(/stop)");
+                if (cmd7.Success)
+                {
+                    if (Server.IsRunning)
+                        ServerInstance.Instance.Stop();
+
                     correct = true;
                 }
 
@@ -187,7 +213,7 @@ namespace HellionExtendedServer
         {
             if (true)
             {
-                Console.WriteLine("Loading GUI (WIP)");
+                Console.WriteLine("(WIP)Loading GUI...");
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 if (m_form == null || m_form.IsDisposed)
@@ -237,13 +263,11 @@ namespace HellionExtendedServer
         {
             if (sig == HES.CtrlType.CTRL_C_EVENT || sig == HES.CtrlType.CTRL_BREAK_EVENT || (sig == HES.CtrlType.CTRL_LOGOFF_EVENT || sig == HES.CtrlType.CTRL_SHUTDOWN_EVENT) || sig == HES.CtrlType.CTRL_CLOSE_EVENT)
             {
-                Log.Instance.Info("SHUTTING DOWN SERVER");
-
-                Server.IsRunning = false;
-                if (Server.PersistenceSaveInterval > 0.0)
-                    Server.SavePersistenceDataOnShutdown = true;
-                Server.MainLoopEnded.WaitOne(5000);
-                Console.WriteLine("CLOSING HELLION EXTENDED SERVER");
+                if (Server.IsRunning)
+                {
+                    ServerInstance.Instance.Stop();
+                    Console.WriteLine("CLOSING HELLION EXTENDED SERVER");
+                }               
             }
             return false;
         }

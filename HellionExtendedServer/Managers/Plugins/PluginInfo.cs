@@ -1,6 +1,8 @@
 ﻿using HellionExtendedServer.Common.Plugins;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using HellionExtendedServer.Managers.Commands;
 
 namespace HellionExtendedServer.Managers.Plugins
 {

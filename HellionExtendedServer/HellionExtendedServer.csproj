@@ -129,7 +129,6 @@
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
-    <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="GUI\Components\GameServerIni.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
     <Compile Include="Managers\Commands\CommandAttribute.cs" />
@@ -204,9 +203,7 @@
       <Name>HellionExtendedServer.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Managers\Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

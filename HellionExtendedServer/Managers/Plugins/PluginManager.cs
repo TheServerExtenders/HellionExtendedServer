@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using HellionExtendedServer.Managers.Commands;
 
 namespace HellionExtendedServer.Managers.Plugins
 {

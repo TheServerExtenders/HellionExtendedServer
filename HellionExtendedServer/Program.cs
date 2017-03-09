@@ -104,7 +104,7 @@ namespace HellionExtendedServer
         private void Run(string[] args)
         {
             m_serverInstance = new ServerInstance();
-            m_serverInstance.Config = new GameServerIni();
+            //m_serverInstance.Config = new GameServerIni();
             m_serverInstance.Config.Load();
 
 

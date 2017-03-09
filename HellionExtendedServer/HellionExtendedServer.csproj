@@ -126,21 +126,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+
     <Compile Include="Managers\Commands\Command.cs" />
     <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="Managers\Commands\CommandAttribute.cs" />
     <Compile Include="Managers\Commands\CommandManager.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Test.cs" />
+
+    <Compile Include="Modules\Config.cs" />
+    <Compile Include="Modules\Folders.cs" />
+    <Compile Include="Modules\Localization.cs" />
+
     <Compile Include="Managers\CommandManager.cs" />
-    <Compile Include="Managers\LogManager.cs" />
-    <Compile Include="Managers\Plugins\IPlugin.cs" />
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
+
     <Compile Include="Managers\Plugins\PluginAttribute.cs" />
     <Compile Include="Managers\Plugins\PluginBase.cs" />
     <Compile Include="Managers\Plugins\PluginBaseConfig.cs" />
     <Compile Include="Managers\Plugins\PluginHelper.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Localization.cs" />   
+
     <Compile Include="Managers\ServerInstance.cs" />
     <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
@@ -156,7 +162,7 @@
     <Compile Include="Managers\Plugins\PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Managers\UpdateManager.cs" />
+    <Compile Include="Modules\Updater.cs" />
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
     </EmbeddedResource>
@@ -196,9 +202,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Plugins\TestPlugin\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HellionExtendedServer.Common\HellionExtendedServer.Common.csproj">

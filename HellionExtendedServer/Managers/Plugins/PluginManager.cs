@@ -1,15 +1,13 @@
 ﻿using HellionExtendedServer.Common.Plugins;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using HellionExtendedServer.Managers.Commands;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
-    public class PluginManager
+    internal class PluginManager
     {
         #region Fields
 
@@ -53,8 +51,10 @@ namespace HellionExtendedServer.Managers.Plugins
 
             try
             {
+
                 Plugin.MainClass = (PluginBase)Activator.CreateInstance(Plugin.MainClassType);
                 
+
                 if (Plugin.MainClass != null)
                 {
                     try
@@ -64,11 +64,11 @@ namespace HellionExtendedServer.Managers.Plugins
                     }
                     catch (MissingMethodException)
                     {
-                      Console.WriteLine(string.Format(HES.Localization.Sentences["InitializationPlugin"], Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["InitializationPlugin"], Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
                     }
                     catch (Exception ex)
                     {
-                      Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                     }
 
                 }
@@ -115,7 +115,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 {
                     if (Plugin.MainClass != null)
                     {
-                        Plugin.MainClass.DisablePlugin();
+                        Plugin.MainClass.Shutdown();
                     }
                     Plugin.MainClass = null;
                 }
@@ -127,6 +127,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 m_discoveredPlugins.Remove(Plugin);
             }
         }
+
 
         public void ShutdownPlugin(String Plugin)
         {
@@ -157,8 +158,6 @@ namespace HellionExtendedServer.Managers.Plugins
         public List<PluginInfo> FindAllPlugins()
         {
             List<PluginInfo> foundPlugins = new List<PluginInfo>();
-
-            //TODO create Plugin Folder if it does not exist
 
             String modPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
             String[] subDirectories = Directory.GetDirectories(modPath);
@@ -203,33 +202,26 @@ namespace HellionExtendedServer.Managers.Plugins
                 Console.WriteLine("Loading Plugin Located at "+library);
                 bytes = File.ReadAllBytes(library);
                 libraryAssembly = Assembly.Load(bytes);
+				
                 //Bug Guid is Glitched Right Now
                 //Guid guid = new Guid(((GuidAttribute)libraryAssembly.GetCustomAttributes(typeof(GuidAttribute), true)[0]).Value);
                 
                 bool plug = true;
+
                 PluginInfo Plugin = new PluginInfo();
                 //Plugin.Guid = guid;
                 Plugin.Assembly = libraryAssembly;
-
-                Command[] CommandList;
 
                 Type[] PluginTypes = libraryAssembly.GetExportedTypes();
 
                 foreach (Type PluginType in PluginTypes)
                 {
-                    if (PluginType.BaseType == typeof(Command))
-                    {
-                        Plugin.FoundCommands.Add(PluginType);
-                        continue;
-                    }
-                    if (PluginType.GetInterface(typeof(IPlugin).FullName) != null && plug)
+                    if (PluginType.GetInterface(typeof(IPlugin).FullName) != null)
                     {
                         Plugin.MainClassType = PluginType;
-                        plug = false;
-                        continue;
+                        return Plugin;
                     }
                 }
-                 return Plugin;
             }
             catch (Exception ex)
             {

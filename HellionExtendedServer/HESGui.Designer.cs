@@ -1,6 +1,6 @@
 ﻿namespace HellionExtendedServer
 {
-    partial class Form1
+    partial class HESGui
     {
         /// <summary>
         /// Required designer variable.
@@ -38,7 +38,7 @@
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Admins", new System.Windows.Forms.TreeNode[] {
             treeNode4,
             treeNode5});
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HESGui));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();

@@ -1,33 +1,52 @@
-﻿using HellionExtendedServer.Controllers;
+﻿using HellionExtendedServer.Common.Components;
+using HellionExtendedServer.Controllers;
 using HellionExtendedServer.Managers;
+using HellionExtendedServer.Common;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using ZeroGravity;
+using ZeroGravity.Objects;
+
+using static ZeroGravity.Network.NetworkController;
+
 
 namespace HellionExtendedServer
 {
     public class HES
     {
+        
+
+        public static string GameVersion = "0.1.5";
+        public static string BuildBranch = "Dev";
+
         #region Fields
 
         private static HES m_instance;
-        private static Form1 m_form;
+        private static Config m_config;
+        private static Localization m_localization;
+        private static HESGui m_form;
         private static ServerInstance m_serverInstance;
-        private static HES.EventHandler _handler;
+        private static EventHandler _handler;
+        private static Boolean m_useGui = true;
+        private static Thread uiThread;
 
         #endregion Fields
 
         #region Properties
 
-        public static String BuildBranch { get { return "Master Branch"; } }
         public static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
-        public static String VersionString { get { return Version.ToString(3) + " " + BuildBranch; } }
+        public static String VersionString { get { return Version.ToString(4) + " Branch: " + BuildBranch; } }
         public static HES Instance { get { return m_instance; } }
+        public static Config Config { get { return m_config; } }
+        public static Localization Localization { get { return m_localization; } }
         public static Server CurrentServer { get { return m_serverInstance.Server; } }
+
+        public static String WindowTitle { get { return String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", VersionString, GameVersion); } }
 
         #endregion Properties
 
@@ -37,17 +56,22 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
-                  
             // Setup the handler for closing HES properly and saving
-            HES._handler += new HES.EventHandler(HES.Handler);
-            HES.SetConsoleCtrlHandler(HES._handler, true);
+            _handler += new EventHandler(Handler);
+            SetConsoleCtrlHandler(_handler, true);
 
-            //SetupGUI();
-            Console.Title = String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", Version, "0.1.5");
+            Console.Title = WindowTitle;
           
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
-            SetupGUI();
+            //Init the log for HES
+            new Log();
+
+            m_config = new Config();
+            m_config.Load();
+
+            m_localization = new Localization();
+            m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
 
             HES program = new HES(args);
             program.Run(args);
@@ -56,17 +80,19 @@ namespace HellionExtendedServer
         #region Methods
         private static void SetupGUI()
         {
-            Thread uiThread = new Thread(LoadGUI);
+            if (uiThread != null)
+                return;
+
+            uiThread = new Thread(LoadGUI);
             uiThread.SetApartmentState(ApartmentState.STA);
             uiThread.Start();
+
         }
 
 
         public HES(string[] args)
         {
-            m_instance = this;
-
-            
+            m_instance = this;          
         }
 
         /// <summary>
@@ -77,22 +103,44 @@ namespace HellionExtendedServer
         private void Run(string[] args)
         {
             m_serverInstance = new ServerInstance();
-            m_serverInstance.Config = new Components.GameServerIni();
+            m_serverInstance.Config = new GameServerIni();
             m_serverInstance.Config.Load();
 
-            foreach(string arg in args)
+
+            bool autoStart = false;
+            foreach (string arg in args)
             {
-                if (arg.Contains("-autostart"))
-                    ServerInstance.Instance.Start();
+
+                if (arg.Equals("-nogui"))
+                {
+                    m_useGui = false;
+
+                    if(!m_form.Visible)
+                        Log.Instance.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
+                }
+
+                if (arg.Equals("-autostart") | Properties.Settings.Default.AutoStart)
+                {
+                    autoStart = true;
+                    Log.Instance.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
+                }
+
             }
 
-            //ServerInstance.Instance.Start();
+            if (m_useGui)            
+                SetupGUI();
+                                                     
+            Log.Instance.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
 
+            if (autoStart)   
+                ServerInstance.Instance.Start();
+            
             ReadConsoleCommands();
         }
 
+
         /// <summary>
-        /// This contains the regex for console commands
+        /// This contains the console commands
         /// </summary>
         public void ReadConsoleCommands()
         {
@@ -104,102 +152,133 @@ namespace HellionExtendedServer
             }
             else
             {
-                //This correct bool is used 
-                bool correct = false;
-                string command = "";
-
-                Match cmd1 = Regex.Match(cmd, @"^(/help)");
-                if (cmd1.Success)
+                string[] strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
+                List<string> stringList = new List<string>();
+                int num = 1;
+                foreach (string str2 in strArray)
                 {
-                    PrintHelp();
-                    correct = true;
+                    if (str2 != "" && str2 != " ")
+                        stringList.Add(str2);
+                    ++num;
+                }
+                bool flag = false;
+
+
+                if (stringList[1] == "help")
+                {
+                    HES.PrintHelp();
+                    flag = true;
                 }
 
-                //Differents args for /players command to display the count, the full list of players (disconnected and disconnected) and the list of connected players.
-                Match cmd2 = Regex.Match(cmd, @"^(/players)");
-                if (cmd2.Success && cmd.Length > 9)
+                //Different args for /players command to display the count, the full list of players (disconnected and disconnected) and the list of connected players.
+                if (stringList[1] == "players" && stringList.Count > 2 & Server.IsRunning)
                 {
-                    correct = true;
-                    Console.WriteLine();
-                    command = cmd.Substring(9);
-                    if (command == "-count")
-                        Console.WriteLine("Players Connected: " + ServerInstance.Instance.Server.NetworkController.CurrentOnlinePlayers() + "/" + ServerInstance.Instance.Server.MaxPlayers);
-
-                    if (command == "-list")
+                    if (stringList[2] == "-count")
+                    {
+                        Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayersConnected"], ServerInstance.Instance.Server.NetworkController.CurrentOnlinePlayers(), ServerInstance.Instance.Server.MaxPlayers));
+                        flag = true;
+                    }
+                    else if (stringList[2] == "-list")
                     {
                         Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId-------"));
                         foreach (var client in NetworkController.Instance.ClientList)
                         {
                             Console.WriteLine(string.Format("\t {0} \t {1}", client.Value.Player.Name, client.Value.Player.SteamId));
                         }
+                        flag = true;
                     }
-
-                    if (command == "-all")
+                    else if (stringList[2] == "-all")
                     {
+                        Console.WriteLine(string.Format(m_localization.Sentences["AllPlayers"], ServerInstance.Instance.Server.AllPlayers.Count));
                         Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId------- | -------Connected-------"));
                         foreach (var player in ServerInstance.Instance.Server.AllPlayers)
                         {
                             Console.WriteLine(string.Format("\t {0} \t {1} \t {2}", player.Name, player.SteamId, NetworkController.Instance.ClientList.Values.Contains(NetworkController.Instance.GetClient(player))));
                         }
+                        flag = true;
                     }
                     Console.WriteLine();
                 }
 
-                Match cmd3 = Regex.Match(cmd, @"^(/save)");
-                if (cmd3.Success)
+
+                if (stringList[1] == "save" & Server.IsRunning)
                 {
-                    ServerInstance.Instance.Save();
-                    correct = true;
+                    if (stringList.Count > 2 && stringList[2] == "-show")
+                        ServerInstance.Instance.Save(true);
+                    else
+                        ServerInstance.Instance.Save(false);
+                    flag = true;
                 }
 
-                Match cmd6 = Regex.Match(cmd, @"^(/start)");
-                if (cmd6.Success)
+                if (stringList[1] == "msg" && stringList.Count > 2 & Server.IsRunning)
                 {
-                    if(!Server.IsRunning)
+                    flag = true;
+                    string msg = "";
+                    if (stringList.Count > 2 && stringList[2].Contains("(") && stringList[2].Contains(")"))
+                    {
+                        foreach (string str2 in stringList)
+                        {
+                            if (stringList.IndexOf(str2) > 2)
+                                msg = msg + str2 + " ";
+                        }
+                        if (NetworkController.Instance.ConnectedPlayer(stringList[3]))
+                        {
+                            Console.WriteLine("Server > " + stringList[3] + " : " + msg);
+                            NetworkController.Instance.MessageToClient(msg, "Server", stringList[3]);
+                        }
+                        else
+                            Console.WriteLine(HES.m_localization.Sentences["PlayerNotConnected"]);
+                    }
+                    else
+                        Console.WriteLine(HES.m_localization.Sentences["NoPlayerName"]);
+                }
+
+
+                if (stringList[1] == "kick" && stringList.Count > 2)
+                {
+                    flag = true;
+                    if (stringList[3].Contains("(") && stringList[3].Contains(")"))
+                    {
+                        Player player = null;
+                        if (NetworkController.Instance.ConnectedPlayer(stringList[3], out player))
+                        {
+                            try
+                            {
+                                player.DiconnectFromNetworkContoller();
+                                Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayerKicked"], (object)player.Name));
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Instance.Error("Hellion Extended Server [KICK ERROR] : " + ex.ToString());
+                            }
+                        }
+                        else
+                            Console.WriteLine(HES.m_localization.Sentences["PlayerNotConnected"]);
+                    }
+                }
+
+                if (stringList[1] == "start")
+                {
+                    if (!Server.IsRunning)
                         ServerInstance.Instance.Start();
-
-                    correct = true;
+                    flag = true;
                 }
 
-                Match cmd7 = Regex.Match(cmd, @"^(/stop)");
-                if (cmd7.Success)
+                if (stringList[1] == "stop")
                 {
                     if (Server.IsRunning)
                         ServerInstance.Instance.Stop();
-
-                    correct = true;
+                    flag = true;
                 }
 
-                Match cmd5 = Regex.Match(cmd, @"^(/opengui)");
-                if (cmd5.Success)
+                if (stringList[1] == "opengui")
                 {
-                    LoadGUI();
-                    correct = true;
+                    SetupGUI();
+                    flag = true;
                 }
 
-                // I add it to send a private message to a player (it's really usefull for adminsitrators)
-                Match cmd4 = Regex.Match(cmd, @"^(/send)");
-                if (cmd4.Success && cmd.Length > 5)
-                {
-                    correct = true;
-                    command = cmd.Substring(5);
-                    string target = "";
-                    string text = "";
-                    if (command.Contains("(") && command.Contains("("))
-                    {
-                        target = command.Substring(command.IndexOf('(') + 1, command.IndexOf(')') - 2);
-
-                        if (command.Length > command.IndexOf(')') + 1)
-                        {
-                            text = command.Substring(command.IndexOf(')') + 2);
-                        }
-
-                        Console.WriteLine("Server > " + target + " : " + text);
-                        NetworkController.Instance.MessageToClient(text, "Server", target);
-                    }
-                    else
-                        Console.WriteLine("No player name specified");
-                }
+                if (!flag)
+                    Console.WriteLine(HES.m_localization.Sentences["BadSyntax"]);
             }
 
             ReadConsoleCommands();
@@ -211,33 +290,36 @@ namespace HellionExtendedServer
         [STAThread]
         private static void LoadGUI()
         {
-            if (true)
+            Console.WriteLine(HES.m_localization.Sentences["LoadingGUI"]);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            if (m_form == null || m_form.IsDisposed)
             {
-                Console.WriteLine("(WIP)Loading GUI...");
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                if (m_form == null || m_form.IsDisposed)
-                {
-                    m_form = new Form1();
-                }
-                else if (m_form.Visible)
-                    return;
-
-                Application.Run(m_form);
+                m_form = new HESGui();
             }
+            else if (m_form.Visible)
+                return;
+              
+            Application.Run(m_form);
 
+            m_form.Text = WindowTitle + " GUI";
+
+            Application.Run(m_form);
         }
-
+      
         public static void PrintHelp()
         {
-            Log.Instance.Warn("-------------------------HELP--------------------------------");
-            Log.Instance.Warn("Type directly into the console to chat with online players");
-            Log.Instance.Warn("Current commands are;" + Environment.NewLine);
-            Log.Instance.Warn("/help - this page ;)");
-            Log.Instance.Warn("/players -count - returns the current amount of online players");
-            Log.Instance.Warn("/players -list - returns the full list of connected players");
-            Log.Instance.Warn("/save - forces a universe save");
-            Log.Instance.Warn("/send (name) text - send a message to the specified player");
+            Log.Instance.Warn("------------------------------------------------------------");
+            Log.Instance.Warn(HES.m_localization.Sentences["DescHelp"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["HelpCommand"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["SaveCommand"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["StartCommand"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["StopCommand"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["OpenGUICommand"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["PlayersCommand"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["MsgCommand"]);
+            Log.Instance.Warn(HES.m_localization.Sentences["KickCommand"]);
             Log.Instance.Warn("-------------------------------------------------------------");
         }
 
@@ -246,9 +328,9 @@ namespace HellionExtendedServer
         #region ConsoleHandler
 
         [DllImport("Kernel32")]
-        private static extern bool SetConsoleCtrlHandler(HES.EventHandler handler, bool add);
+        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
 
-        private delegate bool EventHandler(HES.CtrlType sig);
+        private delegate bool EventHandler(CtrlType sig);
 
         private enum CtrlType
         {
@@ -259,9 +341,9 @@ namespace HellionExtendedServer
             CTRL_SHUTDOWN_EVENT = 6,
         }
 
-        private static bool Handler(HES.CtrlType sig)
+        private static bool Handler(CtrlType sig)
         {
-            if (sig == HES.CtrlType.CTRL_C_EVENT || sig == HES.CtrlType.CTRL_BREAK_EVENT || (sig == HES.CtrlType.CTRL_LOGOFF_EVENT || sig == HES.CtrlType.CTRL_SHUTDOWN_EVENT) || sig == HES.CtrlType.CTRL_CLOSE_EVENT)
+            if (sig == CtrlType.CTRL_C_EVENT || sig == CtrlType.CTRL_BREAK_EVENT || (sig == CtrlType.CTRL_LOGOFF_EVENT || sig == CtrlType.CTRL_SHUTDOWN_EVENT) || sig == CtrlType.CTRL_CLOSE_EVENT)
             {
                 if (Server.IsRunning)
                 {

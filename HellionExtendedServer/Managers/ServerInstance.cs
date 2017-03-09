@@ -7,9 +7,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ZeroGravity;
-using HellionExtendedServer.Components;
-using System.Net.Sockets;
+using HellionExtendedServer.Common.Components;
 using ZeroGravity.Objects;
+using HellionExtendedServer.Common;
 
 namespace HellionExtendedServer.Managers
 {
@@ -65,41 +65,46 @@ namespace HellionExtendedServer.Managers
         /// Saves the server on demand when ran, will not let it save while saving
         /// Starts the save in a different thread to avoid locking up HES
         /// </summary>
-        public void Save()
+        public void Save(bool showToPLayer = false)
         {
-            if (!Server.IsRunning)
+            if (Server.IsRunning)
                 return;
-
-            if (isSaving)
+            if (this.isSaving)
             {
-                Console.WriteLine("Save is already in progress!");
-                return;
+                Console.WriteLine(HES.Localization.Sentences["SaveAlreadyInProgress"]);
             }
-
-            try
+            else
             {
-                new TaskFactory().StartNew(() =>
+                try
                 {
-                    isSaving = true;
-                    Stopwatch saveTime = new Stopwatch();
-                    saveTime.Start();
-                    Console.WriteLine("Saving Universe...");
-                    Persistence.Save();
-                    saveTime.Stop();
+                    if (showToPLayer)
+                    {
+                        NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavingUniverse"], false, false);
+                        NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavedUniverse"], false, false);
+                    }
 
-                    Log.Instance.Info("Universe Saved in " + saveTime.Elapsed.Milliseconds + "ms to "
-                        + String.Format(Persistence.PersistanceFileName,
-                        DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss")));
+                    new TaskFactory().StartNew(() =>
+                    {
+                        isSaving = true;
+                        Stopwatch saveTime = new Stopwatch();
+                        saveTime.Start();
+                        Console.WriteLine(HES.Localization.Sentences["SavingUniverse"]);
+                        Persistence.Save();
+                        saveTime.Stop();
+
+                        Log.Instance.Info(string.Format(HES.Localization.Sentences["SavedUniverseTime"], saveTime.Elapsed.Milliseconds, string.Format((string)Persistence.PersistanceFileName, DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss"))));
+                        isSaving = false;
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Log.Instance.Error("Hellion Extended Server [SAVE ERROR] " + ex.ToString());
                     isSaving = false;
-                });
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Error("Hellion Extended Server [SAVE ERROR] " + ex.ToString());
-                isSaving = false;
+                }
             }
         }
 
+        // Test method, please don't change ;)
         public void Test()
         {
 
@@ -114,8 +119,11 @@ namespace HellionExtendedServer.Managers
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
-        public void Start()
+        public void Start(int wait = 0)
         {
+            if (wait > 0)
+                Thread.Sleep(wait);
+
             if (Server.IsRunning)
                 return;
 
@@ -142,12 +150,12 @@ namespace HellionExtendedServer.Managers
                 stopwatch.Stop();
                 long num = (long)(1000.0 / stopwatch.Elapsed.TotalMilliseconds);
 
-                Console.WriteLine(string.Format("==============================================================================\r\n\tServer name: {5}\r\n\tServer ID: {1}\r\n\tStart date: {0}\r\n\tServer ticks: {2}{4}\r\n\tMax server ticks (not precise): {3}\r\n==============================================================================", (object)DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (object)(Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat((object)Server.NetworkController.ServerID)), 64, (object)num, (object)(64 > num ? " WARNING: Server ticks is larger than max tick" : ""), (object)Server.ServerName));
+                Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
 
             new NetworkController(m_server.NetworkController);
-            
-            Log.Instance.Info("Ready for connections!");
+
+            Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 
             HES.PrintHelp();
         }

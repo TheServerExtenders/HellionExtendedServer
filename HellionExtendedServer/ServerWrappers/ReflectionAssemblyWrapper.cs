@@ -2,6 +2,7 @@
 using System.Reflection;
 using HellionExtendedServer.Managers;
 using System.Diagnostics;
+using HellionExtendedServer.Common;
 
 // Helper class to ease reflecting of the server
 

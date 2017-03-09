@@ -5,6 +5,7 @@ using System.Threading;
 using ZeroGravity;
 using HellionExtendedServer.Managers;
 using System.Net.Sockets;
+using HellionExtendedServer.Common;
 
 namespace HellionExtendedServer.ServerWrappers
 {
@@ -71,7 +72,7 @@ namespace HellionExtendedServer.ServerWrappers
         {
             try
             {
-                Log.Instance.Info("Hellion Extended Server: Shutting down server...");
+                Log.Instance.Info(HES.Localization.Sentences["ShuttingDown"]);
 
                 m_closeSocketListeners.Invoke(Server.Instance.NetworkController, null);
 
@@ -79,18 +80,18 @@ namespace HellionExtendedServer.ServerWrappers
                 if (Server.PersistenceSaveInterval > 0.0)
                 {
                     ServerInstance.Instance.Save();
-                    Log.Instance.Info("Saving Universe");
+                    Log.Instance.Info(HES.Localization.Sentences["SavingUniverse"]);
                 }
 
                 Dbg.Destroy();
                 Server.MainLoopEnded.WaitOne(5000);
-                
-                Log.Instance.Info("Hellion Extended Server: Server Successfully shutdown.");
+
+                Log.Instance.Info(HES.Localization.Sentences["SuccessShutdown"]);
             }
             catch (Exception ex)
             {
 
-                Log.Instance.Error("[Error] Hellion Extended Server: Server Failed to shutdown: " + ex.ToString());
+                Log.Instance.Error("Hellion Extended Server [SHUTDOWN ERROR] : " + ex.ToString());
             }
             
         }
@@ -102,7 +103,7 @@ namespace HellionExtendedServer.ServerWrappers
         /// <returns>the thread!</returns>
         public Thread StartServer(Object args)
         {
-            Log.Instance.Info("Hellion Extended Server: Loading HELLION Dedicated.");
+            Log.Instance.Info(HES.Localization.Sentences["LoadingDedicated"]);
 
             serverThread = new Thread(new ParameterizedThreadStart(this.ThreadStart));
 
@@ -117,11 +118,11 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-                Log.Instance.Fatal("[ERROR] Hellion Extended Server[ServerThread]: " + ex.ToString());
+                Log.Instance.Fatal("Hellion Extended Server [SERVER THREAD ERROR] : " + ex.ToString());
                 return null;
             }
 
-            Log.Instance.Warn("Hellion Extended Server: Waiting for server to start. This may take at least 10 seconds or longer depending on the size of the current save.");
+            Log.Instance.Warn(HES.Localization.Sentences["WaitingStart"]);
 
             try
             {
@@ -137,7 +138,7 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-                Log.Instance.Fatal("[ERROR] Hellion Extended Server: " + ex.ToString());
+                Log.Instance.Fatal("Hellion Extended Server [FATAL ERROR] : " + ex.ToString());
                 return null;
             }
 
@@ -159,7 +160,7 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-                Log.Instance.Fatal("Unhandled Exception caused server to crash. Exception: " + ex.ToString());
+                Log.Instance.Fatal("Hellion Extended Server [UNHANDLED EXCEPTION] : " + ex.ToString());
             }
             m_isRunning = false;
         }
@@ -181,11 +182,11 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (TypeInitializationException ex)
             {
-                Log.Instance.Fatal("[FATAL ERROR] REPORT THE FOLLOWING TO GITHUB ISSUES] HES: Could Not Initialize Server! : " + ex.ToString());
+                Log.Instance.Fatal("[REPORT THE FOLLOWING TO GITHUB ISSUES] Could Not Initialize Server! : [FATAL ERROR]" + ex.ToString());
             }
             catch (Exception ex)
             {
-                Log.Instance.Fatal("HES: Server Start Exception: " + ex.Message);
+                Log.Instance.Fatal("Hellion Extended Server [START EXCEPTION] :  " + ex.Message);
             }
         }
 

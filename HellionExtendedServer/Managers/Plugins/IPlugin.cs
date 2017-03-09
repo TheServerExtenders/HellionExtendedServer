@@ -13,7 +13,7 @@ namespace HellionExtendedServer.Common.Plugins
         #region Properties
         Guid Id
         { get; }
-        string Name
+        string GetName
         { get; }
         string Version
         { get; }

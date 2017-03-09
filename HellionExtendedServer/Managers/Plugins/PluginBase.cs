@@ -16,6 +16,12 @@ namespace HellionExtendedServer.Common.Plugins
         #region Fields
         protected String m_directory;
         protected Server m_server;
+        protected String m_version;
+        protected String m_desc;
+        protected String m_author;
+        protected String m_name;
+        protected String m_api;
+        protected Guid m_id;
         protected PluginHelper m_plugin_helper;
         protected Boolean isenabled = false;
 
@@ -25,13 +31,13 @@ namespace HellionExtendedServer.Common.Plugins
 
         #region Properties
         public virtual Boolean Enabled { get { return isenabled; } internal set { isenabled = value; } }
-        public virtual Guid Id { get { return Id; } internal set { Id = value; } }
-        public virtual String Name { get { return Name; } internal set { Name = value; } }
-        public virtual String Version { get { return Version; } internal set { Version = value; } }
-        public virtual String Description { get { return Description; } internal set { Version = value; } }
-        public virtual String Author { get { return Author; } internal set { Version = value; } }
-        public virtual String Directory { get { return m_directory; } internal set { Version = value; } }
-        public virtual String API { get { return API; } internal set { API = value; } }
+        public virtual Guid Id { get { return m_id; } internal set { m_id = value; } }
+        public virtual String GetName { get { return m_name; } internal set { m_name = value; } }
+        public virtual String Version { get { return m_version; } internal set { m_version = value; } }
+        public virtual String Description { get { return m_desc; } internal set { m_desc = value; } }
+        public virtual String Author { get { return m_author; } internal set { m_author = value; } }
+        public virtual String Directory { get { return m_directory; } internal set { m_directory = value; } }
+        public virtual String API { get { return m_api; } internal set { m_api = value; } }
         public virtual Server GetServer { get { return m_server; } }
         public virtual PluginHelper GetPluginHelper { get { return m_plugin_helper; } }
 
@@ -71,7 +77,7 @@ namespace HellionExtendedServer.Common.Plugins
             PluginAttribute pluginAttribute = Attribute.GetCustomAttribute(GetType(), typeof(PluginAttribute), true) as PluginAttribute;
             if (pluginAttribute != null)
             {
-                Name = pluginAttribute.Name;
+                GetName = pluginAttribute.Name;
                 Version = pluginAttribute.Version;
                 Description = pluginAttribute.Description;
                 Author = pluginAttribute.Author;
@@ -103,7 +109,7 @@ namespace HellionExtendedServer.Common.Plugins
         {
             Enabled = true;
             OnDisable();
-            ServerInstance.Instance.PluginManager.ShutdownPlugin(Name);
+            ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
         }
         public virtual void OnEnable()
         {

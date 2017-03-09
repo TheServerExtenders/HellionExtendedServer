@@ -9,7 +9,7 @@ using ZeroGravity.Objects;
 
 namespace TestPlugin
 {
-    [Plugin(API = "1.0.0",Author = "Yungtechboy1", Description = "Simple Test Plugin", Name = "Test Econ",Version = "1.0.0")]
+    [Plugin(API = "1.0.0",Author = "Yungtechboy1", Description = "Simple Test Plugin", Name = "Econ",Version = "1.0.0")]
     public class PluginMain : PluginBase
     {
         public PluginMain()

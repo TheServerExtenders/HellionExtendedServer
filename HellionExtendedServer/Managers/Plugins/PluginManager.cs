@@ -72,12 +72,6 @@ namespace HellionExtendedServer.Managers.Plugins
                     }
 
                 }
-                //Commands
-                foreach (Type CommandType in Plugin.FoundCommands)
-                {
-                    Command commandclass = (Command) Activator.CreateInstance(CommandType, new object[] {ServerInstance.Instance.Server});
-                    ServerInstance.Instance.CommandManager.AddCommand(commandclass);
-                }
             }
             catch (Exception ex)
             {
@@ -88,6 +82,12 @@ namespace HellionExtendedServer.Managers.Plugins
             {
                 lock (_lockObj)
                 {
+                    //Commands
+                    foreach (Type CommandType in Plugin.FoundCommands)
+                    {
+                        Command c = (Command)Activator.CreateInstance(CommandType, new object[] { ServerInstance.Instance.Server });
+                        ServerInstance.Instance.CommandManager.AddCommand(c);
+                    }
                     m_loadedPlugins.Add(Plugin);
                 }
             }
@@ -140,7 +140,7 @@ namespace HellionExtendedServer.Managers.Plugins
                         Console.WriteLine("Error 131!");
                         return;
                     }
-                    if (pb.Name.ToLower() == Plugin)
+                    if (pb.GetName.ToLower() == Plugin)
                     {
                         Console.WriteLine(String.Format("Shutting down Plugin {0}", Plugininfo.Assembly.GetName().Name));
                         pb.DisablePlugin();

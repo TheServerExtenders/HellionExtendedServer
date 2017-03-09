@@ -10,7 +10,7 @@ using ZeroGravity.Objects;
 
 namespace TestPlugin
 {
-    [Command(CommandName = "money",Description = "View your money",Usage = "/money [player]",Permission = "CyberCore.Money")]
+    [Command(CommandName = "money",Description = "View your money",Usage = "/money [player]",Permission = "CyberCore.Money",Plugin = "Econ")]
     public class MoneyCmd : Command
     {
         

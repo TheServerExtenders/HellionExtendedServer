@@ -75,8 +75,8 @@ namespace HellionExtendedServer.Managers.Commands
                 //Search for Plugin
                 foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins)
                 {
-                    Console.WriteLine("-----");
-                    if (pi.MainClass.Name.ToLower() == PluginName.ToLower())
+                    Console.WriteLine(pi.MainClass.GetName.ToLower()+ "-----" + PluginName.ToLower());
+                    if (pi.MainClass.GetName.ToLower() == PluginName.ToLower())
                     {
                         Console.WriteLine("--||||---");
                         GetPlugin = pi.MainClass;

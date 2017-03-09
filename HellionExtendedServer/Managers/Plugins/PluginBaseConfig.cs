@@ -33,7 +33,7 @@ namespace HellionExtendedServer.Common.Plugins
 
         public virtual void Init()
         {
-            m_configFile = Path.Combine(m_plugin.Directory, m_plugin.Name + ".xml");
+            m_configFile = Path.Combine(m_plugin.Directory, m_plugin.GetName + ".xml");
         }
 
         public virtual void Save()

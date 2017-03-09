@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
-    internal class PluginManager
+    public class PluginManager
     {
         #region Fields
 

@@ -4,8 +4,8 @@ using System.Reflection;
 using System.Threading;
 using ZeroGravity;
 using HellionExtendedServer.Managers;
-using System.Net.Sockets;
 using HellionExtendedServer.Common;
+using System.Diagnostics;
 
 namespace HellionExtendedServer.ServerWrappers
 {
@@ -15,8 +15,6 @@ namespace HellionExtendedServer.ServerWrappers
     public class HELLION : ReflectionClassWrapper
     {
         #region Fields
-
-        private Boolean m_isRunning;
         private MethodInfo m_entryPoint;
         private MethodInfo m_closeSocketListeners;
         private HELLION m_instance;
@@ -33,9 +31,10 @@ namespace HellionExtendedServer.ServerWrappers
 
         public Server Server { get { return m_server; } }
 
-        public Boolean IsRunning { get { return m_isRunning; } }
-
         #endregion Properties
+
+        public delegate void ServerLoadingEvent(Server server);
+        public event ServerLoadingEvent OnServerLoading;
 
         public HELLION(Assembly Assembly, string Namespace)
             : base(Assembly, Namespace)
@@ -77,6 +76,7 @@ namespace HellionExtendedServer.ServerWrappers
                 m_closeSocketListeners.Invoke(Server.Instance.NetworkController, null);
 
                 Server.IsRunning = false;
+                
                 if (Server.PersistenceSaveInterval > 0.0)
                 {
                     ServerInstance.Instance.Save();
@@ -86,11 +86,11 @@ namespace HellionExtendedServer.ServerWrappers
                 Dbg.Destroy();
                 Server.MainLoopEnded.WaitOne(5000);
 
+                ServerInstance.Instance.IsRunning = false;
                 Log.Instance.Info(HES.Localization.Sentences["SuccessShutdown"]);
             }
             catch (Exception ex)
             {
-
                 Log.Instance.Error("Hellion Extended Server [SHUTDOWN ERROR] : " + ex.ToString());
             }
             
@@ -111,6 +111,7 @@ namespace HellionExtendedServer.ServerWrappers
             serverThread.CurrentCulture = CultureInfo.InvariantCulture;
             serverThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
+
             try
             {
                 // Start the thread!
@@ -120,6 +121,24 @@ namespace HellionExtendedServer.ServerWrappers
             {
                 Log.Instance.Fatal("Hellion Extended Server [SERVER THREAD ERROR] : " + ex.ToString());
                 return null;
+            }
+                     
+            return serverThread;
+        }
+
+        /// <summary>
+        /// Load Hellion Dedicated into memory
+        /// </summary>
+        /// <param name="args"></param>
+        private void ThreadStart(Object args)
+        {
+            try
+            {
+                ServerWrapper.HellionDedi.Start(args as Object[]);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Fatal("Hellion Extended Server [UNHANDLED EXCEPTION] : " + ex.ToString());
             }
 
             Log.Instance.Warn(HES.Localization.Sentences["WaitingStart"]);
@@ -139,30 +158,17 @@ namespace HellionExtendedServer.ServerWrappers
             catch (Exception ex)
             {
                 Log.Instance.Fatal("Hellion Extended Server [FATAL ERROR] : " + ex.ToString());
-                return null;
+                return;
+            }
+
+            if (OnServerLoading != null)
+            {
+                OnServerLoading(Server);
             }
 
             // The server is now running, set the running field to true
-            m_isRunning = m_instance.Server.WorldInitialized;
-         
-            return serverThread;
-        }
+            ServerInstance.Instance.IsRunning = m_instance.Server.WorldInitialized;
 
-        /// <summary>
-        /// Load Hellion Dedicated into memory
-        /// </summary>
-        /// <param name="args"></param>
-        private void ThreadStart(Object args)
-        {
-            try
-            {
-                ServerWrapper.HellionDedi.Start(args as Object[]);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Fatal("Hellion Extended Server [UNHANDLED EXCEPTION] : " + ex.ToString());
-            }
-            m_isRunning = false;
         }
 
         /// <summary>

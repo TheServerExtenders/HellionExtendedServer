@@ -82,6 +82,7 @@ namespace HellionExtendedServer.Managers.Commands
         public CommandManager()
         {
             AddCommand(new Test(ServerInstance.Instance.Server));
+            AddCommand(new Status(ServerInstance.Instance.Server));
         }
 
     }

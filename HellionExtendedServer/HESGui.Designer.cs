@@ -64,8 +64,6 @@
             this.cpc_chat_tabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.cpc_chat_list = new System.Windows.Forms.TextBox();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.cpc_chat_privatemessages = new System.Windows.Forms.TextBox();
             this.cpc_chat_send = new System.Windows.Forms.Button();
             this.cpc_messagebox = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
@@ -90,7 +88,6 @@
             this.splitContainer3.SuspendLayout();
             this.cpc_chat_tabs.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -296,6 +293,7 @@
             // cpc_players_treelist
             // 
             this.cpc_players_treelist.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cpc_players_treelist.Enabled = false;
             this.cpc_players_treelist.Location = new System.Drawing.Point(0, 0);
             this.cpc_players_treelist.Name = "cpc_players_treelist";
             treeNode1.Name = "Online";
@@ -318,6 +316,7 @@
             // 
             // cpc_players_demote
             // 
+            this.cpc_players_demote.Enabled = false;
             this.cpc_players_demote.Location = new System.Drawing.Point(162, 31);
             this.cpc_players_demote.Name = "cpc_players_demote";
             this.cpc_players_demote.Size = new System.Drawing.Size(64, 23);
@@ -327,6 +326,7 @@
             // 
             // cpc_players_promote
             // 
+            this.cpc_players_promote.Enabled = false;
             this.cpc_players_promote.Location = new System.Drawing.Point(162, 3);
             this.cpc_players_promote.Name = "cpc_players_promote";
             this.cpc_players_promote.Size = new System.Drawing.Size(64, 23);
@@ -342,6 +342,7 @@
             this.cpc_players_ban.TabIndex = 2;
             this.cpc_players_ban.Text = "Ban";
             this.cpc_players_ban.UseVisualStyleBackColor = true;
+            this.cpc_players_ban.Click += new System.EventHandler(this.cpc_players_ban_Click);
             // 
             // cpc_players_kick
             // 
@@ -351,6 +352,7 @@
             this.cpc_players_kick.TabIndex = 1;
             this.cpc_players_kick.Text = "Kick";
             this.cpc_players_kick.UseVisualStyleBackColor = true;
+            this.cpc_players_kick.Click += new System.EventHandler(this.cpc_players_kick_Click);
             // 
             // splitContainer3
             // 
@@ -374,8 +376,8 @@
             // cpc_chat_tabs
             // 
             this.cpc_chat_tabs.Controls.Add(this.tabPage3);
-            this.cpc_chat_tabs.Controls.Add(this.tabPage4);
             this.cpc_chat_tabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cpc_chat_tabs.Enabled = false;
             this.cpc_chat_tabs.Location = new System.Drawing.Point(0, 0);
             this.cpc_chat_tabs.Name = "cpc_chat_tabs";
             this.cpc_chat_tabs.SelectedIndex = 0;
@@ -403,27 +405,6 @@
             this.cpc_chat_list.Size = new System.Drawing.Size(551, 420);
             this.cpc_chat_list.TabIndex = 2;
             // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.cpc_chat_privatemessages);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(557, 426);
-            this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "Private Messages";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // cpc_chat_privatemessages
-            // 
-            this.cpc_chat_privatemessages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cpc_chat_privatemessages.Location = new System.Drawing.Point(3, 3);
-            this.cpc_chat_privatemessages.Multiline = true;
-            this.cpc_chat_privatemessages.Name = "cpc_chat_privatemessages";
-            this.cpc_chat_privatemessages.ReadOnly = true;
-            this.cpc_chat_privatemessages.Size = new System.Drawing.Size(551, 420);
-            this.cpc_chat_privatemessages.TabIndex = 2;
-            // 
             // cpc_chat_send
             // 
             this.cpc_chat_send.Location = new System.Drawing.Point(509, 3);
@@ -432,13 +413,16 @@
             this.cpc_chat_send.TabIndex = 1;
             this.cpc_chat_send.Text = "Send";
             this.cpc_chat_send.UseVisualStyleBackColor = true;
+            this.cpc_chat_send.Click += new System.EventHandler(this.cpc_chat_send_Click);
             // 
             // cpc_messagebox
             // 
             this.cpc_messagebox.Location = new System.Drawing.Point(3, 5);
             this.cpc_messagebox.Name = "cpc_messagebox";
+            this.cpc_messagebox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.cpc_messagebox.Size = new System.Drawing.Size(500, 20);
             this.cpc_messagebox.TabIndex = 0;
+            this.cpc_messagebox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cpc_messagebox_KeyDown);
             // 
             // HESGui
             // 
@@ -478,8 +462,6 @@
             this.cpc_chat_tabs.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -492,7 +474,6 @@
         private System.Windows.Forms.PropertyGrid serverconfig_properties;
         private System.Windows.Forms.CheckBox server_config_autostart;
         private System.Windows.Forms.Button server_config_stopserver;
-        private System.Windows.Forms.Button server_config_startserver;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.Button server_config_setdefaults;
         private System.Windows.Forms.Button server_config_cancel;
@@ -511,10 +492,9 @@
         private System.Windows.Forms.TabControl cpc_chat_tabs;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TextBox cpc_chat_list;
-        private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TextBox cpc_chat_privatemessages;
         private System.Windows.Forms.Button cpc_chat_send;
         private System.Windows.Forms.TextBox cpc_messagebox;
+        public System.Windows.Forms.Button server_config_startserver;
     }
 }
 

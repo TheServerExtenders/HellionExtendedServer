@@ -15,6 +15,7 @@ using ZeroGravity.Math;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
 using NetworkController = HellionExtendedServer.Controllers.NetworkController;
+using System.Windows.Forms;
 
 namespace HellionExtendedServer.Managers
 {
@@ -35,23 +36,55 @@ namespace HellionExtendedServer.Managers
         private static ServerInstance m_serverInstance;
 
         private bool isSaving = false;
-
+        private Boolean m_isRunning;
         #endregion Fieldss
+
 
         #region Properties
 
         public TimeSpan Uptime { get { return DateTime.Now - m_launchedTime; } }
-        public Boolean IsRunning { get { return ServerWrapper.HellionDedi.IsRunning; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
         public GameServerIni Config { get { return m_gameServerIni; } }
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
-        
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
 
+        public Boolean IsRunning
+        {
+            get { return m_isRunning; }
+            set
+            {
+                if (m_isRunning == value)
+                {
+                    return;
+                }
+                m_isRunning = value;
+                if (m_isRunning)
+                {
+                    if (OnServerRunning != null)
+                    {
+                        OnServerRunning(m_server);
+                    }
+                }
+                else
+                {
+                    if (OnServerStopped != null)
+                    {
+                        OnServerStopped(m_server);
+                    }
+                }
+            }
+        }
+
         #endregion Properties
+
+        #region Events
+        public delegate void ServerRunningEvent(Server server);
+        public event ServerRunningEvent OnServerRunning;
+        public event ServerRunningEvent OnServerStopped;
+        #endregion
 
         public ServerInstance()
         {
@@ -65,7 +98,11 @@ namespace HellionExtendedServer.Managers
             m_serverWrapper = new ServerWrapper(m_assembly);
 
             m_gameServerIni = new GameServerIni();
+
+            ServerWrapper.HellionDedi.OnServerLoading += HellionDedi_OnServerLoading;
         }
+
+      
 
         #region Methods
 
@@ -124,11 +161,14 @@ namespace HellionExtendedServer.Managers
 
         }
 
+
+
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
         public void Start(int wait = 0)
         {
+
             if (wait > 0)
                 Thread.Sleep(wait);
 
@@ -142,9 +182,11 @@ namespace HellionExtendedServer.Managers
 
             m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
 
-            m_serverWrapper.Init();
+            m_serverWrapper.Init();     
+        }
 
-            Thread.Sleep(5000);
+        private void HellionDedi_OnServerLoading(Server server)
+        {
 
             m_server = ServerWrapper.HellionDedi.Server;
 
@@ -160,6 +202,7 @@ namespace HellionExtendedServer.Managers
 
                 Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
+
             //Load Commands
             m_commandManager = new CommandManager();
             //Load Plugins!

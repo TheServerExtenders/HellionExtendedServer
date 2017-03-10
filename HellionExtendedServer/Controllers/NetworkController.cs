@@ -1,4 +1,5 @@
-﻿using HellionExtendedServer.Common;
+﻿using HellionExtendedServer;
+using HellionExtendedServer.Common;
 using NLog;
 using System;
 using System.Collections;
@@ -87,6 +88,7 @@ namespace HellionExtendedServer.Controllers
             try
             {
                 TextChatMessage textChatMessage = data as TextChatMessage;
+                              
                 chatlogger.Info("(" + textChatMessage.Sender + ")" + textChatMessage.Name + ": " + textChatMessage.MessageText);
             }
             catch (Exception ex)
@@ -95,7 +97,7 @@ namespace HellionExtendedServer.Controllers
             }
         }
 
-        public void MessageAllClients(string msg, bool sendAsServer = true, bool printToConsole = true)
+        public void MessageAllClients(string msg, bool sendAsServer = true, bool printToConsole = true, bool printtoGui = true)
         {
             if (string.IsNullOrEmpty(msg))
                 return;
@@ -108,15 +110,22 @@ namespace HellionExtendedServer.Controllers
             textChatMessage.MessageText = msg;
             try
             {
+                
                 m_network.SendToAllClients(textChatMessage, (textChatMessage).Sender);
             }
             catch (Exception)
             {
                 Log.Instance.Warn(HES.Localization.Sentences["PlayerNotConnected"]);
             }
+
+            if (printtoGui)
+                HES.GUI.AddChatLine(String.Format("{0} - {1}: {2}", DateTime.Now.ToLocalTime(), textChatMessage.Name, msg));
+
             if (!printToConsole)
                 return;
             chatlogger.Info((string)textChatMessage.Name + " : " + msg);
+
+            
         }
 
         public void MessageToClient(string msg, string SenderName, string ReceiverName)

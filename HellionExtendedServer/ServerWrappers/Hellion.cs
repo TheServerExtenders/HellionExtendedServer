@@ -86,6 +86,8 @@ namespace HellionExtendedServer.ServerWrappers
                 Dbg.Destroy();
                 Server.MainLoopEnded.WaitOne(5000);
 
+                ServerInstance.Instance.IsRunning = false;
+
                 Log.Instance.Info(HES.Localization.Sentences["SuccessShutdown"]);
             }
             catch (Exception ex)
@@ -144,7 +146,9 @@ namespace HellionExtendedServer.ServerWrappers
 
             // The server is now running, set the running field to true
             m_isRunning = m_instance.Server.WorldInitialized;
-         
+
+            ServerInstance.Instance.IsRunning = true;
+
             return serverThread;
         }
 

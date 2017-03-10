@@ -157,7 +157,7 @@ namespace HellionExtendedServer.Managers.Plugins
             List<PluginInfo> foundPlugins = new List<PluginInfo>();
 
             //TODO create Plugin Folder if it does not exist
-            String modPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
+            String modPath = Path.Combine(Environment.CurrentDirectory, "hes/plugins");
             String[] subDirectories = Directory.GetDirectories(modPath);
 
             foreach (String subDirectory in subDirectories)

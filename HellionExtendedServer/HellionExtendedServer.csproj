@@ -82,7 +82,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <OutputPath>bin\Server\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -129,12 +129,10 @@
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
-    <Compile Include="GUI\Components\GameServerIni.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
     <Compile Include="Managers\Commands\CommandAttribute.cs" />
     <Compile Include="Managers\Commands\CommandManager.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Test.cs" />
-    <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Managers\Plugins\IPlugin.cs" />
     <Compile Include="Managers\Plugins\PluginAttribute.cs" />
     <Compile Include="Managers\Plugins\PluginBase.cs" />
@@ -205,6 +203,32 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>@echo off
+
+echo Running build event for $(ProjectName)..
+
+if not exist "$(ProjectDir)bin\HESRelease"                              md "$(ProjectDir)bin\HESRelease"
+if not exist "$(ProjectDir)bin\HESRelease\Hes"                      md "$(ProjectDir)bin\HESRelease\Hes"
+if not exist "$(ProjectDir)bin\HESRelease\Hes\bin "              md "$(ProjectDir)bin\HESRelease\Hes\bin"
+if not exist "$(ProjectDir)bin\HESRelease\Hes\localization" md "$(ProjectDir)bin\HESRelease\Hes\localization"
+if not exist "$(ProjectDir)bin\HESRelease\Hes\updates"       md "$(ProjectDir)bin\HESRelease\Hes\updates"
+if not exist  "$(ProjectDir)bin\HESRelease\Hes\plugins"       md  "$(ProjectDir)bin\HESRelease\Hes\plugins"
+
+xcopy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)bin\HESRelease\"  /y
+xcopy "$(TargetDir)$(TargetFileName).config" "$(ProjectDir)bin\HESRelease\" /y
+
+xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
+xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
+xcopy "$(TargetDir)NLog.config" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
+
+echo $(ProjectName) files have been copied to "$(ProjectDir)bin\HESRelease\".
+
+echo This is used to build the proper folder/file structure for releases to be zipped up.
+
+REM Dont remove this line below! VS hates when you dont exit 0!
+EXIT 0</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

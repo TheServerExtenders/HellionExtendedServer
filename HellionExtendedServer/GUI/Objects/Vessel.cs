@@ -19,7 +19,6 @@ namespace HellionExtendedServer.GUI.Objects
         }
 
 
-
         public SpaceObjectVessel ThisVessel
         {
             get {return m_vessel; }

@@ -54,20 +54,20 @@
             this.StatusBar = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-            this.cpc_messagebox = new System.Windows.Forms.TextBox();
-            this.cpc_chat_send = new System.Windows.Forms.Button();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.cpc_players_treelist = new System.Windows.Forms.TreeView();
+            this.cpc_players_demote = new System.Windows.Forms.Button();
+            this.cpc_players_promote = new System.Windows.Forms.Button();
+            this.cpc_players_ban = new System.Windows.Forms.Button();
             this.cpc_players_kick = new System.Windows.Forms.Button();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.cpc_chat_tabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
             this.cpc_chat_list = new System.Windows.Forms.TextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
             this.cpc_chat_privatemessages = new System.Windows.Forms.TextBox();
-            this.cpc_players_ban = new System.Windows.Forms.Button();
-            this.cpc_players_promote = new System.Windows.Forms.Button();
-            this.cpc_players_demote = new System.Windows.Forms.Button();
+            this.cpc_chat_send = new System.Windows.Forms.Button();
+            this.cpc_messagebox = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -80,14 +80,14 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
-            this.splitContainer3.Panel1.SuspendLayout();
-            this.splitContainer3.Panel2.SuspendLayout();
-            this.splitContainer3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
             this.cpc_chat_tabs.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -272,41 +272,6 @@
             this.splitContainer2.SplitterDistance = 229;
             this.splitContainer2.TabIndex = 0;
             // 
-            // splitContainer3
-            // 
-            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer3.Name = "splitContainer3";
-            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer3.Panel1
-            // 
-            this.splitContainer3.Panel1.Controls.Add(this.cpc_chat_tabs);
-            // 
-            // splitContainer3.Panel2
-            // 
-            this.splitContainer3.Panel2.Controls.Add(this.cpc_chat_send);
-            this.splitContainer3.Panel2.Controls.Add(this.cpc_messagebox);
-            this.splitContainer3.Size = new System.Drawing.Size(565, 485);
-            this.splitContainer3.SplitterDistance = 452;
-            this.splitContainer3.TabIndex = 0;
-            // 
-            // cpc_messagebox
-            // 
-            this.cpc_messagebox.Location = new System.Drawing.Point(3, 5);
-            this.cpc_messagebox.Name = "cpc_messagebox";
-            this.cpc_messagebox.Size = new System.Drawing.Size(500, 20);
-            this.cpc_messagebox.TabIndex = 0;
-            // 
-            // cpc_chat_send
-            // 
-            this.cpc_chat_send.Location = new System.Drawing.Point(509, 3);
-            this.cpc_chat_send.Name = "cpc_chat_send";
-            this.cpc_chat_send.Size = new System.Drawing.Size(50, 23);
-            this.cpc_chat_send.TabIndex = 1;
-            this.cpc_chat_send.Text = "Send";
-            this.cpc_chat_send.UseVisualStyleBackColor = true;
-            // 
             // splitContainer4
             // 
             this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -351,6 +316,33 @@
             this.cpc_players_treelist.Size = new System.Drawing.Size(229, 387);
             this.cpc_players_treelist.TabIndex = 2;
             // 
+            // cpc_players_demote
+            // 
+            this.cpc_players_demote.Location = new System.Drawing.Point(162, 31);
+            this.cpc_players_demote.Name = "cpc_players_demote";
+            this.cpc_players_demote.Size = new System.Drawing.Size(64, 23);
+            this.cpc_players_demote.TabIndex = 4;
+            this.cpc_players_demote.Text = "Demote";
+            this.cpc_players_demote.UseVisualStyleBackColor = true;
+            // 
+            // cpc_players_promote
+            // 
+            this.cpc_players_promote.Location = new System.Drawing.Point(162, 3);
+            this.cpc_players_promote.Name = "cpc_players_promote";
+            this.cpc_players_promote.Size = new System.Drawing.Size(64, 23);
+            this.cpc_players_promote.TabIndex = 3;
+            this.cpc_players_promote.Text = "Promote";
+            this.cpc_players_promote.UseVisualStyleBackColor = true;
+            // 
+            // cpc_players_ban
+            // 
+            this.cpc_players_ban.Location = new System.Drawing.Point(5, 31);
+            this.cpc_players_ban.Name = "cpc_players_ban";
+            this.cpc_players_ban.Size = new System.Drawing.Size(63, 23);
+            this.cpc_players_ban.TabIndex = 2;
+            this.cpc_players_ban.Text = "Ban";
+            this.cpc_players_ban.UseVisualStyleBackColor = true;
+            // 
             // cpc_players_kick
             // 
             this.cpc_players_kick.Location = new System.Drawing.Point(5, 3);
@@ -359,6 +351,25 @@
             this.cpc_players_kick.TabIndex = 1;
             this.cpc_players_kick.Text = "Kick";
             this.cpc_players_kick.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.cpc_chat_tabs);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.cpc_chat_send);
+            this.splitContainer3.Panel2.Controls.Add(this.cpc_messagebox);
+            this.splitContainer3.Size = new System.Drawing.Size(565, 485);
+            this.splitContainer3.SplitterDistance = 452;
+            this.splitContainer3.TabIndex = 0;
             // 
             // cpc_chat_tabs
             // 
@@ -382,6 +393,16 @@
             this.tabPage3.Text = "Chat";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // cpc_chat_list
+            // 
+            this.cpc_chat_list.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cpc_chat_list.Location = new System.Drawing.Point(3, 3);
+            this.cpc_chat_list.Multiline = true;
+            this.cpc_chat_list.Name = "cpc_chat_list";
+            this.cpc_chat_list.ReadOnly = true;
+            this.cpc_chat_list.Size = new System.Drawing.Size(551, 420);
+            this.cpc_chat_list.TabIndex = 2;
+            // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.cpc_chat_privatemessages);
@@ -393,16 +414,6 @@
             this.tabPage4.Text = "Private Messages";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // cpc_chat_list
-            // 
-            this.cpc_chat_list.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cpc_chat_list.Location = new System.Drawing.Point(3, 3);
-            this.cpc_chat_list.Multiline = true;
-            this.cpc_chat_list.Name = "cpc_chat_list";
-            this.cpc_chat_list.ReadOnly = true;
-            this.cpc_chat_list.Size = new System.Drawing.Size(551, 420);
-            this.cpc_chat_list.TabIndex = 2;
-            // 
             // cpc_chat_privatemessages
             // 
             this.cpc_chat_privatemessages.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -413,34 +424,23 @@
             this.cpc_chat_privatemessages.Size = new System.Drawing.Size(551, 420);
             this.cpc_chat_privatemessages.TabIndex = 2;
             // 
-            // cpc_players_ban
+            // cpc_chat_send
             // 
-            this.cpc_players_ban.Location = new System.Drawing.Point(5, 31);
-            this.cpc_players_ban.Name = "cpc_players_ban";
-            this.cpc_players_ban.Size = new System.Drawing.Size(63, 23);
-            this.cpc_players_ban.TabIndex = 2;
-            this.cpc_players_ban.Text = "Ban";
-            this.cpc_players_ban.UseVisualStyleBackColor = true;
+            this.cpc_chat_send.Location = new System.Drawing.Point(509, 3);
+            this.cpc_chat_send.Name = "cpc_chat_send";
+            this.cpc_chat_send.Size = new System.Drawing.Size(50, 23);
+            this.cpc_chat_send.TabIndex = 1;
+            this.cpc_chat_send.Text = "Send";
+            this.cpc_chat_send.UseVisualStyleBackColor = true;
             // 
-            // cpc_players_promote
+            // cpc_messagebox
             // 
-            this.cpc_players_promote.Location = new System.Drawing.Point(162, 3);
-            this.cpc_players_promote.Name = "cpc_players_promote";
-            this.cpc_players_promote.Size = new System.Drawing.Size(64, 23);
-            this.cpc_players_promote.TabIndex = 3;
-            this.cpc_players_promote.Text = "Promote";
-            this.cpc_players_promote.UseVisualStyleBackColor = true;
+            this.cpc_messagebox.Location = new System.Drawing.Point(3, 5);
+            this.cpc_messagebox.Name = "cpc_messagebox";
+            this.cpc_messagebox.Size = new System.Drawing.Size(500, 20);
+            this.cpc_messagebox.TabIndex = 0;
             // 
-            // cpc_players_demote
-            // 
-            this.cpc_players_demote.Location = new System.Drawing.Point(162, 31);
-            this.cpc_players_demote.Name = "cpc_players_demote";
-            this.cpc_players_demote.Size = new System.Drawing.Size(64, 23);
-            this.cpc_players_demote.TabIndex = 4;
-            this.cpc_players_demote.Text = "Demote";
-            this.cpc_players_demote.UseVisualStyleBackColor = true;
-            // 
-            // Form1
+            // HESGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -448,9 +448,9 @@
             this.ClientSize = new System.Drawing.Size(812, 517);
             this.Controls.Add(this.tabControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "HESGui";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hellion Extended Server GUI";
+            this.Text = "-";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -466,15 +466,15 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.splitContainer4.Panel1.ResumeLayout(false);
+            this.splitContainer4.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+            this.splitContainer4.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             this.splitContainer3.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
-            this.splitContainer4.Panel1.ResumeLayout(false);
-            this.splitContainer4.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
-            this.splitContainer4.ResumeLayout(false);
             this.cpc_chat_tabs.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();

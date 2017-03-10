@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using HellionExtendedServer.Managers;
+using System.Diagnostics;
+using HellionExtendedServer.Common;
 
 // Helper class to ease reflecting of the server
 
@@ -219,7 +222,7 @@ namespace HellionExtendedServer.ServerWrappers
 
             if (methodInfo == null)
             {
-               // LogManager.ErrorLog.WriteLineAndConsole(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
+               Log.Instance.Fatal(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
                 return null;
             }
 
@@ -237,7 +240,7 @@ namespace HellionExtendedServer.ServerWrappers
 
             if (methodInfo == null)
             {
-                //LogManager.ErrorLog.WriteLineAndConsole(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
+                Log.Instance.Fatal(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
                 return null;
             }
 
@@ -255,7 +258,7 @@ namespace HellionExtendedServer.ServerWrappers
 
             if (methodInfo == null)
             {
-                //LogManager.ErrorLog.WriteLineAndConsole(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
+                Log.Instance.Fatal(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
                 return null;
             }
 

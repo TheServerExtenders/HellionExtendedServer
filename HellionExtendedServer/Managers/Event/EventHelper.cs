@@ -27,7 +27,8 @@ namespace HellionExtendedServer.Managers.Event
         {
             //TODO Register Each Event here
             //Spawn event
-            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(HandelPlayerSpawnEvent));
+            //BUG Causes Exception?!?!?!?
+            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(HandelPlayerSpawnEvent));
 
 
         }

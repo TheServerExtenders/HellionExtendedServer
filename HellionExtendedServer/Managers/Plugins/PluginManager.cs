@@ -92,7 +92,13 @@ namespace HellionExtendedServer.Managers.Plugins
                     //Actually Just register them
                     //Events
                     //Enable 
-                    Plugin.FoundEvents.ForEach(x => ServerInstance.Instance.EventHelper.RegisterEvent(x));
+                    //Enable Events 
+                    foreach (EventListener el in Plugin.FoundEvents)
+                    {
+                        ServerInstance.Instance.EventHelper.RegisterEvent(el);
+                    }
+
+                    //Plugin.FoundEvents.ForEach(x => ServerInstance.Instance.EventHelper.RegisterEvent(x));
 
                     m_loadedPlugins.Add(Plugin);
                 }
@@ -237,23 +243,28 @@ namespace HellionExtendedServer.Managers.Plugins
                 //B4 resturn Check for Events here
                 //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
                 //Events
-                if (plug)
+                if (!plug)
                 {
-                    foreach (MethodInfo method in plugin.MainClass.GetType().GetMethods())
+                    Log.Instance.Info("B4");
+                    foreach (MethodInfo method in plugin.MainClassType.GetMethods())
                     {
+                        Log.Instance.Info("CHECKING METHOD >> " + method.Name);
                         Boolean isevent = false;
                         foreach (object attribute in method.GetCustomAttributes(true))
                         {
+                            Log.Instance.Info("CHECKING ATTRIBUTE >> " + attribute.GetType().Name);
                             if (attribute is HESEventAttribute)
                             {
+                                Log.Instance.Info("ATTRIBUTE ISSSS >> " + attribute.GetType().Name);
                                 isevent = true;
                                 break;
                             }
                             if (isevent) break;
                         }
                         if (!isevent) continue;//Your not an event! Get outa here!!!
-                        //Check paramaters now
+                                               //Check paramaters now
 
+                        Log.Instance.Info("Found Event >> "+ method.Name);
                         ParameterInfo[] parameters = method.GetParameters();
                         if (parameters.Length <= 0)
                         {

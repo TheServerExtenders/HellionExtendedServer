@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using HellionExtendedServer;
 using ZeroGravity;
 using ZeroGravity.Objects;
 
@@ -66,7 +67,9 @@ namespace HellionExtendedServer
             SetConsoleCtrlHandler(_handler, true);
 
             Console.Title = WindowTitle;
-          
+
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Debuging.CurrentDomain_UnhandledException);
+
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
 

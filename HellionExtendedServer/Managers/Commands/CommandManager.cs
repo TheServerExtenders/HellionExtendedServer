@@ -83,6 +83,19 @@ namespace HellionExtendedServer.Managers.Commands
         {
             AddCommand(new Test(ServerInstance.Instance.Server));
             AddCommand(new Status(ServerInstance.Instance.Server));
+            var status = new List<string>()
+                {
+                    String.Format("~~ Status of {0} ~~", ServerInstance.Instance.Server.ServerName),
+                    String.Format("Server Started on {0} and has been running for {1} Days and {2} Hours",
+                        ServerInstance.Instance.Server.ServerStartTime, ServerInstance.Instance.Server.RunTime.Days, ServerInstance.Instance.Server.RunTime.Hours),
+                    String.Format("Players Online: {0}/{1} | Tick Rate: {1}",
+                        ServerInstance.Instance.Server.NetworkController.CurrentOnlinePlayers(), ServerInstance.Instance.Server.MaxPlayers),
+                    String.Format("Server Object Count: {0} | Loaded Plugins Count: {1}", ServerInstance.Instance.Server.AllVessels.Count,
+                        ServerInstance.Instance.Server.TickMilliseconds, ServerInstance.Instance.PluginManager.LoadedPlugins.Count),
+                };
+
+            Console.WriteLine("TESTTTTT");
+            status.ForEach((line) => Console.WriteLine(line));
         }
 
     }

@@ -91,11 +91,9 @@ namespace HellionExtendedServer.Managers.Plugins
                     //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
                     //Actually Just register them
                     //Events
-                    //Enable Events
-                    foreach (EventListener el in Plugin.FoundEvents)
-                    {
-                        ServerInstance.Instance.EventHelper.RegisterEvent(el);   
-                    }
+                    //Enable 
+                    Plugin.FoundEvents.ForEach(x => ServerInstance.Instance.EventHelper.RegisterEvent(x));
+
                     m_loadedPlugins.Add(Plugin);
                 }
             }

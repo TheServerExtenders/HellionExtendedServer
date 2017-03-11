@@ -28,7 +28,7 @@ namespace TestPlugin
         [HESEvent(EventID.SpawnEvent)]
         public void TestSpawnEvent(HESSpawnEvent evnt)
         {
-            Console.WriteLine("Test Spawn Event");
+            Console.WriteLine("Test Spawn Event"+evnt.ShipItemID);
         }
 
         public override void OnCommand(Player p, string command, string[] args)

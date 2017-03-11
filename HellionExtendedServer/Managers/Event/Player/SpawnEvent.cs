@@ -13,9 +13,8 @@ namespace HellionExtendedServer.Managers.Event.Player
         public SpawnPointLocationType SpawnType;
         public long SpawPointParentID;
         public GameScenes.SceneID ShipItemID;
-        public readonly int ID = 1;
 
-        public HESSpawnEvent(SpawnPointLocationType st, long sppid, GameScenes.SceneID ShipIID)
+        public HESSpawnEvent(SpawnPointLocationType st, long sppid, GameScenes.SceneID ShipIID) : base(EventID.SpawnEvent)
         {
             SpawnType = st;
             SpawPointParentID = sppid;

@@ -8,9 +8,14 @@ namespace HellionExtendedServer.Managers.Event
 {
     public class Event
     {
-        public Event()
+
+        private EventID Type;
+
+        public EventID GetEventType { get { return Type; } }
+
+        public Event(EventID type)
         {
-            
+            Type = type;
         }
 
     }

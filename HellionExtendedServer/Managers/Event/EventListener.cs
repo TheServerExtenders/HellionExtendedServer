@@ -14,10 +14,14 @@ namespace HellionExtendedServer.Managers.Event
     public class EventListener
     {
         private MethodInfo Function;
+        private EventID Type;
 
-        public EventListener(MethodInfo function)
+        public EventID GetEventType { get { return Type; } }
+
+        public EventListener(MethodInfo function, EventID type)
         {
             Function = function;
+            Type = type;
         }
 
         public void Execute(Event evnt)

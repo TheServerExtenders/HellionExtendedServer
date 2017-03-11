@@ -246,7 +246,9 @@ namespace HellionExtendedServer.Managers.Plugins
                 if (!plug)
                 {
                     Log.Instance.Info("B4");
-                    foreach (MethodInfo method in plugin.MainClassType.GetMethods())
+                    EventID eid = EventID.None;
+                    Log.Instance.Info("B4");
+                    foreach (MethodInfo method in plugin.MainClass.GetType().GetMethods())
                     {
                         Log.Instance.Info("CHECKING METHOD >> " + method.Name);
                         Boolean isevent = false;
@@ -255,11 +257,12 @@ namespace HellionExtendedServer.Managers.Plugins
                             Log.Instance.Info("CHECKING ATTRIBUTE >> " + attribute.GetType().Name);
                             if (attribute is HESEventAttribute)
                             {
+                                HESEventAttribute hea = (HESEventAttribute) attribute;
+                                eid = hea.EventType;
                                 Log.Instance.Info("ATTRIBUTE ISSSS >> " + attribute.GetType().Name);
                                 isevent = true;
                                 break;
                             }
-                            if (isevent) break;
                         }
                         if (!isevent) continue;//Your not an event! Get outa here!!!
                                                //Check paramaters now
@@ -278,7 +281,7 @@ namespace HellionExtendedServer.Managers.Plugins
                             continue;
                         }
 
-                        EventListener el = new EventListener(method);
+                        EventListener el = new EventListener(method, eid);
                         plugin.FoundEvents.Add(el);
                         Log.Instance.Info("Found Event > "+parameters[0].Name);
                     }

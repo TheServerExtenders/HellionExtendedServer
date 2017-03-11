@@ -32,7 +32,7 @@ namespace HellionExtendedServer.Managers
         private GameServerIni m_gameServerIni;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
-        private EventHelper m_eventhelper;
+        private EventHelper m_eventhelper = null;
 
         private static ServerInstance m_serverInstance;
 

@@ -14,6 +14,7 @@ namespace HellionExtendedServer.Managers.Event
 
     public enum EventID
     {
+        None,
         SpawnEvent,
         DeathEvent,
     };
@@ -21,7 +22,7 @@ namespace HellionExtendedServer.Managers.Event
     public class EventHelper
     {
 
-        protected List<Event> RegiteredEvents = new List<Event>();
+        protected List<EventListener> RegiteredEvents = new List<EventListener>();
 
         public EventHelper()
         {
@@ -52,14 +53,20 @@ namespace HellionExtendedServer.Managers.Event
 
         public void RegisterEvent(EventListener e)
         {
-            
+            RegiteredEvents.Add(e);
         }
 
         public void ExecuteEvent(Event e)
         {
-            foreach (Event evnt in RegiteredEvents)
+            foreach (EventListener evnt in RegiteredEvents)
             {
-                
+                Log.Instance.Info("CHECKING "+e.GetEventType.ToString()+" =?= "+evnt.GetEventType.ToString());
+                if (e.GetEventType == evnt.GetEventType)
+                {
+                    Log.Instance.Info("EVENTS ARE EQUAL RUNNING!");
+                    evnt.Execute(e);
+                    Log.Instance.Info("RAN");
+                }
             }
         }
     }

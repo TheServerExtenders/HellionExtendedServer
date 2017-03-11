@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HellionExtendedServer.Common;
+using System.Threading;
+using System.Diagnostics;
 
 namespace HellionExtendedServer
 {
-    static class Debuging
+    public static class CrashDump
     {
-
         public static class MINIDUMP_TYPE
         {
             public const int MiniDumpNormal = 0x00000000;
@@ -43,12 +44,15 @@ namespace HellionExtendedServer
 
         public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            CreateMiniDump();
+            CreateMiniDump(e);
         }
 
-        private static void CreateMiniDump()
+        [DllImport("kernel32.dll")]
+        public static extern int GetCurrentThreadId();
+
+        private static void CreateMiniDump(UnhandledExceptionEventArgs e)
         {
-            Console.WriteLine("Creating Dump");
+           Console.WriteLine("Creating Dump");
             //Back Slashes for windows and C# right???
             //Bug... Maybe
             
@@ -59,13 +63,14 @@ namespace HellionExtendedServer
             {
                 using (System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
                 {
+                    //TODO later remove Try Statement
                     try
                     { 
                         MiniDumpWriteDump(process.Handle,
                             process.Id,
                             fs.SafeFileHandle.DangerousGetHandle(),
-                            MINIDUMP_TYPE.MiniDumpWithFullMemory+MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo,
-                            //MINIDUMP_TYPE.MiniDumpWithFullMemory,
+                            MINIDUMP_TYPE.MiniDumpWithFullMemory + MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo + MINIDUMP_TYPE.MiniDumpWithThreadInfo,// + MINIDUMP_TYPE.MiniDumpWithCodeSegs,
+                                                                                                                                                   //MINIDUMP_TYPE.MiniDumpWithFullMemory,
                             IntPtr.Zero,
                             IntPtr.Zero,
                             IntPtr.Zero);
@@ -77,7 +82,7 @@ namespace HellionExtendedServer
                 }
             }
 
-            Console.WriteLine("Finished (my) Dump XD");
+            Console.WriteLine("Dump File Created at > "+ String.Format("HES\\Dump\\UnhandledDump_{0}.dmp", now));
         }
     }
 }

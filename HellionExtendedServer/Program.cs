@@ -68,7 +68,7 @@ namespace HellionExtendedServer
 
             Console.Title = WindowTitle;
 
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Debuging.CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
 
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
@@ -367,4 +367,5 @@ namespace HellionExtendedServer
 
         #endregion ConsoleHandler
     }
+
 }

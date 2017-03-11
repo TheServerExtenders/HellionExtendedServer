@@ -1,5 +1,4 @@
 ﻿using HellionExtendedServer.Common.Components;
-using HellionExtendedServer.Controllers;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Common;
 using HellionExtendedServer.Modules;
@@ -11,10 +10,14 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using HellionExtendedServer;
+using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
+using ZeroGravity.Data;
+using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
 using static ZeroGravity.Network.NetworkController;
+using NetworkController = HellionExtendedServer.Controllers.NetworkController;
 
 
 namespace HellionExtendedServer
@@ -178,6 +181,15 @@ namespace HellionExtendedServer
                     if (stringList[1] == "help")
                     {
                         HES.PrintHelp();
+                        flag = true;
+                    }
+
+                    if (stringList[1] == "eventtest")
+                    {
+                        HESSpawnEvent hesse = new HESSpawnEvent(SpawnPointLocationType.Ship, 11111l, GameScenes.SceneID.AltCorp_AirLock);
+                        Log.Instance.Info("Started TEST");
+                        ServerInstance.Instance.EventHelper.ExecuteEvent(hesse);
+                        Log.Instance.Info("Ended TEST");
                         flag = true;
                     }
 

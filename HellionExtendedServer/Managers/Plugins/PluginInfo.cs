@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -16,6 +17,7 @@ namespace HellionExtendedServer.Managers.Plugins
         public PluginBase MainClass;
         public Dictionary<String, Command> CommandList;
         public List<Type> FoundCommands = new List<Type>();
+        public List<EventListener> FoundEvents = new List<EventListener>();
         public Type MainClassType;
 
         #endregion Fields

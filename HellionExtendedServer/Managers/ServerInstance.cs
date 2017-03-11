@@ -10,6 +10,7 @@ using HellionExtendedServer.Common;
 using HellionExtendedServer.Common.Components;
 using ZeroGravity;
 using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
 using HellionExtendedServer.Managers.Plugins;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
@@ -31,6 +32,7 @@ namespace HellionExtendedServer.Managers
         private GameServerIni m_gameServerIni;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
+        private EventHelper m_eventhelper;
 
         private static ServerInstance m_serverInstance;
 
@@ -47,6 +49,7 @@ namespace HellionExtendedServer.Managers
         public GameServerIni Config { get { return m_gameServerIni; } }
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
+        public EventHelper EventHelper { get { return m_eventhelper; } }
         
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
@@ -197,6 +200,8 @@ namespace HellionExtendedServer.Managers
             m_commandManager = new CommandManager();
             //Load Plugins!
             m_pluginManager = new PluginManager();
+            //Load Events
+            m_eventhelper = new EventHelper();
             PluginManager.InitializeAllPlugins();
             //Command Listner
             Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener

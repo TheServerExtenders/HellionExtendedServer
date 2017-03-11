@@ -23,7 +23,7 @@ namespace HellionExtendedServer.Managers.Event
 
         protected List<Event> RegiteredEvents = new List<Event>();
 
-        public EventHelper(Server s)
+        public EventHelper()
         {
             //TODO Register Each Event here
             //Spawn event

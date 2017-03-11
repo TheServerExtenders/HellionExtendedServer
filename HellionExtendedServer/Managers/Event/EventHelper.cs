@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HellionExtendedServer.Common;
+using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
 using ZeroGravity.Data;
 using ZeroGravity.Network;
@@ -44,6 +45,7 @@ namespace HellionExtendedServer.Managers.Event
                 SpawnPointLocationType SpawnType = playerSpawnRequest.SpawnType;
                 long SpawPointParentID = playerSpawnRequest.SpawPointParentID;
                 GameScenes.SceneID ShipItemID = playerSpawnRequest.ShipItemID;
+                ExecuteEvent(new HESSpawnEvent(SpawnType,SpawPointParentID,ShipItemID));
             }
             catch (Exception ex)
             {

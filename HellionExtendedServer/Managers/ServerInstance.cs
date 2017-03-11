@@ -196,6 +196,10 @@ namespace HellionExtendedServer.Managers
 
                 Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
+            Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
+            Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
+
+            new NetworkController(m_server.NetworkController);
             //Load Commands
             m_commandManager = new CommandManager();
             //Load Plugins!
@@ -204,10 +208,7 @@ namespace HellionExtendedServer.Managers
             m_eventhelper = new EventHelper();
             PluginManager.InitializeAllPlugins();
             //Command Listner
-            Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
-            Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
-            new NetworkController(m_server.NetworkController);
 
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 

@@ -126,7 +126,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DBGHelp_Sample\Program.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Status.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />

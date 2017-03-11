@@ -14,26 +14,22 @@ namespace HellionExtendedServer.Managers.Event
     public class EventListener
     {
         private MethodInfo Function;
-        private EventID Type;
+        private EventID EType;
+        private Type TType;
 
-        public EventID GetEventType { get { return Type; } }
+        public EventID GetEventType { get { return EType; } }
 
-        public EventListener(MethodInfo function, EventID type)
+        public EventListener(MethodInfo function, Type tt, EventID type)
         {
             Function = function;
-            Type = type;
+            EType = type;
+            TType = tt;
         }
 
         public void Execute(Event evnt)
         {
-            Log.Instance.Debug("Starting Execute");
-            Function.Invoke(this,new Object[]{ evnt });
-            Log.Instance.Debug("Finished Execute");
+            Function.Invoke(Activator.CreateInstance(TType), new Object[]{ evnt });
         }
-
-        //public delegate void SpawnListnerFunction(SpawnPointLocationType spawntype,long sppid, GameScenes.SceneID shipiid);
-        public delegate void SpawnListnerFunction(HESSpawnEvent evnt);
-        public delegate void ListnerFunction(Event evnt);
-
+        
     }
 }

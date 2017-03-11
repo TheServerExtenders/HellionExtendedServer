@@ -14,9 +14,9 @@ namespace HellionExtendedServer.Managers.Event
 
     public enum EventID
     {
-        None,
-        SpawnEvent,
-        DeathEvent,
+        None = 0,
+        SpawnEvent = 1,
+        DeathEvent = 2,
     };
 
     public class EventHelper
@@ -29,7 +29,7 @@ namespace HellionExtendedServer.Managers.Event
             //TODO Register Each Event here
             //Spawn event
             //BUG Causes Exception?!?!?!?
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(HandelPlayerSpawnEvent));
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(HandelPlayerSpawnEvent));
 
 
         }
@@ -54,18 +54,16 @@ namespace HellionExtendedServer.Managers.Event
         public void RegisterEvent(EventListener e)
         {
             RegiteredEvents.Add(e);
+            //TODO notify of Regerstration
         }
 
         public void ExecuteEvent(Event e)
         {
             foreach (EventListener evnt in RegiteredEvents)
             {
-                Log.Instance.Info("CHECKING "+e.GetEventType.ToString()+" =?= "+evnt.GetEventType.ToString());
                 if (e.GetEventType == evnt.GetEventType)
                 {
-                    Log.Instance.Info("EVENTS ARE EQUAL RUNNING!");
                     evnt.Execute(e);
-                    Log.Instance.Info("RAN");
                 }
             }
         }

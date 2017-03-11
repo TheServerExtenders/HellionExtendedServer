@@ -245,28 +245,23 @@ namespace HellionExtendedServer.Managers.Plugins
                 //Events
                 if (!plug)
                 {
-                    Log.Instance.Info("B4");
                     EventID eid = EventID.None;
                     foreach (MethodInfo method in plugin.MainClassType.GetMethods())
                     {
-                        Log.Instance.Info("CHECKING METHOD >> " + method.Name);
                         Boolean isevent = false;
-                        foreach (object attribute in method.GetCustomAttributes(true))
+                        foreach (Attribute attribute in method.GetCustomAttributes(true))
                         {
-                            Log.Instance.Info("CHECKING ATTRIBUTE >> " + attribute.GetType().Name);
                             if (attribute is HESEventAttribute)
                             {
-                                HESEventAttribute hea = (HESEventAttribute) attribute;
+                                HESEventAttribute hea = attribute as HESEventAttribute;
                                 eid = hea.EventType;
-                                Log.Instance.Info("ATTRIBUTE ISSSS >> " + attribute.GetType().Name);
                                 isevent = true;
                                 break;
                             }
                         }
                         if (!isevent) continue;//Your not an event! Get outa here!!!
-                                               //Check paramaters now
+                        //Check paramaters now
 
-                        Log.Instance.Info("Found Event >> "+ method.Name);
                         ParameterInfo[] parameters = method.GetParameters();
                         if (parameters.Length <= 0)
                         {
@@ -280,9 +275,9 @@ namespace HellionExtendedServer.Managers.Plugins
                             continue;
                         }
 
-                        EventListener el = new EventListener(method, eid);
+                        EventListener el = new EventListener(method, plugin.MainClassType, eid);
                         plugin.FoundEvents.Add(el);
-                        Log.Instance.Info("Found Event > "+parameters[0].Name);
+                        Log.Instance.Info("Found Event Functon : " + parameters[0].ParameterType.Name + " For EventType : " + eid);
                     }
                 }
                 return plugin;

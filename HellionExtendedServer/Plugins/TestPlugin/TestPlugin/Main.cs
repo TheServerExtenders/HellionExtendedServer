@@ -25,7 +25,7 @@ namespace TestPlugin
         }
 
         //Will Only send Events that Are Releated to this attribute below!
-        [HESEvent(EventID.SpawnEvent)]
+        [HESEvent(EventType = EventID.SpawnEvent)]
         public void TestSpawnEvent(HESSpawnEvent evnt)
         {
             Console.WriteLine("Test Spawn Event"+evnt.ShipItemID);

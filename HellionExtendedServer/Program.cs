@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using HellionExtendedServer.DBGHelp_Sample;
+using HellionExtendedServer;
 using ZeroGravity;
 using ZeroGravity.Objects;
 

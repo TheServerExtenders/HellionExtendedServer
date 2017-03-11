@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HellionExtendedServer.Common;
 
-namespace HellionExtendedServer.DBGHelp_Sample
+namespace HellionExtendedServer
 {
     static class Debuging
     {
@@ -48,25 +48,19 @@ namespace HellionExtendedServer.DBGHelp_Sample
 
         private static void CreateMiniDump()
         {
-            Console.WriteLine("Creating Dump"+ Directory.GetCurrentDirectory());
+            Console.WriteLine("Creating Dump");
             //Back Slashes for windows and C# right???
             //Bug... Maybe
-
-            Log.Instance.Error("asdasdasds");
+            
             String path = @"HES\Dump";
             if (!Directory.Exists(path)) System.IO.Directory.CreateDirectory(path);
-            Log.Instance.Error("asdasdasds");
             String now = DateTime.UtcNow.ToString("yyyy_MM_dd__HH_mm_ss");
-            Log.Instance.Error("asdasdasds>>"+now);
             using (FileStream fs = new FileStream(String.Format( "HES\\Dump\\UnhandledDump_{0}.dmp",now), FileMode.Create))
             {
-                Log.Instance.Error("asdasdasds");
                 using (System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
                 {
                     try
-                    {
-
-                        Log.Instance.Error("asdasdasds");
+                    { 
                         MiniDumpWriteDump(process.Handle,
                             process.Id,
                             fs.SafeFileHandle.DangerousGetHandle(),
@@ -80,7 +74,6 @@ namespace HellionExtendedServer.DBGHelp_Sample
                     {
                         Console.WriteLine(ex);
                     }
-                Log.Instance.Error("asdsssssssssssssssssssssssssssssssssasdasds");
                 }
             }
 

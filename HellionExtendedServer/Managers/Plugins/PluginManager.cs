@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -35,7 +37,7 @@ namespace HellionExtendedServer.Managers.Plugins
         public void InitializeAllPlugins()
         {
             m_discoveredPlugins = FindAllPlugins();
-            Console.WriteLine(String.Format("Found {0} Plugins!",m_discoveredPlugins.Count));
+            Console.WriteLine(String.Format("Found {0} Plugins!", m_discoveredPlugins.Count));
             foreach (PluginInfo Plugin in m_discoveredPlugins)
             {
                 InitializePlugin(Plugin);
@@ -53,7 +55,7 @@ namespace HellionExtendedServer.Managers.Plugins
             try
             {
                 Plugin.MainClass = (PluginBase)Activator.CreateInstance(Plugin.MainClassType);
-                
+
                 if (Plugin.MainClass != null)
                 {
                     try
@@ -86,6 +88,9 @@ namespace HellionExtendedServer.Managers.Plugins
                         Command c = (Command)Activator.CreateInstance(CommandType, new object[] { ServerInstance.Instance.Server });
                         ServerInstance.Instance.CommandManager.AddCommand(c);
                     }
+                    //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
+                    //Actually Just register them
+                    //Events
                     m_loadedPlugins.Add(Plugin);
                 }
             }
@@ -197,16 +202,16 @@ namespace HellionExtendedServer.Managers.Plugins
             Assembly libraryAssembly;
             try
             {
-                Console.WriteLine("Loading Plugin Located at "+library);
+                Console.WriteLine("Loading Plugin Located at " + library);
                 bytes = File.ReadAllBytes(library);
                 libraryAssembly = Assembly.Load(bytes);
                 //Bug Guid is Glitched Right Now
                 //Guid guid = new Guid(((GuidAttribute)libraryAssembly.GetCustomAttributes(typeof(GuidAttribute), true)[0]).Value);
-                
+
                 bool plug = true;
-                PluginInfo Plugin = new PluginInfo();
+                PluginInfo plugin = new PluginInfo();
                 //Plugin.Guid = guid;
-                Plugin.Assembly = libraryAssembly;
+                plugin.Assembly = libraryAssembly;
 
                 Command[] CommandList;
 
@@ -216,17 +221,55 @@ namespace HellionExtendedServer.Managers.Plugins
                 {
                     if (PluginType.BaseType == typeof(Command))
                     {
-                        Plugin.FoundCommands.Add(PluginType);
+                        plugin.FoundCommands.Add(PluginType);
                         continue;
                     }
                     if (PluginType.GetInterface(typeof(IPlugin).FullName) != null && plug)
                     {
-                        Plugin.MainClassType = PluginType;
+                        plugin.MainClassType = PluginType;
                         plug = false;
                         continue;
                     }
                 }
-                 return Plugin;
+                //B4 resturn Check for Events here
+                //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
+                //Events
+                if (plug)
+                {
+                    foreach (MethodInfo method in plugin.MainClass.GetType().GetMethods())
+                    {
+                        Boolean isevent = false;
+                        foreach (object attribute in method.GetCustomAttributes(true))
+                        {
+                            if (attribute is HESEventAttribute)
+                            {
+                                isevent = true;
+                                break;
+                            }
+                            if (isevent) break;
+                        }
+                        if (!isevent) continue;//Your not an event! Get outa here!!!
+                        //Check paramaters now
+
+                        ParameterInfo[] parameters = method.GetParameters();
+                        if (parameters.Length <= 0)
+                        {
+                            Log.Instance.Error("Paramater had no lenght! Method Name: " + method.Name);
+                            continue;
+
+                        }
+                        if (parameters[0].ParameterType.BaseType != typeof(Event.Event))
+                        {
+                            Log.Instance.Error("INVLAID Function Format! Event Expect but got " + parameters[0].Name);
+                            continue;
+                        }
+
+                        EventListener el = new EventListener(method);
+                        plugin.FoundEvents.Add(el);
+                        Log.Instance.Info("Found Event > "+parameters[0].Name);
+                    }
+                }
+                return plugin;
             }
             catch (Exception ex)
             {

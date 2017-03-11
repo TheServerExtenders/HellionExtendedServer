@@ -247,8 +247,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 {
                     Log.Instance.Info("B4");
                     EventID eid = EventID.None;
-                    Log.Instance.Info("B4");
-                    foreach (MethodInfo method in plugin.MainClass.GetType().GetMethods())
+                    foreach (MethodInfo method in plugin.MainClassType.GetMethods())
                     {
                         Log.Instance.Info("CHECKING METHOD >> " + method.Name);
                         Boolean isevent = false;

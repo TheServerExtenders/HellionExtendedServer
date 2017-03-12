@@ -20,6 +20,8 @@ namespace HellionExtendedServer.Modules
 
         public void DownloadLatestRelease()
         {
+            //Seriously guys ! 
+            //If it's not updated you say it's update ?????
             if (!m_Release.IsUpdate)
             {
                 Console.WriteLine("HES is up to date!");

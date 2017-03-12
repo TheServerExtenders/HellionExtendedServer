@@ -134,6 +134,7 @@
     <Compile Include="Managers\Event\EventListener.cs" />
     <Compile Include="Managers\Event\Player\HESPlayerTransferEvent.cs" />
     <Compile Include="Managers\Event\Player\HESRemoveDeletedCharcters.cs" />
+    <Compile Include="Managers\Event\Player\HESRespawnEvent.cs" />
     <Compile Include="Managers\Event\Player\HESSpawnEvent.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />

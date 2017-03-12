@@ -18,6 +18,11 @@ namespace HellionExtendedServer.Managers.Event
         SpawnEvent = 1,
         DeathEvent = 2,
         RemoveDeletedCharcters = 3,
+        HESRespawnEvent = 4,
+        HESSpawnObjects = 4,
+        HESSubscribeToObject = 4,
+        HESUnsubscribeFromObject = 4,
+        HESTextChatMessage = 4,
     };
 
     public class EventHelper
@@ -34,24 +39,124 @@ namespace HellionExtendedServer.Managers.Event
                 HandelPlayerTransferEvent);
             NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CharacterListResponse),
                 RemoveDeletedCharacters);
-
-            //TODO
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CheckDeletedMessage),
+                CheckDeleted);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerRespawnRequest),
+                PlayerRespawnRequestListener);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(SpawnObjectsRequest),
+                SpawnObjectsRequestListener);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(SubscribeToObjectsRequest),
+                SubscribeObjectsRequestListener);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(UnsubscribeFromObjectsRequest),
+                UnsubscribeFromSpaceObjectListener);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(TextChatMessage),
+                TextChatMessageListener);
+            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(TransferResourceMessage),TransferResourcesMessageListener);
+            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(RefineResourceMessage),(this.RefineResourceMessageListener));
+            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CheckInResponse),(this.CheckInResponseListener));
+            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayersOnServerRequest),(this.PlayersOnServerRequestListener));
+            // NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(LatencyTestMessage),(this.LatencyTestListener));
+            // NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(SaveGameMessage),(this.SaveGameMessageListener));
             //NetworkController.Instance.NetContoller.EventSystem.AddListener(EventSystem.InternalEventType.GetPlayer, new EventSystem.InternalEventsDelegate(LoginPlayer));//TODO maybe NEVER!
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CheckDeletedMessage), new EventSystem.NetworkDataDelegate(this.CheckDeleted));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerSpawnRequestListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerRespawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerRespawnRequestListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(SpawnObjectsRequest), new EventSystem.NetworkDataDelegate(this.SpawnObjectsRequestListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(SubscribeToObjectsRequest), new EventSystem.NetworkDataDelegate(this.SubscribeToSpaceObjectListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(UnsubscribeFromObjectsRequest), new EventSystem.NetworkDataDelegate(this.UnsubscribeFromSpaceObjectListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(TransferResourceMessage), new EventSystem.NetworkDataDelegate(this.TransferResourcesMessageListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(RefineResourceMessage), new EventSystem.NetworkDataDelegate(this.RefineResourceMessageListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CheckInResponse), new EventSystem.NetworkDataDelegate(this.CheckInResponseListener));
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayersOnServerRequest), new EventSystem.NetworkDataDelegate(this.PlayersOnServerRequestListener));
-            // NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(LatencyTestMessage), new EventSystem.NetworkDataDelegate(this.LatencyTestListener));
-            // NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(SaveGameMessage), new EventSystem.NetworkDataDelegate(this.SaveGameMessageListener));
         }
 
+        public void TextChatMessageListener(NetworkData data)
+        {
+            try
+            {
+                TextChatMessage TextChatMessage = data as TextChatMessage;
+
+                long GUID = TextChatMessage.GUID;
+                bool Local = TextChatMessage.Local;
+                string Name = TextChatMessage.Name;
+                string MessageText = TextChatMessage.MessageText;
+
+                ExecuteEvent(new HESTextChatMessage(GUID,Local,Name,MessageText));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("Hellion Extended Server [SpawnObjectsRequestListener ERROR] : " +
+                                   ex.InnerException.ToString());
+            }
+        }
+        public void UnsubscribeFromSpaceObjectListener(NetworkData data)
+        {
+            try
+            {
+                UnsubscribeFromObjectsRequest UnsubscribeFromObjectsRequest = data as UnsubscribeFromObjectsRequest;
+
+                List<long> GUIDs = UnsubscribeFromObjectsRequest.GUIDs;
+
+                ExecuteEvent(new HESUnsubscribeFromObject(GUIDs));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("Hellion Extended Server [SpawnObjectsRequestListener ERROR] : " +
+                                   ex.InnerException.ToString());
+            }
+        }
+        public void SubscribeObjectsRequestListener(NetworkData data)
+        {
+            try
+            {
+                SubscribeToObjectsRequest SubscribeToObjectsRequest = data as SubscribeToObjectsRequest;
+
+                //TODO
+                List<long> GUIDs = SubscribeToObjectsRequest.GUIDs;
+
+                ExecuteEvent(new HESSubscribeToObject(GUIDs));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("Hellion Extended Server [SpawnObjectsRequestListener ERROR] : " +
+                                   ex.InnerException.ToString());
+            }
+        }
+        public void SpawnObjectsRequestListener(NetworkData data)
+        {
+            try
+            {
+                SpawnObjectsRequest SpawnObjectsRequest = data as SpawnObjectsRequest;
+
+                List<long> GUIDs = SpawnObjectsRequest.GUIDs;
+
+                ExecuteEvent(new HESSpawnObjects(GUIDs));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("Hellion Extended Server [SpawnObjectsRequestListener ERROR] : " +
+                                   ex.InnerException.ToString());
+            }
+        }
+
+        public void PlayerRespawnRequestListener(NetworkData data)
+        {
+            try
+            {
+                PlayerRespawnRequest PlayerRespawnRequest = data as PlayerRespawnRequest;
+
+                long GUID = PlayerRespawnRequest.GUID;
+
+                ExecuteEvent(new HESRespawnEvent(GUID));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("Hellion Extended Server [CheckDeleted ERROR] : " +
+                                   ex.InnerException.ToString());
+            }
+        }
+        public void CheckDeleted(NetworkData data)
+        {
+            try
+            {
+                //Unsued Event
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("Hellion Extended Server [CheckDeleted ERROR] : " +
+                                   ex.InnerException.ToString());
+            }
+        }
         public void RemoveDeletedCharacters(NetworkData data)
         {
             try
@@ -68,7 +173,7 @@ namespace HellionExtendedServer.Managers.Event
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " +
+                Log.Instance.Error("Hellion Extended Server [RemoveDeletedCharacters ERROR] : " +
                                    ex.InnerException.ToString());
             }
         }
@@ -91,7 +196,7 @@ namespace HellionExtendedServer.Managers.Event
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " +
+                Log.Instance.Error("Hellion Extended Server [HandelPlayerTransferEvent ERROR] : " +
                                    ex.InnerException.ToString());
             }
         }
@@ -110,7 +215,7 @@ namespace HellionExtendedServer.Managers.Event
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " +
+                Log.Instance.Error("Hellion Extended Server [HandelPlayerSpawnEvent ERROR] : " +
                                    ex.InnerException.ToString());
             }
         }

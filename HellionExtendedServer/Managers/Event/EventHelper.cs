@@ -12,29 +12,31 @@ using NetworkController = HellionExtendedServer.Controllers.NetworkController;
 
 namespace HellionExtendedServer.Managers.Event
 {
-
     public enum EventID
     {
         None = 0,
         SpawnEvent = 1,
         DeathEvent = 2,
+        RemoveDeletedCharcters = 3,
     };
 
     public class EventHelper
     {
-
         protected List<EventListener> RegiteredEvents = new List<EventListener>();
 
         public EventHelper()
         {
             //TODO Register Each Event here
             //Active
-            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest), HandelPlayerSpawnEvent);
-            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CharacterDataResponse), HandelPlayerTransferEvent);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest),
+                HandelPlayerSpawnEvent);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CharacterDataResponse),
+                HandelPlayerTransferEvent);
+            NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CharacterListResponse),
+                RemoveDeletedCharacters);
 
             //TODO
             //NetworkController.Instance.NetContoller.EventSystem.AddListener(EventSystem.InternalEventType.GetPlayer, new EventSystem.InternalEventsDelegate(LoginPlayer));//TODO maybe NEVER!
-            //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CharacterListResponse), new EventSystem.NetworkDataDelegate(this.RemoveDeletedCharacters));
             //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(CheckDeletedMessage), new EventSystem.NetworkDataDelegate(this.CheckDeleted));
             //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerSpawnRequestListener));
             //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayerRespawnRequest), new EventSystem.NetworkDataDelegate(this.PlayerRespawnRequestListener));
@@ -48,8 +50,27 @@ namespace HellionExtendedServer.Managers.Event
             //NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(PlayersOnServerRequest), new EventSystem.NetworkDataDelegate(this.PlayersOnServerRequestListener));
             // NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(LatencyTestMessage), new EventSystem.NetworkDataDelegate(this.LatencyTestListener));
             // NetworkController.Instance.NetContoller.EventSystem.AddListener(typeof(SaveGameMessage), new EventSystem.NetworkDataDelegate(this.SaveGameMessageListener));
+        }
+
+        public void RemoveDeletedCharacters(NetworkData data)
+        {
+            try
+            {
+                CharacterListResponse CharacterListResponse = data as CharacterListResponse;
 
 
+                ResponseResult Response = CharacterListResponse.Response;
+                string Message = CharacterListResponse.Message;
+                Dictionary<long, CharacterData> Characters = CharacterListResponse.Characters;
+
+
+                ExecuteEvent(new HESRemoveDeletedCharcters(Response, Message, Characters));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " +
+                                   ex.InnerException.ToString());
+            }
         }
 
         public void HandelPlayerTransferEvent(NetworkData data)
@@ -65,13 +86,16 @@ namespace HellionExtendedServer.Managers.Event
                 string CharacterName = CharacterDataResponse.CharacterName;
                 string SteamId = CharacterDataResponse.SteamId;
                 long CharacterId = CharacterDataResponse.CharacterId;
-                ExecuteEvent(new HESPlayerTransferEvent(Response,Message,CharacterData,CharacterName,SteamId,CharacterId));
+                ExecuteEvent(new HESPlayerTransferEvent(Response, Message, CharacterData, CharacterName, SteamId,
+                    CharacterId));
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " +
+                                   ex.InnerException.ToString());
             }
         }
+
         public void HandelPlayerSpawnEvent(NetworkData data)
         {
             try
@@ -86,7 +110,8 @@ namespace HellionExtendedServer.Managers.Event
             }
             catch (Exception ex)
             {
-                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " + ex.InnerException.ToString());
+                Log.Instance.Error("Hellion Extended Server [SPAWN REQUEST EVENT ERROR] : " +
+                                   ex.InnerException.ToString());
             }
         }
         /*

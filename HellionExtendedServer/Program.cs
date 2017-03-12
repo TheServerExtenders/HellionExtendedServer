@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using HellionExtendedServer;
+using HellionExtendedServer.Managers.Event;
 using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
 using ZeroGravity.Data;
@@ -186,9 +187,13 @@ namespace HellionExtendedServer
 
                     if (stringList[1] == "eventtest")
                     {
-                        HESSpawnEvent hesse = new HESSpawnEvent(SpawnPointLocationType.Ship, 11111l, GameScenes.SceneID.AltCorp_AirLock);
+                        PlayerSpawnRequest PSR = new PlayerSpawnRequest();
+                        PSR.SpawnType = SpawnPointLocationType.Ship;
+                        PSR.SpawPointParentID = 111555L;
+                        PSR.ShipItemID = GameScenes.SceneID.AltCorp_AirLock;
+                        GenericEvent ge = new GenericEvent(EventID.SpawnEvent, PSR);
                         Log.Instance.Info("Started TEST");
-                        ServerInstance.Instance.EventHelper.ExecuteEvent(hesse);
+                        ServerInstance.Instance.EventHelper.ExecuteEvent(ge);
                         Log.Instance.Info("Ended TEST");
                         flag = true;
                     }

@@ -42,6 +42,9 @@ namespace HellionExtendedServer.Managers.Event
             if (data is TextChatMessage)
             {
                 ExecuteEvent(new GenericEvent(EventID.HESTextChatMessage,data));
+            }else if (data is PlayerSpawnRequest)
+            {
+                ExecuteEvent(new GenericEvent(EventID.SpawnEvent, data));
             }
         }
 

@@ -132,10 +132,16 @@
     <Compile Include="Managers\Event\EventAttribute.cs" />
     <Compile Include="Managers\Event\EventHelper.cs" />
     <Compile Include="Managers\Event\EventListener.cs" />
+    <Compile Include="Managers\Event\EventSystem2.cs" />
+    <Compile Include="Managers\Event\Player\GenericEvent.cs" />
     <Compile Include="Managers\Event\Player\HESPlayerTransferEvent.cs" />
     <Compile Include="Managers\Event\Player\HESRemoveDeletedCharcters.cs" />
     <Compile Include="Managers\Event\Player\HESRespawnEvent.cs" />
     <Compile Include="Managers\Event\Player\HESSpawnEvent.cs" />
+    <Compile Include="Managers\Event\Player\HESSpawnObjects.cs" />
+    <Compile Include="Managers\Event\Player\HESSubscribeToObject.cs" />
+    <Compile Include="Managers\Event\Player\HESTextChatMessage.cs" />
+    <Compile Include="Managers\Event\Player\HESUnsubscribeFromObject.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />

@@ -7,6 +7,7 @@ using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Event;
 using HellionExtendedServer.Managers.Event.Player;
 using HellionExtendedServer.Managers.Plugins;
+using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
 namespace TestPlugin
@@ -26,9 +27,10 @@ namespace TestPlugin
 
         //Will Only send Events that Are Releated to this attribute below!
         [HESEvent(EventType = EventID.SpawnEvent)]
-        public void TestSpawnEvent(HESSpawnEvent evnt)
+        public void TestSpawnEvent(GenericEvent evnt)
         {
-            Console.WriteLine("Test Spawn Event"+evnt.ShipItemID);
+            PlayerSpawnRequest hesse = evnt.Data as PlayerSpawnRequest;
+            Console.WriteLine("Test Spawn Event"+ hesse.ShipItemID);
         }
 
         public override void OnCommand(Player p, string command, string[] args)

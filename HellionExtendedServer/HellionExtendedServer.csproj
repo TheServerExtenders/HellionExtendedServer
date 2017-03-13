@@ -103,9 +103,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip.Reduced">
-      <HintPath>..\packages\RedCell.Update\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
@@ -134,14 +131,6 @@
     <Compile Include="Managers\Event\EventListener.cs" />
     <Compile Include="Managers\Event\EventSystem2.cs" />
     <Compile Include="Managers\Event\Player\GenericEvent.cs" />
-    <Compile Include="Managers\Event\Player\HESPlayerTransferEvent.cs" />
-    <Compile Include="Managers\Event\Player\HESRemoveDeletedCharcters.cs" />
-    <Compile Include="Managers\Event\Player\HESRespawnEvent.cs" />
-    <Compile Include="Managers\Event\Player\HESSpawnEvent.cs" />
-    <Compile Include="Managers\Event\Player\HESSpawnObjects.cs" />
-    <Compile Include="Managers\Event\Player\HESSubscribeToObject.cs" />
-    <Compile Include="Managers\Event\Player\HESTextChatMessage.cs" />
-    <Compile Include="Managers\Event\Player\HESUnsubscribeFromObject.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />

@@ -34,5 +34,11 @@ namespace HellionExtendedServer.Managers.Plugins
             SendMessageToClient(p,message,"Server");
         }
 
+        public Player GetPlayer(String name)
+        {
+            //TODO
+            return null;
+        }
+
     }
 }

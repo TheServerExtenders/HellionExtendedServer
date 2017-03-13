@@ -26,7 +26,7 @@ namespace TestPlugin
         }
 
         //Will Only send Events that Are Releated to this attribute below!
-        [HESEvent(EventType = EventID.SpawnEvent)]
+        [HESEvent(EventType = EventID.PlayerSpawnRequest)]
         public void TestSpawnEvent(GenericEvent evnt)
         {
             PlayerSpawnRequest hesse = evnt.Data as PlayerSpawnRequest;

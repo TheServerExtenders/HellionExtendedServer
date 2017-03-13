@@ -21,7 +21,7 @@ namespace HellionExtendedServer.Managers.Event
             EH = eh;
             Log.Instance.Info("PACKET FOR 22222222222222");
         }
-        
+
         public new void AddListener(Type group, NetworkDataDelegate function)
         {
 
@@ -35,11 +35,17 @@ namespace HellionExtendedServer.Managers.Event
             EH.ES2.RemoveListener(group, function);
         }
 
-        public new void Invoke(NetworkData data)
+        public void Invoke(NetworkData data)
         {
             Log.Instance.Info("PACKET FOR INVOTE!");
             EH.MassEventHandeler(data);
         }
+        /*
+        public new void Invoke(NetworkData data)
+        {
+            Log.Instance.Info("PACKET FOR INVOTE!");
+            EH.MassEventHandeler(data);
+        }*/
 
         public new void InvokeQueuedData()
         {

@@ -35,6 +35,8 @@ namespace HellionExtendedServer.Managers.Event
             //DELETE ALL Events
             ES2 = NetworkController.Instance.NetContoller.EventSystem;//Copies Events
             Log.Instance.Debug("DELETED OLD LISTENER");
+            NetworkController.Instance.NetContoller.EventSystem = null; //I listen First!
+            Log.Instance.Debug("CHECK OLD LISTENER"+ES2.GetType().Namespace);
             NetworkController.Instance.NetContoller.EventSystem = new EventSystem2(this); //I listen First!
             Log.Instance.Debug("New One Created!");
         }

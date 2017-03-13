@@ -185,15 +185,25 @@ namespace HellionExtendedServer
                         flag = true;
                     }
 
-                    if (stringList[1] == "eventtest")
+                    if (stringList[1] == "et")
                     {
                         PlayerSpawnRequest PSR = new PlayerSpawnRequest();
                         PSR.SpawnType = SpawnPointLocationType.Ship;
                         PSR.SpawPointParentID = 111555L;
                         PSR.ShipItemID = GameScenes.SceneID.AltCorp_AirLock;
-                        GenericEvent ge = new GenericEvent(EventID.SpawnEvent, PSR);
-                        Log.Instance.Info("Started TEST");
-                        ServerInstance.Instance.EventHelper.ExecuteEvent(ge);
+                        //TODO Test this later
+                        //GenericEvent ge = new GenericEvent(EventID.SpawnEvent, PSR);
+                        Log.Instance.Info("Started TEST"+ NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
+                        /////////ServerInstance.Instance.EventHelper.ES2
+                        EventSystem e = NetworkController.Instance.NetContoller.EventSystem;
+                        Log.Instance.Info("Started TEST" + NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
+                        e.Invoke(PSR);
+                        /*if (e is EventSystem2)
+                        {
+                            Log.Instance.Info("Star2222222222ted TEST" + NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
+                            ((EventSystem2)e).Invoke(PSR);
+                        }*/
+                        //ServerInstance.Instance.EventHelper.ExecuteEvent(ge);
                         Log.Instance.Info("Ended TEST");
                         flag = true;
                     }

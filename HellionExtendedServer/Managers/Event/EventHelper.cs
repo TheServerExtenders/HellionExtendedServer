@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,11 +34,14 @@ namespace HellionExtendedServer.Managers.Event
         {
             //DELETE ALL Events
             ES2 = NetworkController.Instance.NetContoller.EventSystem;//Copies Events
+            Log.Instance.Debug("DELETED OLD LISTENER");
             NetworkController.Instance.NetContoller.EventSystem = new EventSystem2(this); //I listen First!
+            Log.Instance.Debug("New One Created!");
         }
 
         public void MassEventHandeler(NetworkData data)
         {
+            Log.Instance.Debug("11111111111111");
             //TDOD add all types
             if (data is TextChatMessage)
             {
@@ -46,6 +50,7 @@ namespace HellionExtendedServer.Managers.Event
             {
                 ExecuteEvent(new GenericEvent(EventID.SpawnEvent, data));
             }
+            ES2.Invoke(data);//Now I will send info to server XD
         }
 
 
@@ -57,6 +62,7 @@ namespace HellionExtendedServer.Managers.Event
 
         public void ExecuteEvent(GenericEvent e)
         {
+            Log.Instance.Debug("HEARD Event1");
             foreach (EventListener evnt in RegiteredEvents)
             {
                 if (e.GetEventType == evnt.GetEventType)
@@ -69,6 +75,7 @@ namespace HellionExtendedServer.Managers.Event
             }
             if(e.IsCanceled)return;
             //TODO send the message to server listeners
+            Log.Instance.Debug("HEARD Event2");
             ES2.Invoke(e.Data);//Now I will send info to server XD
         }
     }

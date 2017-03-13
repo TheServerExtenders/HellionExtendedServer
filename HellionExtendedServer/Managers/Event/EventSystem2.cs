@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
 using ZeroGravity.Helpers;
@@ -16,63 +17,53 @@ namespace HellionExtendedServer.Managers.Event
         private EventHelper EH;
         public EventSystem2(EventHelper eh)
         {
+            Log.Instance.Info("PACKET FOR 1111111111111");
             EH = eh;
+            Log.Instance.Info("PACKET FOR 22222222222222");
         }
-
-        public void AddListener(Type group, EventSystem.NetworkDataDelegate function)
+        
+        public new void AddListener(Type group, NetworkDataDelegate function)
         {
+
+            Log.Instance.Info("PACKET FOR dddddaaaaaaaaaaaaddddddd!");
             EH.ES2.AddListener(group, function);
         }
-
-        public void RemoveListener(Type group, EventSystem.NetworkDataDelegate function)
+        
+        public new void RemoveListener(Type group, NetworkDataDelegate function)
         {
+            Log.Instance.Info("PACKET FOR BPOIIIIIIIII");
             EH.ES2.RemoveListener(group, function);
         }
 
-        public void Invoke(NetworkData data)
+        public new void Invoke(NetworkData data)
         {
+            Log.Instance.Info("PACKET FOR INVOTE!");
             EH.MassEventHandeler(data);
         }
 
-        public void InvokeQueuedData()
+        public new void InvokeQueuedData()
         {
+            Log.Instance.Info("PACKET FOR INVOasdasdasdasdasdasdsaTE2");
             EH.ES2.InvokeQueuedData();
         }
 
-        public void AddListener(EventSystem.InternalEventType group, EventSystem.InternalEventsDelegate function)
+        public new void AddListener(InternalEventType group, InternalEventsDelegate function)
         {
+
+            Log.Instance.Info("PACKET FOR ADDDDDDDDDDDDD!");
             EH.ES2.AddListener(group, function);
         }
 
-        public void RemoveListener(EventSystem.InternalEventType group, EventSystem.InternalEventsDelegate function)
+        public new void RemoveListener(InternalEventType group, InternalEventsDelegate function)
         {
+            Log.Instance.Info("PACKET FOR INVOTE2ssssss");
             EH.ES2.RemoveListener(group, function);
         }
 
-        public void Invoke(EventSystem.InternalEventData data)
+        public new void Invoke(EventSystem.InternalEventData data)
         {
+            Log.Instance.Info("PACKET FOR INVOTE2");
             EH.ES2.Invoke(data);
-        }
-
-        public class InternalEventData
-        {
-            public EventSystem.InternalEventType Type;
-            public object[] Objects;
-
-            public InternalEventData(EventSystem.InternalEventType type, params object[] objects)
-            {
-                this.Type = type;
-                this.Objects = objects;
-            }
-        }
-
-        public delegate void NetworkDataDelegate(NetworkData data);
-
-        public delegate void InternalEventsDelegate(EventSystem.InternalEventData data);
-
-        public enum InternalEventType
-        {
-            GetPlayer,
         }
     }
 }

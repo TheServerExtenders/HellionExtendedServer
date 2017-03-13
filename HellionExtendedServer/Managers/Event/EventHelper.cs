@@ -34,17 +34,12 @@ namespace HellionExtendedServer.Managers.Event
 
         public EventHelper()
         {
-            //DELETE ALL Events
             ES2 = NetworkController.Instance.NetContoller.EventSystem;//Copies Events
-
-            //Tried everything! Cant cancel Packets
-            //Cant Use Reflection
-
+            
             //Unregister All Listeners
             //Get All Listeners to Register
-            ThreadSafeDictionary<EventSystem.InternalEventType, EventSystem.InternalEventsDelegate> internalDataGroups = GetCurrentListenersInternal();
             ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> networkDataGroups = GetCurrentListenersNetwork();
-            if (internalDataGroups == null)
+            if (networkDataGroups == null)
             {
                 Log.Instance.Error("Error starting EventHandeler! Could not find all events!");
                 return;
@@ -52,20 +47,12 @@ namespace HellionExtendedServer.Managers.Event
             List<Type> AddedTypes = new List<Type>();
             foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> entry in networkDataGroups)
             {
-                NetworkController.Instance.NetContoller.EventSystem.RemoveListener(entry.Key,entry.Value);
                 if(AddedTypes.Contains(entry.Key))continue;
                 AddedTypes.Add(entry.Key);
                 NetworkController.Instance.NetContoller.EventSystem.AddListener(entry.Key, MassEventHandeler);
+                //Listen for Everything!
             }
-
-            //TODO dead end!
-            //BUg actually! A BIG ONE!!!!!!!!
-
-            Log.Instance.Debug("DELETED OLD LISTENER");
-            NetworkController.Instance.NetContoller.EventSystem = null; //I listen First!
-            Log.Instance.Debug("CHECK OLD LISTENER"+ES2.GetType().Namespace);
-            NetworkController.Instance.NetContoller.EventSystem = new EventSystem2(this); //I listen First!
-            Log.Instance.Debug("New One Created!");
+            
         }
 
         public ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>
@@ -75,41 +62,31 @@ namespace HellionExtendedServer.Managers.Event
             try
             {
                 BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic;
-                FieldInfo mi = ES2.GetType().GetField("networkDataGroups", bf);
-                return (ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>)mi.GetValue(mi);
+                FieldInfo mi =
+                    NetworkController.Instance.NetContoller.EventSystem.GetType().GetField("networkDataGroups", bf);
+                ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> a =
+                    (ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>)
+                    mi.GetValue(NetworkController.Instance.NetContoller.EventSystem);
+                ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> b =
+                    new ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>();
+                foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> entry in a)
+                {
+                    b.Add(entry.Key,entry.Value);
+                }
+                return b;
             }
             catch (Exception Ex)
             {
-                
+                Log.Instance.Info("ERROR!" + Ex.ToString());
             }
 
             return null;
 
         }
 
-        public ThreadSafeDictionary<EventSystem.InternalEventType, EventSystem.InternalEventsDelegate>
-            GetCurrentListenersInternal()
-        {
-
-            //HACK
-            try
-            {
-                BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic;
-                FieldInfo mi = ES2.GetType().GetField("internalDataGroups", bf);
-                return (ThreadSafeDictionary<EventSystem.InternalEventType, EventSystem.InternalEventsDelegate>)mi.GetValue(mi);
-            }
-            catch (Exception Ex)
-            {
-                
-            }
-
-            return null;
-
-        }
 
         public void MassEventHandeler(NetworkData data)
         {
-            Log.Instance.Debug("11111111111111");
             //TDOD add all types
             if (data is TextChatMessage)
             {
@@ -118,7 +95,6 @@ namespace HellionExtendedServer.Managers.Event
             {
                 ExecuteEvent(new GenericEvent(EventID.SpawnEvent, data));
             }
-            ES2.Invoke(data);//Now I will send info to server XD
         }
 
 
@@ -130,7 +106,6 @@ namespace HellionExtendedServer.Managers.Event
 
         public void ExecuteEvent(GenericEvent e)
         {
-            Log.Instance.Debug("HEARD Event1");
             foreach (EventListener evnt in RegiteredEvents)
             {
                 if (e.GetEventType == evnt.GetEventType)
@@ -141,10 +116,6 @@ namespace HellionExtendedServer.Managers.Event
                     }
                 }
             }
-            if(e.IsCanceled)return;
-            //TODO send the message to server listeners
-            Log.Instance.Debug("HEARD Event2");
-            ES2.Invoke(e.Data);//Now I will send info to server XD
         }
     }
 }

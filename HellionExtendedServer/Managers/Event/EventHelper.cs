@@ -37,6 +37,9 @@ namespace HellionExtendedServer.Managers.Event
             //DELETE ALL Events
             ES2 = NetworkController.Instance.NetContoller.EventSystem;//Copies Events
 
+            //Tried everything! Cant cancel Packets
+            //Cant Use Reflection
+
             //Unregister All Listeners
             //Get All Listeners to Register
             ThreadSafeDictionary<EventSystem.InternalEventType, EventSystem.InternalEventsDelegate> internalDataGroups = GetCurrentListenersInternal();

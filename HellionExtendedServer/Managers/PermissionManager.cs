@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers
 {
@@ -38,6 +39,11 @@ namespace HellionExtendedServer.Managers
             string json = JsonConvert.SerializeObject(melist, Formatting.Indented);
             //BUG might have error here since I dont have '@' at the begining of the name :/
             System.IO.File.WriteAllText(SaveFile, json);
+        }
+
+        public Permission GetPlayerPermission(Player p)
+        {
+            return GetPermission(p.GUID);
         }
 
         public Permission GetPermission(long guid)

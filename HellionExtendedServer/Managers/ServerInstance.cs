@@ -11,6 +11,7 @@ using HellionExtendedServer.Common.Components;
 using ZeroGravity;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.ServerEvents;
 using HellionExtendedServer.Managers.Plugins;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
@@ -211,7 +212,8 @@ namespace HellionExtendedServer.Managers
             //Load Plugins!
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
-            //TODO load Event Listeners
+            //TODO load Server Event Listeners
+            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"),typeof(JoinEvent),EventID.PlayerSpawnRequest));
             //Command Listner
 
 

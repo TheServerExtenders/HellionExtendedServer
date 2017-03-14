@@ -50,7 +50,7 @@ namespace HellionExtendedServer.Managers
             if (!Groups.Contains(group)) Groups.Add(group);
         }
 
-        public void DelGroup(String groupo)
+        public void DelGroup(String group)
         {
             if (Groups.Contains(group)) Groups.Remove(group);
         }

@@ -31,14 +31,22 @@ namespace HellionExtendedServer.Managers.Plugins
         }
         public void SendMessageToClient(Player p, String message)
         {
-            SendMessageToClient(p,message,"Server");
+            SendMessageToClient(p, message, "Server");
+        }
+
+        public void SendMessageToServer(String message)
+        {
+            foreach (Player p in GetServer.AllPlayers)
+            {
+                SendMessageToClient(p, message, "Server");
+            }
         }
 
         public Player GetPlayer(String name)
         {
             Player found = null;
             int delta = int.MaxValue;
-            foreach(Player player in ServerInstance.Instance.Server.AllPlayers)
+            foreach (Player player in ServerInstance.Instance.Server.AllPlayers)
             {
                 if (player.Name.ToLower().StartsWith(name))
                 {
@@ -59,10 +67,17 @@ namespace HellionExtendedServer.Managers.Plugins
 
         public Player getPlayerExact(String name)
         {
-            name = name.ToLower();
             foreach (Player player in ServerInstance.Instance.Server.AllPlayers)
             {
-                if (player.Name.ToLower() == name.ToLower())return player;
+                if (player.Name.ToLower() == name.ToLower()) return player;
+            }
+            return null;
+        }
+        public Player getPlayerFromGuid(long guid)
+        {
+            foreach (Player player in ServerInstance.Instance.Server.AllPlayers)
+            {
+                if (player.GUID == guid) return player;
             }
             return null;
         }

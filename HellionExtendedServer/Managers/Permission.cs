@@ -10,9 +10,9 @@ namespace HellionExtendedServer.Managers
     {
         public long GUID { get; set; }
         public String name { get; set; }
-        public Boolean OP{ get; set; }
-        public List<String> Perms{ get; set; }
-        public List<String> Groups{ get; set; }
+        public Boolean OP { get; set; }
+        public List<String> Perms { get; set; }
+        public List<String> Groups { get; set; }
 
         public Permission(long guid)
         {
@@ -25,18 +25,23 @@ namespace HellionExtendedServer.Managers
         //Super smart now! Allows for HES.* and HES.I.Am.Testing.This.Very.Long.Name.That.I.Can.Can.Access.With HES.* or HES.I.* ect....
         public Boolean HasPerm(String perm)
         {
-            String[] b = perm.Split(".".ToCharArray());
+            String[] b = perm.ToLower().Split(".".ToCharArray());
             foreach (String p in Perms)
             {
                 bool valid = false;
                 String[] a = p.Split(".".ToCharArray());
-                if(b.Length < a.Length)continue;
+                if (b.Length < a.Length) continue;
                 for (int z = 0; z < b.Length; z++)
                 {
-                    if (b[z].ToLower() == a[z].ToLower())valid = true;
+                    if (b[z].ToLower() == a[z].ToLower())
+                    {
+                        valid = true;
+                        continue;
+                    }
                     if (a[z] == "*")return true;//Insta Valid!
                     break;
                 }
+                if (valid) return true;
             }
             return false;
             //Basic
@@ -70,7 +75,7 @@ namespace HellionExtendedServer.Managers
         {
             if (Groups.Contains(group.ToLower())) Groups.Remove(group.ToLower());
         }
-    
 
-}
+
+    }
 }

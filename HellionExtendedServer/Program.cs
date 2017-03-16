@@ -4,6 +4,7 @@ using HellionExtendedServer.Common;
 using HellionExtendedServer.Modules;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -167,6 +168,16 @@ namespace HellionExtendedServer
                 }
                 else
                 {
+                    if (cmd.StartsWith("/"))
+                    {
+                        string cmmd = cmd.Split(" ".ToCharArray())[0].Replace("/", "");
+                        string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
+                            if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args))
+                            {
+                                ReadConsoleCommands();
+                                return;
+                        }
+                    }
                     string[] strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
                     List<string> stringList = new List<string>();
                     int num = 1;

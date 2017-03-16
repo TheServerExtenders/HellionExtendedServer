@@ -32,13 +32,13 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
                 return;
             }
             Permission p = ServerInstance.Instance.PermissionManager.GetPlayerPermission(target);
-            p.AddPerm(args[1]);
+            p.DelPerm(args[1]);
             ServerInstance.Instance.PermissionManager.SetPlayerPermission(p);
             GetPluginHelper.SendMessageToClient(sender, "Success! " + args[1] + " was removed from" + target.Name + "'s permission!");
         }
 
 
-        public void ConsolerunCommand(string[] args)
+        public override void ConsolerunCommand(string[] args)
         {
             if (args.Length != 2)
             {
@@ -52,7 +52,7 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
                 return;
             }
             Permission p = ServerInstance.Instance.PermissionManager.GetPlayerPermission(target);
-            p.AddPerm(args[1]);
+            p.DelPerm(args[1]);
             ServerInstance.Instance.PermissionManager.SetPlayerPermission(p);
             GetPluginHelper.GetLogger.Info("Success! " + args[1] + " was removed from" + target.Name + "'s permission!");
         }

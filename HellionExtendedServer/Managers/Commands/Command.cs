@@ -96,7 +96,7 @@ namespace HellionExtendedServer.Managers.Commands
                 }
             }
         }
-        public void ConsolerunCommand(string[] args)
+        public virtual void ConsolerunCommand(string[] args)
         {
 
         }

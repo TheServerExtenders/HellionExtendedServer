@@ -39,7 +39,7 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
         }
 
 
-        public void ConsolerunCommand(string[] args)
+        public override void ConsolerunCommand(string[] args)
         {
             if (args.Length != 2)
             {
@@ -55,6 +55,8 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
             Permission p = ServerInstance.Instance.PermissionManager.GetPlayerPermission(target);
             p.AddPerm(args[1]);
             ServerInstance.Instance.PermissionManager.SetPlayerPermission(p);
+            GetPluginHelper.GetLogger.Info("Success! " + args[1] + " to " + target.Name + "'s permission!");
+            p.HasPerm("HES.Test");
         }
 
     }

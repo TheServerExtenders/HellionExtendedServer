@@ -65,7 +65,7 @@ namespace HellionExtendedServer.Managers
 
         public void SetPlayerPermission(Permission p)
         {
-            PermissionFactory.Add(p.GUID,p);
+            PermissionFactory[p.GUID] = p;
         }
         public Permission GetPlayerPermission(Player p)
         {

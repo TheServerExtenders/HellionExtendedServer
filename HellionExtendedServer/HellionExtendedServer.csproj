@@ -134,6 +134,7 @@
     <Compile Include="Managers\JoinEvent.cs" />
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
+    <Compile Include="Managers\PermmissionAttribute.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />

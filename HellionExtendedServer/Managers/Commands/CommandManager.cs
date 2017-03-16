@@ -56,7 +56,7 @@ namespace HellionExtendedServer.Managers.Commands
 
         public void HandleConsoleCommand(string cmd, string[] args)
         {
-
+            //TODO
         }
         public void HandlePlayerCommand(string cmd, string[] args, Player sender)
         {
@@ -76,6 +76,13 @@ namespace HellionExtendedServer.Managers.Commands
                 c.ReloadPlugin();
             }
             //TODO Send error!
+            //Checking Perms
+            if (ServerInstance.Instance.PermissionManager.CheckPerm(c.Permissions) && !ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender,c.Permissions))
+            {
+                //Error!
+                new PluginHelper(Server.Instance).SendMessageToClient(sender,"Error! you do not have permission to access that command!");
+                return;
+            }
             c.runCommand(sender, args);
         }
 

@@ -22,9 +22,25 @@ namespace HellionExtendedServer.Managers
             Perms = new List<string>();
         }
 
+        //Super smart now! Allows for HES.* and HES.I.Am.Testing.This.Very.Long.Name.That.I.Can.Can.Access.With HES.* or HES.I.* ect....
         public Boolean HasPerm(String perm)
         {
-            return Perms.Contains(perm);
+            String[] b = perm.Split(".".ToCharArray());
+            foreach (String p in Perms)
+            {
+                bool valid = false;
+                String[] a = p.Split(".".ToCharArray());
+                if(b.Length < a.Length)continue;
+                for (int z = 0; z < b.Length; z++)
+                {
+                    if (b[z].ToLower() == a[z].ToLower())valid = true;
+                    if (a[z] == "*")return true;//Insta Valid!
+                    break;
+                }
+            }
+            return false;
+            //Basic
+            //return Perms.Contains(perm.ToLower());
         }
         public Boolean IsOP()
         {
@@ -38,21 +54,21 @@ namespace HellionExtendedServer.Managers
 
         public void AddPerm(String perm)
         {
-            if (!Perms.Contains(perm)) Perms.Add(perm);
+            if (!Perms.Contains(perm.ToLower())) Perms.Add(perm.ToLower());
         }
 
         public void DelPerm(String perm)
         {
-            if (Perms.Contains(perm)) Perms.Remove(perm);
+            if (Perms.Contains(perm.ToLower())) Perms.Remove(perm.ToLower());
         }
         public void AddGroup(String group)
         {
-            if (!Groups.Contains(group)) Groups.Add(group);
+            if (!Groups.Contains(group.ToLower())) Groups.Add(group.ToLower());
         }
 
         public void DelGroup(String group)
         {
-            if (Groups.Contains(group)) Groups.Remove(group);
+            if (Groups.Contains(group.ToLower())) Groups.Remove(group.ToLower());
         }
     
 

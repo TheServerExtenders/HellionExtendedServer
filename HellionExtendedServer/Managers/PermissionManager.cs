@@ -11,13 +11,36 @@ namespace HellionExtendedServer.Managers
 {
     public class PermissionManager
     {
-
-        protected readonly string SaveFile = "HES/Perms.json";
+        
+        protected readonly string SaveFile = "HES/PlayerPerms.json";
         protected Dictionary<long,Permission> PermissionFactory = new Dictionary<long, Permission>();
+        protected Dictionary<string, PermissionAttribute> PermsDictionary = new Dictionary<string, PermissionAttribute>();
 
         public PermissionManager()
         {
             LoadFromFile();
+        }
+
+        public void AddPermissionAttribute(PermissionAttribute value)
+        {
+            PermsDictionary.Add(value.PermissionName.ToLower(),value);
+        }
+
+        public bool PlayerHasPerm(Player p, string perm)
+        {
+            Permission permission = GetPlayerPermission(p);
+            if (permission.HasPerm(perm)) return true;
+            return false;
+        }
+
+        public bool CheckPerm(string perm)
+        {
+            if (PermsDictionary.ContainsKey(perm.ToLower()))
+            {
+                PermissionAttribute pa = PermsDictionary[perm.ToLower()];
+                if (pa.Default.ToLower() == "default") return false;
+            }
+            return true;
         }
 
         public void LoadFromFile()

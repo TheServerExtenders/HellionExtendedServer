@@ -18,7 +18,6 @@ namespace HellionExtendedServer.Managers.Event.ServerEvents
             PlayerSpawnRequest data = evnt.Data as PlayerSpawnRequest;
             //Check if Permissions are Loaded
             ServerInstance.Instance.PermissionManager.GetPermission(data.Sender);
-            Log.Instance.Debug("EVENT CALDDDEEEE!!!");
         }
     }
 }

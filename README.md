@@ -1,18 +1,17 @@
 # HellionExtendedServer
 An Extended Dedicated Server for Hellion http://www.playhellion.com 
 
-###Websites
+[![Build status](https://ci.appveyor.com/api/projects/status/v79i035u5iwr5w5a/branch/master?svg=true)](https://ci.appveyor.com/project/generalwrex/hellionextendedserver/branch/master)
+
+### Websites
 **Jenkins** - jenkins.hellionextendedserver.com:8080
 
 **Forums and Plugins** - https://hellionextendedserver.com
 
-[![Build status](https://ci.appveyor.com/api/projects/status/v79i035u5iwr5w5a/branch/master?svg=true)](https://ci.appveyor.com/project/generalwrex/hellionextendedserver/branch/master)
+**Steam Discussion**  - http://steamcommunity.com/app/588210/discussions/0/133258593382366911/
 
-Steam Discussion: 
-http://steamcommunity.com/app/588210/discussions/0/133258593382366911/
+**Hellion Forum Topic** - https://www.playhellion.com/forum/discussion/132/program-hellion-extended-server-hes-a-dedicated-server-extender
 
-Hellion Forum Topic:
-https://www.playhellion.com/forum/discussion/132/program-hellion-extended-server-hes-a-dedicated-server-extender
 
 THIS IS A WORK IN PROGRESS.
 
@@ -22,16 +21,22 @@ You can read the chat from all players that talk.
 
 # INSTALLING
 
-Just drop the 5 files from the zip archive into your Hellion Dedicated Server directory
+Just drop the 5 files and the folder from the zip archive into your Hellion Dedicated Server directory
 
      HellionExtendedServer.exe
      HellionExtendedServer.exe.config
      HellionExtendedServer.Common.dll
      NLog.dll
      NLog.config
+     Hes/
+          localization/
+          logs/
+          plugins/
+          
+          
      
 
-To start the server, just run HellionServerExtender.exe ( make sure the files above exist with HellionExtendedServer.exe)
+To start the server, just run HellionServerExtender.exe ( make sure the files and folder above exist with HellionExtendedServer.exe)
 
 
 commands start with /

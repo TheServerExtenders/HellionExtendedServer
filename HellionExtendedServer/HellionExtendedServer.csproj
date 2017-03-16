@@ -124,6 +124,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrashDump.cs" />
+    <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
+    <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Status.cs" />
     <Compile Include="Managers\Event\Event.cs" />
     <Compile Include="Managers\Event\EventAttribute.cs" />
@@ -134,7 +136,7 @@
     <Compile Include="Managers\JoinEvent.cs" />
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
-    <Compile Include="Managers\PermmissionAttribute.cs" />
+    <Compile Include="Managers\PemissionAttribute.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />

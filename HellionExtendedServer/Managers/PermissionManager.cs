@@ -29,10 +29,9 @@ namespace HellionExtendedServer.Managers
         public bool PlayerHasPerm(Player p, string perm)
         {
             Permission permission = GetPlayerPermission(p);
-            if (permission.HasPerm(perm)) return true;
+            if(permission.HasPerm(perm))return true;
             return false;
         }
-
         public bool CheckPerm(string perm)
         {
             if (PermsDictionary.ContainsKey(perm.ToLower()))
@@ -64,6 +63,10 @@ namespace HellionExtendedServer.Managers
             System.IO.File.WriteAllText(SaveFile, json);
         }
 
+        public void SetPlayerPermission(Permission p)
+        {
+            PermissionFactory.Add(p.GUID,p);
+        }
         public Permission GetPlayerPermission(Player p)
         {
             return GetPermission(p.GUID);

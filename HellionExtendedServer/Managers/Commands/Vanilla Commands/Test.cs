@@ -11,7 +11,7 @@ using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
 {
-    [Permission(Description = "Unused var at the moment!",Default = "default",PermissionName = "HES.Test.OP")]
+    [Permission(Description = "Unused var at the moment!",Default = "OP",PermissionName = "HES.Test.OP")]
     [Command(CommandName = "test", Description = "Testing the functionality the code", Usage = "Simply use /test", Permission = "HES.Test.OP")]
     public class Test : Command
     {

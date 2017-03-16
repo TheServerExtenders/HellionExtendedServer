@@ -26,6 +26,11 @@ namespace HellionExtendedServer.Managers.Commands
                                   cmdclass.GetType().FullName);
                 return;
             }
+            PermissionAttribute pa = Attribute.GetCustomAttribute(cmdclass.GetType(), typeof(PermissionAttribute), true) as PermissionAttribute;
+            if (pa != null)
+            {
+                    ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
+            }
             CommandAttribute pluginAttribute = Attribute.GetCustomAttribute(cmdclass.GetType(), typeof(CommandAttribute), true) as CommandAttribute;
             if (pluginAttribute != null)
             {

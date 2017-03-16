@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HellionExtendedServer.Common;
+using NLog;
 using ZeroGravity;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
@@ -13,7 +15,8 @@ namespace HellionExtendedServer.Managers.Plugins
     {
         private Server svr;
 
-        public virtual Server GetServer { get { return svr; } }
+        public Server GetServer { get { return svr; } }
+        public Logger GetLogger{ get { return Log.Instance; } }
 
         public PluginHelper(Server server)
         {

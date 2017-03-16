@@ -17,7 +17,7 @@ namespace HellionExtendedServer.Controllers
         #region Fields
 
         private static NetworkController m_networkController;
-        private ZeroGravity.Network.NetworkController m_network;
+        internal ZeroGravity.Network.NetworkController m_network;
         private static readonly Logger chatlogger = LogManager.GetCurrentClassLogger();
 
         #endregion Fields
@@ -25,6 +25,7 @@ namespace HellionExtendedServer.Controllers
         #region Properties
 
         public static NetworkController Instance { get { return m_networkController; } }
+        internal ZeroGravity.Network.NetworkController NetContoller { get { return m_network; } }
         public ThreadSafeDictionary<long, Client> ClientList { get { return m_network.clientList; } }
 
         #endregion Properties

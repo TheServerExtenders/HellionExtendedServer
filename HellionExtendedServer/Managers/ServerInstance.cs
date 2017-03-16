@@ -10,6 +10,7 @@ using HellionExtendedServer.Common;
 using HellionExtendedServer.Common.Components;
 using ZeroGravity;
 using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
 using HellionExtendedServer.Managers.Plugins;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
@@ -31,6 +32,7 @@ namespace HellionExtendedServer.Managers
         private GameServerIni m_gameServerIni;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
+        private EventHelper m_eventhelper = null;
 
         private static ServerInstance m_serverInstance;
 
@@ -47,6 +49,7 @@ namespace HellionExtendedServer.Managers
         public GameServerIni Config { get { return m_gameServerIni; } }
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
+        public EventHelper EventHelper { get { return m_eventhelper; } }
         
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
@@ -193,16 +196,19 @@ namespace HellionExtendedServer.Managers
 
                 Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
+            Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
+            Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
+
+            new NetworkController(m_server.NetworkController);
+            //Load Events
+            m_eventhelper = new EventHelper();
             //Load Commands
             m_commandManager = new CommandManager();
             //Load Plugins!
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
             //Command Listner
-            Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
-            Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
-            new NetworkController(m_server.NetworkController);
 
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 

@@ -1,5 +1,4 @@
 ﻿using HellionExtendedServer.Common.Components;
-using HellionExtendedServer.Controllers;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Common;
 using HellionExtendedServer.Modules;
@@ -10,10 +9,16 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using HellionExtendedServer;
+using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
+using ZeroGravity.Data;
+using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
 using static ZeroGravity.Network.NetworkController;
+using NetworkController = HellionExtendedServer.Controllers.NetworkController;
 
 
 namespace HellionExtendedServer
@@ -66,7 +71,9 @@ namespace HellionExtendedServer
             SetConsoleCtrlHandler(_handler, true);
 
             Console.Title = WindowTitle;
-          
+
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
+
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
 
@@ -175,6 +182,29 @@ namespace HellionExtendedServer
                     if (stringList[1] == "help")
                     {
                         HES.PrintHelp();
+                        flag = true;
+                    }
+
+                    if (stringList[1] == "et")
+                    {
+                        PlayerSpawnRequest PSR = new PlayerSpawnRequest();
+                        PSR.SpawnType = SpawnPointLocationType.Ship;
+                        PSR.SpawPointParentID = 111555L;
+                        PSR.ShipItemID = GameScenes.SceneID.AltCorp_AirLock;
+                        //TODO Test this later
+                        //GenericEvent ge = new GenericEvent(EventID.SpawnEvent, PSR);
+                        Log.Instance.Info("Started TEST"+ NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
+                        /////////ServerInstance.Instance.EventHelper.ES2
+                        EventSystem e = NetworkController.Instance.NetContoller.EventSystem;
+                        Log.Instance.Info("Started TEST" + NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
+                        e.Invoke(PSR);
+                        /*if (e is EventSystem2)
+                        {
+                            Log.Instance.Info("Star2222222222ted TEST" + NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
+                            ((EventSystem2)e).Invoke(PSR);
+                        }*/
+                        //ServerInstance.Instance.EventHelper.ExecuteEvent(ge);
+                        Log.Instance.Info("Ended TEST");
                         flag = true;
                     }
 
@@ -364,4 +394,5 @@ namespace HellionExtendedServer
 
         #endregion ConsoleHandler
     }
+
 }

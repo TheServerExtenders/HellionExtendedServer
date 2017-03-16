@@ -26,7 +26,7 @@ namespace HellionExtendedServer
 {
     public class HES
     {
-        
+
 
         public static string GameVersion = "0.1.5";
         public static string BuildBranch = "Dev";
@@ -104,7 +104,7 @@ namespace HellionExtendedServer
 
         public HES(string[] args)
         {
-            m_instance = this;          
+            m_instance = this;
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace HellionExtendedServer
                 {
                     m_useGui = false;
 
-                    if(!m_form.Visible)
+                    if (!m_form.Visible)
                         Log.Instance.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
                 }
 
@@ -140,14 +140,14 @@ namespace HellionExtendedServer
             }
 
 
-            if (m_useGui)            
+            if (m_useGui)
                 SetupGUI();
-                                                     
+
             Log.Instance.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
 
-            if (autoStart | Properties.Settings.Default.AutoStart)   
+            if (autoStart | Properties.Settings.Default.AutoStart)
                 ServerInstance.Instance.Start();
-            
+
             ReadConsoleCommands();
         }
 
@@ -157,27 +157,22 @@ namespace HellionExtendedServer
         /// </summary>
         public void ReadConsoleCommands()
         {
-            string cmd = Console.ReadLine();
-
-            if(cmd.Length > 1)
+            while (true)
             {
-                if (!cmd.StartsWith("/"))
+                string cmd = Console.ReadLine();
+
+                if (cmd.Length > 1)
                 {
-                    if (NetworkController.Instance != null)
-                        NetworkController.Instance.MessageAllClients(cmd);
-                }
-                else
-                {
-                    if (cmd.StartsWith("/"))
+                    if (!cmd.StartsWith("/") && NetworkController.Instance != null)
                     {
-                        string cmmd = cmd.Split(" ".ToCharArray())[0].Replace("/", "");
-                        string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
-                            if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args))
-                            {
-                                ReadConsoleCommands();
-                                return;
-                        }
+                        NetworkController.Instance.MessageAllClients(cmd);
+                        continue;
                     }
+
+                    string cmmd = cmd.Split(" ".ToCharArray())[0].Replace("/", "");
+                    string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
+                    if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args)) continue;
+
                     string[] strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
                     List<string> stringList = new List<string>();
                     int num = 1;
@@ -196,35 +191,14 @@ namespace HellionExtendedServer
                         flag = true;
                     }
 
-                    if (stringList[1] == "et")
-                    {
-                        PlayerSpawnRequest PSR = new PlayerSpawnRequest();
-                        PSR.SpawnType = SpawnPointLocationType.Ship;
-                        PSR.SpawPointParentID = 111555L;
-                        PSR.ShipItemID = GameScenes.SceneID.AltCorp_AirLock;
-                        //TODO Test this later
-                        //GenericEvent ge = new GenericEvent(EventID.SpawnEvent, PSR);
-                        Log.Instance.Info("Started TEST"+ NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
-                        /////////ServerInstance.Instance.EventHelper.ES2
-                        EventSystem e = NetworkController.Instance.NetContoller.EventSystem;
-                        Log.Instance.Info("Started TEST" + NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
-                        e.Invoke(PSR);
-                        /*if (e is EventSystem2)
-                        {
-                            Log.Instance.Info("Star2222222222ted TEST" + NetworkController.Instance.NetContoller.EventSystem.GetType().Namespace);
-                            ((EventSystem2)e).Invoke(PSR);
-                        }*/
-                        //ServerInstance.Instance.EventHelper.ExecuteEvent(ge);
-                        Log.Instance.Info("Ended TEST");
-                        flag = true;
-                    }
-
                     //Different args for /players command to display the count, the full list of players (disconnected and disconnected) and the list of connected players.
                     if (stringList[1] == "players" && stringList.Count > 2 & Server.IsRunning)
                     {
                         if (stringList[2] == "-count")
                         {
-                            Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayersConnected"], ServerInstance.Instance.Server.NetworkController.CurrentOnlinePlayers(), ServerInstance.Instance.Server.MaxPlayers));
+                            Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayersConnected"],
+                                ServerInstance.Instance.Server.NetworkController.CurrentOnlinePlayers(),
+                                ServerInstance.Instance.Server.MaxPlayers));
                             flag = true;
                         }
                         else if (stringList[2] == "-list")
@@ -232,17 +206,23 @@ namespace HellionExtendedServer
                             Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId-------"));
                             foreach (var client in NetworkController.Instance.ClientList)
                             {
-                                Console.WriteLine(string.Format("\t {0} \t {1}", client.Value.Player.Name, client.Value.Player.SteamId));
+                                Console.WriteLine(string.Format("\t {0} \t {1}", client.Value.Player.Name,
+                                    client.Value.Player.SteamId));
                             }
                             flag = true;
                         }
                         else if (stringList[2] == "-all")
                         {
-                            Console.WriteLine(string.Format(m_localization.Sentences["AllPlayers"], ServerInstance.Instance.Server.AllPlayers.Count));
-                            Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId------- | -------Connected-------"));
+                            Console.WriteLine(string.Format(m_localization.Sentences["AllPlayers"],
+                                ServerInstance.Instance.Server.AllPlayers.Count));
+                            Console.WriteLine(
+                                string.Format(
+                                    "\t-------Pseudo------- | -------SteamId------- | -------Connected-------"));
                             foreach (var player in ServerInstance.Instance.Server.AllPlayers)
                             {
-                                Console.WriteLine(string.Format("\t {0} \t {1} \t {2}", player.Name, player.SteamId, NetworkController.Instance.ClientList.Values.Contains(NetworkController.Instance.GetClient(player))));
+                                Console.WriteLine(string.Format("\t {0} \t {1} \t {2}", player.Name, player.SteamId,
+                                    NetworkController.Instance.ClientList.Values.Contains(
+                                        NetworkController.Instance.GetClient(player))));
                             }
                             flag = true;
                         }
@@ -294,7 +274,8 @@ namespace HellionExtendedServer
                                 try
                                 {
                                     player.DiconnectFromNetworkContoller();
-                                    Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayerKicked"], (object)player.Name));
+                                    Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayerKicked"],
+                                        (object)player.Name));
                                 }
                                 catch (Exception ex)
                                 {
@@ -330,9 +311,8 @@ namespace HellionExtendedServer
                         Console.WriteLine(HES.m_localization.Sentences["BadSyntax"]);
                 }
             }
-
-            ReadConsoleCommands();
         }
+
 
         /// <summary>
         /// Loads the gui into its own thread
@@ -350,13 +330,13 @@ namespace HellionExtendedServer
             }
             else if (m_form.Visible)
                 return;
-              
+
             m_form.Text = WindowTitle + " GUI";
 
 
             Application.Run(m_form);
         }
-      
+
         public static void PrintHelp()
         {
             Log.Instance.Warn("------------------------------------------------------------");
@@ -398,7 +378,7 @@ namespace HellionExtendedServer
                 {
                     ServerInstance.Instance.Stop();
                     Console.WriteLine("CLOSING HELLION EXTENDED SERVER");
-                }               
+                }
             }
             return false;
         }

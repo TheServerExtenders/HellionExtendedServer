@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BulletSharp.SoftBody;
+using HellionExtendedServer.Common;
 using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Commands.Vanilla_Commands;
 using HellionExtendedServer.Managers.Plugins;
@@ -47,7 +48,7 @@ namespace HellionExtendedServer.Managers.Commands
                 return;
             }
             Console.WriteLine("Loaded Command /" + cmdclass.Command_Name);
-            commandDictionary.Add(cmdclass.Command_Name, cmdclass.GetType());
+            commandDictionary[cmdclass.Command_Name] =  cmdclass.GetType();
         }
         public void AddCommand(Command cmdclass)
         {
@@ -77,6 +78,7 @@ namespace HellionExtendedServer.Managers.Commands
                 c.ReloadPlugin();
             }*/
             c.ConsolerunCommand(args);
+            Log.Instance.Debug("Console Command Ran!");
             return true;
         }
         public void HandlePlayerCommand(string cmd, string[] args, Player sender)

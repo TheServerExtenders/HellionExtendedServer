@@ -4,7 +4,7 @@ An Extended Dedicated Server for Hellion http://www.playhellion.com
 ### Websites
 **Jenkins** - jenkins.hellionextendedserver.com:8080
 
-**Forums and Plugins** - hellionextendedserver.com
+**Forums and Plugins** - https://hellionextendedserver.com
 
 [![Build status](https://ci.appveyor.com/api/projects/status/phdspum8g0d3ics9/branch/master?svg=true)](https://ci.appveyor.com/project/yungtechboy1/hellionextendedserver/branch/master)
 

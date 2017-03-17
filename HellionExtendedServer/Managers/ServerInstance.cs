@@ -114,8 +114,9 @@ namespace HellionExtendedServer.Managers
         /// </summary>
         public void Save(bool showToPLayer = false)
         {
-            if (Server.IsRunning)
+            if (!Server.IsRunning)
                 return;
+
             if (this.isSaving)
             {
                 Console.WriteLine(HES.Localization.Sentences["SaveAlreadyInProgress"]);

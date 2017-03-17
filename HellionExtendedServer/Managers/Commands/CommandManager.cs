@@ -17,6 +17,11 @@ namespace HellionExtendedServer.Managers.Commands
     {
         private Dictionary<string, Type> commandDictionary = new Dictionary<string, Type>();
 
+        public Dictionary<string, Type> GetCommandDictionary()
+        {
+            return commandDictionary;
+        }
+
         public void AddCommand(Command cmdclass, PluginBase plugin)
         {
             if (cmdclass == null) return;
@@ -100,7 +105,8 @@ namespace HellionExtendedServer.Managers.Commands
             }
             //TODO Send error!
             //Checking Perms
-            if (ServerInstance.Instance.PermissionManager.CheckPerm(c.Permissions) && !ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender,c.Permissions))
+            //Todo make sure this is working correctly
+            if (!ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender,c.Permissions))
             {
                 //Error!
                 new PluginHelper(Server.Instance).SendMessageToClient(sender,"Error! you do not have permission to access that command!");
@@ -113,6 +119,7 @@ namespace HellionExtendedServer.Managers.Commands
         {
             AddCommand(new Test(ServerInstance.Instance.Server));
             AddCommand(new Status(ServerInstance.Instance.Server));
+            AddCommand(new Help(ServerInstance.Instance.Server));
             AddCommand(new AddPerms(ServerInstance.Instance.Server));
             AddCommand(new DelPerms(ServerInstance.Instance.Server));
         }

@@ -133,6 +133,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 }
                 catch (Exception ex)
                 {
+                    Log.Instance.Error("ERror!!!"+ex);
                     Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                 }
                 m_loadedPlugins.Remove(Plugin);
@@ -155,7 +156,7 @@ namespace HellionExtendedServer.Managers.Plugins
                     if (pb.GetName.ToLower() == Plugin)
                     {
                         Console.WriteLine(String.Format("Shutting down Plugin {0}", Plugininfo.Assembly.GetName().Name));
-                        pb.DisablePlugin();
+                        pb.DisablePlugin(false);
                         m_loadedPlugins.Remove(Plugininfo);
                         m_discoveredPlugins.Remove(Plugininfo);
                         return;

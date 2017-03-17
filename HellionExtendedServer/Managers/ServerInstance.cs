@@ -11,6 +11,7 @@ using HellionExtendedServer.Common.Components;
 using ZeroGravity;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.ServerEvents;
 using HellionExtendedServer.Managers.Plugins;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
@@ -32,6 +33,7 @@ namespace HellionExtendedServer.Managers
         private GameServerIni m_gameServerIni;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
+        private PermissionManager m_permissionmanager;
         private EventHelper m_eventhelper = null;
 
         private static ServerInstance m_serverInstance;
@@ -50,6 +52,7 @@ namespace HellionExtendedServer.Managers
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
         public EventHelper EventHelper { get { return m_eventhelper; } }
+        public PermissionManager PermissionManager { get { return m_permissionmanager; } }
         
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
@@ -201,6 +204,8 @@ namespace HellionExtendedServer.Managers
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
             new NetworkController(m_server.NetworkController);
+            //Load Permission
+            m_permissionmanager = new PermissionManager();
             //Load Events
             m_eventhelper = new EventHelper();
             //Load Commands
@@ -208,6 +213,8 @@ namespace HellionExtendedServer.Managers
             //Load Plugins!
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
+            //TODO load Server Event Listeners
+            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"),typeof(JoinEvent),EventID.PlayerSpawnRequest));
             //Command Listner
 
 

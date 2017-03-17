@@ -4,6 +4,7 @@ using HellionExtendedServer.Common;
 using HellionExtendedServer.Modules;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -25,8 +26,6 @@ namespace HellionExtendedServer
 {
     public class HES
     {
-
-
         private static string GameVersion = "0.1.8";
         private static string BuildBranch = "Dev";
 
@@ -161,9 +160,21 @@ namespace HellionExtendedServer
                 }
                 else
                 {
-                    var strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
-                    var stringList = new List<string>();
-                    var num = 1;
+
+                    if (cmd.StartsWith("/"))
+                    {
+                        string cmmd = cmd.Split(" ".ToCharArray())[0].Replace("/", "");
+                        string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
+                            if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args))
+                            {
+                                ReadConsoleCommands();
+                                return;
+                        }
+                    }
+                    string[] strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
+                    List<string> stringList = new List<string>();
+                    int num = 1;
+
                     foreach (string str2 in strArray)
                     {
                         if (str2 != "" && str2 != " ")

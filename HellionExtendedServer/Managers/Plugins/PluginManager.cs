@@ -231,6 +231,18 @@ namespace HellionExtendedServer.Managers.Plugins
                     if (PluginType.BaseType == typeof(Command))
                     {
                         plugin.FoundCommands.Add(PluginType);
+                        //Permissions In Command
+                        //Load Permissions
+                        foreach (Attribute attribute in PluginType.GetCustomAttributes(true))
+                        {
+                            if (attribute is PermissionAttribute)
+                            {
+                                PermissionAttribute pa = attribute as PermissionAttribute;
+                                //Add To plugin
+                                //Onplayer Join Event Add Default Perms to player
+                                ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
+                            }
+                        }
                         continue;
                     }
                     if (PluginType.GetInterface(typeof(IPlugin).FullName) != null && plug)
@@ -245,7 +257,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 //Events
                 if (!plug)
                 {
-                    EventID eid = EventID.None;
+                    //Loads Events
                     foreach (MethodInfo method in plugin.MainClassType.GetMethods())
                     {
                         Boolean isevent = false;
@@ -254,30 +266,21 @@ namespace HellionExtendedServer.Managers.Plugins
                             if (attribute is HESEventAttribute)
                             {
                                 HESEventAttribute hea = attribute as HESEventAttribute;
-                                eid = hea.EventType;
-                                isevent = true;
-                                break;
+
+                                plugin = HandelEvent(method,plugin,hea.EventType);
                             }
                         }
-                        if (!isevent) continue;//Your not an event! Get outa here!!!
-                        //Check paramaters now
-
-                        ParameterInfo[] parameters = method.GetParameters();
-                        if (parameters.Length <= 0)
+                    }
+                    //Load Permissions
+                    foreach (Attribute attribute in plugin.GetType().GetCustomAttributes(true))
+                    {
+                        if (attribute is PermissionAttribute)
                         {
-                            Log.Instance.Error("Paramater had no lenght! Method Name: " + method.Name);
-                            continue;
-
+                            PermissionAttribute pa = attribute as PermissionAttribute;
+                            //Add To plugin
+                            //Onplayer Join Event Add Default Perms to player
+                            ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
                         }
-                        if (parameters[0].ParameterType.BaseType != typeof(Event.Event))
-                        {
-                            Log.Instance.Error("INVLAID Function Format! Event Expect but got " + parameters[0].Name);
-                            continue;
-                        }
-
-                        EventListener el = new EventListener(method, plugin.MainClassType, eid);
-                        plugin.FoundEvents.Add(el);
-                        Log.Instance.Info("Found Event Functon : " + parameters[0].ParameterType.Name + " For EventType : " + eid);
                     }
                 }
                 return plugin;
@@ -287,6 +290,27 @@ namespace HellionExtendedServer.Managers.Plugins
                 Console.WriteLine("Failed to load assembly: " + library + " Error: " + ex.ToString());
             }
             return null;
+        }
+
+        public PluginInfo HandelEvent(MethodInfo method,PluginInfo plugin, EventID eid)
+        {
+            ParameterInfo[] parameters = method.GetParameters();
+            if (parameters.Length <= 0)
+            {
+                Log.Instance.Error("Paramater had no lenght! Method Name: " + method.Name);
+                return plugin;
+
+            }
+            if (parameters[0].ParameterType.BaseType != typeof(Event.Event))
+            {
+                Log.Instance.Error("INVLAID Function Format! Event Expect but got " + parameters[0].Name);
+                return plugin;
+            }
+
+            EventListener el = new EventListener(method, plugin.MainClassType, eid);
+            plugin.FoundEvents.Add(el);
+            Log.Instance.Info("Found Event Functon : " + parameters[0].ParameterType.Name + " For EventType : " + eid);
+            return plugin;
         }
 
         #endregion Methods

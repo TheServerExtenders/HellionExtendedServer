@@ -16,7 +16,9 @@ namespace HellionExtendedServer.Managers.Event
         private MethodInfo Function;
         private EventID EType;
         private Type TType;
+        private bool IgnoreCanceled = false;
 
+        public bool IgnoreCanceledEvent { get { return IgnoreCanceled; } }
         public EventID GetEventType { get { return EType; } }
 
         public EventListener(MethodInfo function, Type tt, EventID type)
@@ -26,8 +28,9 @@ namespace HellionExtendedServer.Managers.Event
             TType = tt;
         }
 
-        public void Execute(Event evnt)
+        public void Execute(GenericEvent evnt)
         {
+            //Todo Convert to Corret Type
             Function.Invoke(Activator.CreateInstance(TType), new Object[]{ evnt });
         }
         

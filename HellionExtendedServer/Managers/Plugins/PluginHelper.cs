@@ -34,5 +34,38 @@ namespace HellionExtendedServer.Managers.Plugins
             SendMessageToClient(p,message,"Server");
         }
 
+        public Player GetPlayer(String name)
+        {
+            Player found = null;
+            int delta = int.MaxValue;
+            foreach(Player player in ServerInstance.Instance.Server.AllPlayers)
+            {
+                if (player.Name.ToLower().StartsWith(name))
+                {
+                    int curDelta = player.Name.Length - name.Length;
+                    if (curDelta < delta)
+                    {
+                        found = player;
+                        delta = curDelta;
+                    }
+                    if (curDelta == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+            return found;
+        }
+
+        public Player getPlayerExact(String name)
+        {
+            name = name.ToLower();
+            foreach (Player player in ServerInstance.Instance.Server.AllPlayers)
+            {
+                if (player.Name.ToLower() == name.ToLower())return player;
+            }
+            return null;
+        }
+
     }
 }

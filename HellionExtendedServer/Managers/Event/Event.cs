@@ -11,12 +11,16 @@ namespace HellionExtendedServer.Managers.Event
 
         private EventID Type;
 
+        private Boolean canceled = false;
+
         public EventID GetEventType { get { return Type; } }
+        public Boolean IsCanceled { get { return canceled; } }
 
         public Event(EventID type)
         {
             Type = type;
         }
+
 
     }
 }

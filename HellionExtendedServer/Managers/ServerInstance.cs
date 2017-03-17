@@ -201,12 +201,12 @@ namespace HellionExtendedServer.Managers
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
             new NetworkController(m_server.NetworkController);
+            //Load Events
+            m_eventhelper = new EventHelper();
             //Load Commands
             m_commandManager = new CommandManager();
             //Load Plugins!
             m_pluginManager = new PluginManager();
-            //Load Events
-            m_eventhelper = new EventHelper();
             PluginManager.InitializeAllPlugins();
             //Command Listner
 

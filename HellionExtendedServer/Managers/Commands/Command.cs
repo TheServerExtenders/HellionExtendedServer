@@ -101,6 +101,29 @@ namespace HellionExtendedServer.Managers.Commands
 
         }
 
+        public static String GetCommandPermission(Type commandtype)
+        {
+            foreach (Attribute attribute in commandtype.GetCustomAttributes(true))
+            {
+                if (attribute is CommandAttribute)
+                {
+                    CommandAttribute ca = attribute as CommandAttribute;
+                    //Add To plugin
+                    //Onplayer Join Event Add Default Perms to player
+                    return ca.Permission;
+                }
+            }
+            return null;
+        }
+        public static CommandAttribute GetCommandAttribute(Type commandtype)
+        {
+            foreach (Attribute attribute in commandtype.GetCustomAttributes(true))
+            {
+                if (attribute is CommandAttribute)return attribute as CommandAttribute;
+            }
+            return null;
+        }
+
         #region ICloneable Members
 
         public object Clone()

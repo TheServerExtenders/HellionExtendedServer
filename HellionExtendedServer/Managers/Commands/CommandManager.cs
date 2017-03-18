@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BulletSharp.SoftBody;
+using HellionExtendedServer.Common;
 using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Commands.Vanilla_Commands;
 using HellionExtendedServer.Managers.Plugins;
@@ -15,6 +16,11 @@ namespace HellionExtendedServer.Managers.Commands
     public class CommandManager
     {
         private Dictionary<string, Type> commandDictionary = new Dictionary<string, Type>();
+
+        public Dictionary<string, Type> GetCommandDictionary()
+        {
+            return commandDictionary;
+        }
 
         public void AddCommand(Command cmdclass, PluginBase plugin)
         {
@@ -47,7 +53,7 @@ namespace HellionExtendedServer.Managers.Commands
                 return;
             }
             Console.WriteLine("Loaded Command /" + cmdclass.Command_Name);
-            commandDictionary.Add(cmdclass.Command_Name, cmdclass.GetType());
+            commandDictionary[cmdclass.Command_Name] =  cmdclass.GetType();
         }
         public void AddCommand(Command cmdclass)
         {
@@ -77,6 +83,7 @@ namespace HellionExtendedServer.Managers.Commands
                 c.ReloadPlugin();
             }*/
             c.ConsolerunCommand(args);
+            Log.Instance.Debug("Console Command Ran!");
             return true;
         }
         public void HandlePlayerCommand(string cmd, string[] args, Player sender)
@@ -98,7 +105,8 @@ namespace HellionExtendedServer.Managers.Commands
             }
             //TODO Send error!
             //Checking Perms
-            if (ServerInstance.Instance.PermissionManager.CheckPerm(c.Permissions) && !ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender,c.Permissions))
+            //Todo make sure this is working correctly
+            if (!ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender,c.Permissions))
             {
                 //Error!
                 new PluginHelper(Server.Instance).SendMessageToClient(sender,"Error! you do not have permission to access that command!");
@@ -111,6 +119,7 @@ namespace HellionExtendedServer.Managers.Commands
         {
             AddCommand(new Test(ServerInstance.Instance.Server));
             AddCommand(new Status(ServerInstance.Instance.Server));
+            AddCommand(new Help(ServerInstance.Instance.Server));
             AddCommand(new AddPerms(ServerInstance.Instance.Server));
             AddCommand(new DelPerms(ServerInstance.Instance.Server));
         }

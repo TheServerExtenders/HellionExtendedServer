@@ -73,15 +73,16 @@ namespace HellionExtendedServer.ServerWrappers
             try
             {
                 Log.Instance.Info(HES.Localization.Sentences["ShuttingDown"]);
-
-                m_closeSocketListeners.Invoke(Server.Instance.NetworkController, null);
-
-                Server.IsRunning = false;
+               
                 if (Server.PersistenceSaveInterval > 0.0)
                 {
                     ServerInstance.Instance.Save();
                     Log.Instance.Info(HES.Localization.Sentences["SavingUniverse"]);
                 }
+
+                m_closeSocketListeners.Invoke(Server.Instance.NetworkController, null);
+
+                Server.IsRunning = false;
 
                 Dbg.Destroy();
                 Server.MainLoopEnded.WaitOne(5000);

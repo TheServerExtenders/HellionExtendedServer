@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HellionExtendedServer.Common.Plugins;
+using HellionExtendedServer.Managers;
+using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.Player;
 using HellionExtendedServer.Managers.Plugins;
+using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
 namespace TestPlugin
@@ -20,6 +24,14 @@ namespace TestPlugin
         public override void OnEnable()
         {
             Console.WriteLine("Test Command Enabled");
+        }
+
+        //Will Only send Events that Are Releated to this attribute below!
+        [HESEvent(EventType = EventID.PlayerSpawnRequest)]
+        public void TestSpawnEvent(GenericEvent evnt)
+        {
+            PlayerSpawnRequest hesse = evnt.Data as PlayerSpawnRequest;
+            Console.WriteLine("Test Spawn Event"+ hesse.ShipItemID);
         }
 
         public override void OnCommand(Player p, string command, string[] args)

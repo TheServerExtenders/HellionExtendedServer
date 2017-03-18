@@ -103,9 +103,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip.Reduced">
-      <HintPath>..\packages\RedCell.Update\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
@@ -126,7 +123,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrashDump.cs" />
+    <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
+    <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
+    <Compile Include="Managers\Commands\Vanilla Commands\Help.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Status.cs" />
+    <Compile Include="Managers\Event\Event.cs" />
+    <Compile Include="Managers\Event\EventAttribute.cs" />
+    <Compile Include="Managers\Event\EventHelper.cs" />
+    <Compile Include="Managers\Event\EventListener.cs" />
+    <Compile Include="Managers\Event\EventSystem2.cs" />
+    <Compile Include="Managers\Event\GenericEvent.cs" />
+    <Compile Include="Managers\JoinEvent.cs" />
+    <Compile Include="Managers\Permission.cs" />
+    <Compile Include="Managers\PermissionManager.cs" />
+    <Compile Include="Managers\PemissionAttribute.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
@@ -180,6 +191,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -201,6 +213,12 @@
       <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
       <Name>HellionExtendedServer.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="Microsoft.Windows.DebuggersAndTools, Version=1.0.0.0, ProcessorArchitecture=amd64, Type=win32">
+      <Name>dbghelp.dll</Name>
+      <HintPath>..\packages\dbghelp.dll</HintPath>
+    </NativeReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

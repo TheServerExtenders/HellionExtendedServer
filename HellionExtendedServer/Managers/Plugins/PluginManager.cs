@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -35,7 +37,7 @@ namespace HellionExtendedServer.Managers.Plugins
         public void InitializeAllPlugins()
         {
             m_discoveredPlugins = FindAllPlugins();
-            Console.WriteLine(String.Format("Found {0} Plugins!",m_discoveredPlugins.Count));
+            Console.WriteLine(String.Format("Found {0} Plugins!", m_discoveredPlugins.Count));
             foreach (PluginInfo Plugin in m_discoveredPlugins)
             {
                 InitializePlugin(Plugin);
@@ -53,7 +55,7 @@ namespace HellionExtendedServer.Managers.Plugins
             try
             {
                 Plugin.MainClass = (PluginBase)Activator.CreateInstance(Plugin.MainClassType);
-                
+
                 if (Plugin.MainClass != null)
                 {
                     try
@@ -86,6 +88,18 @@ namespace HellionExtendedServer.Managers.Plugins
                         Command c = (Command)Activator.CreateInstance(CommandType, new object[] { ServerInstance.Instance.Server });
                         ServerInstance.Instance.CommandManager.AddCommand(c);
                     }
+                    //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
+                    //Actually Just register them
+                    //Events
+                    //Enable 
+                    //Enable Events 
+                    foreach (EventListener el in Plugin.FoundEvents)
+                    {
+                        ServerInstance.Instance.EventHelper.RegisterEvent(el);
+                    }
+
+                    //Plugin.FoundEvents.ForEach(x => ServerInstance.Instance.EventHelper.RegisterEvent(x));
+
                     m_loadedPlugins.Add(Plugin);
                 }
             }
@@ -111,6 +125,7 @@ namespace HellionExtendedServer.Managers.Plugins
             {
                 try
                 {
+                    //BUG HUGE!!!!!
                     if (Plugin.MainClass != null)
                     {
                         Plugin.MainClass.DisablePlugin();
@@ -119,6 +134,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 }
                 catch (Exception ex)
                 {
+                    Log.Instance.Error("ERror!!!"+ex);
                     Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                 }
                 m_loadedPlugins.Remove(Plugin);
@@ -141,7 +157,7 @@ namespace HellionExtendedServer.Managers.Plugins
                     if (pb.GetName.ToLower() == Plugin)
                     {
                         Console.WriteLine(String.Format("Shutting down Plugin {0}", Plugininfo.Assembly.GetName().Name));
-                        pb.DisablePlugin();
+                        pb.DisablePlugin(false);
                         m_loadedPlugins.Remove(Plugininfo);
                         m_discoveredPlugins.Remove(Plugininfo);
                         return;
@@ -197,16 +213,16 @@ namespace HellionExtendedServer.Managers.Plugins
             Assembly libraryAssembly;
             try
             {
-                Console.WriteLine("Loading Plugin Located at "+library);
+                Console.WriteLine("Loading Plugin Located at " + library);
                 bytes = File.ReadAllBytes(library);
                 libraryAssembly = Assembly.Load(bytes);
                 //Bug Guid is Glitched Right Now
                 //Guid guid = new Guid(((GuidAttribute)libraryAssembly.GetCustomAttributes(typeof(GuidAttribute), true)[0]).Value);
-                
+
                 bool plug = true;
-                PluginInfo Plugin = new PluginInfo();
+                PluginInfo plugin = new PluginInfo();
                 //Plugin.Guid = guid;
-                Plugin.Assembly = libraryAssembly;
+                plugin.Assembly = libraryAssembly;
 
                 Command[] CommandList;
 
@@ -216,23 +232,87 @@ namespace HellionExtendedServer.Managers.Plugins
                 {
                     if (PluginType.BaseType == typeof(Command))
                     {
-                        Plugin.FoundCommands.Add(PluginType);
+                        plugin.FoundCommands.Add(PluginType);
+                        //Permissions In Command
+                        //Load Permissions
+                        foreach (Attribute attribute in PluginType.GetCustomAttributes(true))
+                        {
+                            if (attribute is PermissionAttribute)
+                            {
+                                PermissionAttribute pa = attribute as PermissionAttribute;
+                                //Add To plugin
+                                //Onplayer Join Event Add Default Perms to player
+                                ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
+                            }
+                        }
                         continue;
                     }
                     if (PluginType.GetInterface(typeof(IPlugin).FullName) != null && plug)
                     {
-                        Plugin.MainClassType = PluginType;
+                        plugin.MainClassType = PluginType;
                         plug = false;
                         continue;
                     }
                 }
-                 return Plugin;
+                //B4 resturn Check for Events here
+                //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
+                //Events
+                if (!plug)
+                {
+                    //Loads Events
+                    foreach (MethodInfo method in plugin.MainClassType.GetMethods())
+                    {
+                        Boolean isevent = false;
+                        foreach (Attribute attribute in method.GetCustomAttributes(true))
+                        {
+                            if (attribute is HESEventAttribute)
+                            {
+                                HESEventAttribute hea = attribute as HESEventAttribute;
+
+                                plugin = HandelEvent(method,plugin,hea.EventType);
+                            }
+                        }
+                    }
+                    //Load Permissions
+                    foreach (Attribute attribute in plugin.GetType().GetCustomAttributes(true))
+                    {
+                        if (attribute is PermissionAttribute)
+                        {
+                            PermissionAttribute pa = attribute as PermissionAttribute;
+                            //Add To plugin
+                            //Onplayer Join Event Add Default Perms to player
+                            ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
+                        }
+                    }
+                }
+                return plugin;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Failed to load assembly: " + library + " Error: " + ex.ToString());
             }
             return null;
+        }
+
+        public PluginInfo HandelEvent(MethodInfo method,PluginInfo plugin, EventID eid)
+        {
+            ParameterInfo[] parameters = method.GetParameters();
+            if (parameters.Length <= 0)
+            {
+                Log.Instance.Error("Paramater had no lenght! Method Name: " + method.Name);
+                return plugin;
+
+            }
+            if (parameters[0].ParameterType.BaseType != typeof(Event.Event))
+            {
+                Log.Instance.Error("INVLAID Function Format! Event Expect but got " + parameters[0].Name);
+                return plugin;
+            }
+
+            EventListener el = new EventListener(method, plugin.MainClassType, eid);
+            plugin.FoundEvents.Add(el);
+            Log.Instance.Info("Found Event Functon : " + parameters[0].ParameterType.Name + " For EventType : " + eid);
+            return plugin;
         }
 
         #endregion Methods

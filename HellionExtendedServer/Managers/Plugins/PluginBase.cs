@@ -5,6 +5,7 @@ using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Plugins;
+using NLog;
 using ZeroGravity;
 using ZeroGravity.Objects;
 
@@ -43,6 +44,7 @@ namespace HellionExtendedServer.Common.Plugins
 
         //public virtual LogInstance PluginLog { get { return m_log; } }
         public virtual PluginBaseConfig Config { get { return m_config; } }
+        public Logger GetLogger { get { return Log.Instance; } }
         #endregion
 
         #region Methods
@@ -105,11 +107,11 @@ namespace HellionExtendedServer.Common.Plugins
 
         }
 
-        public void DisablePlugin()
+        public void DisablePlugin(bool remove = true)
         {
             Enabled = true;
             OnDisable();
-            ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
+            if(remove)ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
         }
         public virtual void OnEnable()
         {

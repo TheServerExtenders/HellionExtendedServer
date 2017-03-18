@@ -125,6 +125,7 @@ namespace HellionExtendedServer.Managers.Plugins
             {
                 try
                 {
+                    //BUG HUGE!!!!!
                     if (Plugin.MainClass != null)
                     {
                         Plugin.MainClass.DisablePlugin();

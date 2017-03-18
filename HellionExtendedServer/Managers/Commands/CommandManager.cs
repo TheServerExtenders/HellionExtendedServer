@@ -120,6 +120,7 @@ namespace HellionExtendedServer.Managers.Commands
             AddCommand(new Test(ServerInstance.Instance.Server));
             AddCommand(new Status(ServerInstance.Instance.Server));
             AddCommand(new Help(ServerInstance.Instance.Server));
+            AddCommand(new Help2(ServerInstance.Instance.Server));
             AddCommand(new AddPerms(ServerInstance.Instance.Server));
             AddCommand(new DelPerms(ServerInstance.Instance.Server));
         }

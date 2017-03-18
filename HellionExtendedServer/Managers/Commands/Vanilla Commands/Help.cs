@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Plugins;
+using NLog;
 using ZeroGravity;
 using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
 {
-    [Command(CommandName = "status", Description = "Returns the current status of the server", Usage = "Usage: /status",
-        Permission = "HES.Status")]
+    [Permission(Default = "default", PermissionName = "HES.help")]
+    [Command(CommandName = "help", Description = "Returns the current status of the server",
+        Usage = "Usage: /help [page]",
+        Permission = "HES.help")]
     public class Help : Command
     {
 
@@ -23,37 +27,25 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
 
         public override void ConsolerunCommand(string[] args)
         {
+            Log.Instance.Info("asdas asd asd!");
             Dictionary<string, Type> cd = ServerInstance.Instance.CommandManager.GetCommandDictionary();
             List<String> list = cd.Keys.ToList();
             list.Sort();
-            int pageNumber = 1;
-            int pageHeight = 5;
 
-            if (args.Length != 0)
+            List<CommandAttribute> commands = new List<CommandAttribute>();
+            foreach (String cmd in list)
             {
+                Type t = cd[cmd];
+                CommandAttribute ca = Command.GetCommandAttribute(t);
+                commands.Add(ca);
+            }
 
-                int.TryParse(args[0], out pageNumber);
+            GetPluginHelper.GetLogger.Info(String.Format("==== Help Page ===="));
 
-                List<CommandAttribute> commands = new List<CommandAttribute>();
-                foreach (String cmd in list)
-                {
-                    Type t = cd[cmd];
-                    CommandAttribute ca = Command.GetCommandAttribute(t);
-                    commands.Add(ca);
-                }
-                int totalPage = commands.Count % pageHeight == 0
-                    ? commands.Count / pageHeight
-                    : commands.Count / pageHeight + 1;
-                pageNumber = Math.Min(pageNumber, totalPage);
-                if (pageNumber < 1) pageNumber = 1;
-
-                GetPluginHelper.GetLogger.Info(String.Format("==== Help Page {0} of {1}", pageNumber, totalPage));
-
-                int i = 1;
-                foreach (CommandAttribute command1 in commands)
-                {
-                    GetPluginHelper.GetLogger.Info("/" + command1.CommandName + ": " + command1.Description);
-                }
+            int i = 1;
+            foreach (CommandAttribute command1 in commands)
+            {
+                GetPluginHelper.GetLogger.Info("/" + command1.CommandName + ": " + command1.Description);
             }
         }
 
@@ -65,41 +57,38 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
             int pageNumber = 1;
             int pageHeight = 5;
 
-            if (args.Length != 0)
+            if (args.Length != 0) int.TryParse(args[0], out pageNumber);
+
+            List<CommandAttribute> commands = new List<CommandAttribute>();
+            foreach (String cmd in list)
             {
+                Type t = cd[cmd];
+                CommandAttribute ca = Command.GetCommandAttribute(t);
+                String perm = ca.Permission;
+                if (perm != null && !ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender, perm))
+                    continue;
+                commands.Add(ca);
+            }
+            int totalPage = commands.Count % pageHeight == 0
+                ? commands.Count / pageHeight
+                : commands.Count / pageHeight + 1;
+            pageNumber = Math.Min(pageNumber, totalPage);
+            if (pageNumber < 1) pageNumber = 1;
 
-                int.TryParse(args[0], out pageNumber);
+            GetPluginHelper.SendMessageToClient(sender,
+                String.Format("==== Help Page {0} of {1}", pageNumber, totalPage));
 
-                List<CommandAttribute> commands = new List<CommandAttribute>();
-                foreach (String cmd in list)
+            int i = 1;
+            foreach (CommandAttribute command1 in commands)
+            {
+                if (i >= (pageNumber - 1) * pageHeight + 1 && i <= Math.Min(commands.Count, pageNumber * pageHeight))
                 {
-                    Type t = cd[cmd];
-                    CommandAttribute ca = Command.GetCommandAttribute(t);
-                    String perm = ca.Permission;
-                    if (perm != null && !ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender, perm))
-                        continue;
-                    commands.Add(ca);
+                    GetPluginHelper.SendMessageToClient(sender,
+                        "/" + command1.CommandName + ": " + command1.Description);
                 }
-                int totalPage = commands.Count % pageHeight == 0
-                    ? commands.Count / pageHeight
-                    : commands.Count / pageHeight + 1;
-                pageNumber = Math.Min(pageNumber, totalPage);
-                if (pageNumber < 1) pageNumber = 1;
-
-                GetPluginHelper.SendMessageToClient(sender,
-                    String.Format("==== Help Page {0} of {1}", pageNumber, totalPage));
-
-                int i = 1;
-                foreach (CommandAttribute command1 in commands)
-                {
-                    if (i >= (pageNumber - 1) * pageHeight + 1 && i <= Math.Min(commands.Count, pageNumber * pageHeight))
-                    {
-                        GetPluginHelper.SendMessageToClient(sender,
-                            "/" + command1.CommandName + ": " + command1.Description);
-                    }
-                    i++;
-                }
+                i++;
             }
         }
     }
 }
+

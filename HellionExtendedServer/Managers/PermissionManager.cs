@@ -23,11 +23,12 @@ namespace HellionExtendedServer.Managers
 
         public void AddPermissionAttribute(PermissionAttribute value)
         {
-            PermsDictionary.Add(value.PermissionName.ToLower(),value);
+            PermsDictionary[value.PermissionName.ToLower()] = value;
         }
 
         public bool PlayerHasPerm(Player p, string perm)
         {
+            if (!CheckPerm(perm)) return true;
             Permission permission = GetPlayerPermission(p);
             if(permission.HasPerm(perm))return true;
             return false;

@@ -126,6 +126,7 @@
     <Compile Include="CrashDump.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
+    <Compile Include="Managers\Commands\Vanilla Commands\Help.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Status.cs" />
     <Compile Include="Managers\Event\Event.cs" />
     <Compile Include="Managers\Event\EventAttribute.cs" />

@@ -107,11 +107,11 @@ namespace HellionExtendedServer.Common.Plugins
 
         }
 
-        public void DisablePlugin()
+        public void DisablePlugin(bool remove = true)
         {
             Enabled = true;
             OnDisable();
-            ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
+            if(remove)ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
         }
         public virtual void OnEnable()
         {

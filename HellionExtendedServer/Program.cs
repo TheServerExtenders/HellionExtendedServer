@@ -19,7 +19,7 @@ using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
 using static ZeroGravity.Network.NetworkController;
-using NetworkController = HellionExtendedServer.Controllers.NetworkController;
+using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
 
 
 namespace HellionExtendedServer
@@ -157,9 +157,9 @@ namespace HellionExtendedServer
 
                 if (cmd.Length > 1)
                 {
-                    if (!cmd.StartsWith("/") && NetworkController.Instance != null)
+                    if (!cmd.StartsWith("/") && NetworkManager.Instance != null)
                     {
-                        NetworkController.Instance.MessageAllClients(cmd);
+                        NetworkManager.Instance.MessageAllClients(cmd);
                         continue;
                     }
 
@@ -198,7 +198,7 @@ namespace HellionExtendedServer
                         else if (stringList[2] == "-list")
                         {
                             Console.WriteLine(string.Format("\t-------Pseudo------- | -------SteamId-------"));
-                            foreach (var client in NetworkController.Instance.ClientList)
+                            foreach (var client in NetworkManager.Instance.ClientList)
                             {
                                 Console.WriteLine(string.Format("\t {0} \t {1}", client.Value.Player.Name,
                                     client.Value.Player.SteamId));
@@ -215,8 +215,8 @@ namespace HellionExtendedServer
                             foreach (var player in ServerInstance.Instance.Server.AllPlayers)
                             {
                                 Console.WriteLine(string.Format("\t {0} \t {1} \t {2}", player.Name, player.SteamId,
-                                    NetworkController.Instance.ClientList.Values.Contains(
-                                        NetworkController.Instance.GetClient(player))));
+                                    NetworkManager.Instance.ClientList.Values.Contains(
+                                        NetworkManager.Instance.GetClient(player))));
                             }
                             flag = true;
                         }
@@ -241,10 +241,10 @@ namespace HellionExtendedServer
                                 if (stringList.IndexOf(str2) > 2)
                                     msg = msg + str2 + " ";
                             }
-                            if (NetworkController.Instance.ConnectedPlayer(stringList[3]))
+                            if (NetworkManager.Instance.ConnectedPlayer(stringList[3]))
                             {
                                 Console.WriteLine("Server > " + stringList[3] + " : " + msg);
-                                NetworkController.Instance.MessageToClient(msg, "Server", stringList[3]);
+                                NetworkManager.Instance.MessageToClient(msg, "Server", stringList[3]);
                             }
                             else
                                 Console.WriteLine(HES.m_localization.Sentences["PlayerNotConnected"]);
@@ -259,7 +259,7 @@ namespace HellionExtendedServer
                         if (stringList[3].Contains("(") && stringList[3].Contains(")"))
                         {
                             Player player = null;
-                            if (NetworkController.Instance.ConnectedPlayer(stringList[3], out player))
+                            if (NetworkManager.Instance.ConnectedPlayer(stringList[3], out player))
                             {
                                 try
                                 {

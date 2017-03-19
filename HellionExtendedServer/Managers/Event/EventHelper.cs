@@ -11,7 +11,7 @@ using ZeroGravity;
 using ZeroGravity.Data;
 using ZeroGravity.Helpers;
 using ZeroGravity.Network;
-using NetworkController = HellionExtendedServer.Controllers.NetworkController;
+using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
 
 namespace HellionExtendedServer.Managers.Event
 {
@@ -98,7 +98,7 @@ namespace HellionExtendedServer.Managers.Event
 
         public EventHelper()
         {
-            ES2 = NetworkController.Instance.NetContoller.EventSystem; //Copies Events
+            ES2 = NetworkManager.Instance.NetContoller.EventSystem; //Copies Events
 
             //Unregister All Listeners
             //Get All Listeners to Register
@@ -113,7 +113,7 @@ namespace HellionExtendedServer.Managers.Event
             {
                 if (AddedTypes.Contains(entry.Key)) continue;
                 AddedTypes.Add(entry.Key);
-                NetworkController.Instance.NetContoller.EventSystem.AddListener(entry.Key, MassEventHandeler);
+                NetworkManager.Instance.NetContoller.EventSystem.AddListener(entry.Key, MassEventHandeler);
                 //Listen for Everything!
             }
 
@@ -127,10 +127,10 @@ namespace HellionExtendedServer.Managers.Event
             {
                 BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic;
                 FieldInfo mi =
-                    NetworkController.Instance.NetContoller.EventSystem.GetType().GetField("networkDataGroups", bf);
+                    NetworkManager.Instance.NetContoller.EventSystem.GetType().GetField("networkDataGroups", bf);
                 ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> a =
                     (ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>)
-                    mi.GetValue(NetworkController.Instance.NetContoller.EventSystem);
+                    mi.GetValue(NetworkManager.Instance.NetContoller.EventSystem);
                 ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> b =
                     new ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>();
                 foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> entry in a)

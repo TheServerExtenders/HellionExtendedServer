@@ -10,13 +10,13 @@ using ZeroGravity.Network;
 using ZeroGravity.Objects;
 using static ZeroGravity.Network.NetworkController;
 
-namespace HellionExtendedServer.Controllers
+namespace HellionExtendedServer.Managers
 {
-    public class NetworkController
+    public class NetworkManager
     {
         #region Fields
 
-        private static NetworkController m_networkController;
+        private static NetworkManager m_networkManager;
         internal ZeroGravity.Network.NetworkController m_network;
         private static readonly Logger chatlogger = LogManager.GetCurrentClassLogger();
 
@@ -24,16 +24,15 @@ namespace HellionExtendedServer.Controllers
 
         #region Properties
 
-        public static NetworkController Instance { get { return m_networkController; } }
+        public static NetworkManager Instance { get { return m_networkManager; } }
         internal ZeroGravity.Network.NetworkController NetContoller { get { return m_network; } }
         public ThreadSafeDictionary<long, Client> ClientList { get { return m_network.clientList; } }
-
         #endregion Properties
 
-        public NetworkController(ZeroGravity.Network.NetworkController networkController)
+        public NetworkManager(ZeroGravity.Network.NetworkController networkController)
         {
 
-            m_networkController = this;
+            m_networkManager = this;
             // ISSUE: method pointer
             networkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(TextChatMessageListener));
             Log.Instance.Info("Chat Message Listener Added.");

@@ -123,7 +123,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Chat\ChatMessage.cs" />
     <Compile Include="CrashDump.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />
+    <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
@@ -154,7 +154,7 @@
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
     <Compile Include="GUI\Objects\Vessel.cs" />
-    <Compile Include="Modules\Updates\Resources.cs" />
+    <Compile Include="Managers\Plugins\Browser\Resources.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />
@@ -223,6 +223,7 @@
     </NativeReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="API\Chat\" />
     <Folder Include="API\Players\" />
     <Folder Include="API\Vessels\" />
     <Folder Include="Controllers\" />

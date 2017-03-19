@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 
-namespace HellionExtendedServer.Managers.Plugins.Website
+namespace HellionExtendedServer.Managers.Plugins.Browser
 {
     internal static class PluginBrowser
     {

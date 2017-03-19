@@ -138,6 +138,13 @@
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />
+    <Compile Include="Managers\Plugins\Browser\BBCodeHTML.cs" />
+    <Compile Include="Managers\Plugins\Browser\BrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Managers\Plugins\Browser\BrowserForm.Designer.cs">
+      <DependentUpon>BrowserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
@@ -171,6 +178,9 @@
     <Compile Include="Managers\UpdateManager.cs" />
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Managers\Plugins\Browser\BrowserForm.resx">
+      <DependentUpon>BrowserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

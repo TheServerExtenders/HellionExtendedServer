@@ -35,7 +35,7 @@ namespace HellionExtendedServer.Managers.Plugins.Website
             {
                 Console.WriteLine("Getting Resources");
 
-                var request = WebRequest.Create(@"https://hellionextendedserver.com/api.php?action=getResources&hash=AeAAUen5PKBEmtewUBRqSCwq") as HttpWebRequest;
+                var request = WebRequest.Create(@"https://hellionextendedserver.com/api.php?action=getResources&hash=KEY") as HttpWebRequest;
                 request.Method = "GET";
                 request.Proxy = null;
                 request.UserAgent = nameof(HellionExtendedServer);

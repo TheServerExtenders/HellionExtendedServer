@@ -217,12 +217,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <NativeReference Include="Microsoft.Windows.DebuggersAndTools, Version=1.0.0.0, ProcessorArchitecture=amd64, Type=win32">
-      <Name>dbghelp.dll</Name>
-      <HintPath>..\packages\dbghelp.dll</HintPath>
-    </NativeReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="API\Chat\" />
     <Folder Include="API\Players\" />
     <Folder Include="API\Vessels\" />

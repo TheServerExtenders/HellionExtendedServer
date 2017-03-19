@@ -16,7 +16,7 @@ using HellionExtendedServer.Managers.Plugins;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
-using NetworkController = HellionExtendedServer.Controllers.NetworkController;
+using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
 
 namespace HellionExtendedServer.Managers
 {
@@ -127,8 +127,8 @@ namespace HellionExtendedServer.Managers
                 {
                     if (showToPLayer)
                     {
-                        NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavingUniverse"], false, false);
-                        NetworkController.Instance.MessageAllClients(HES.Localization.Sentences["SavedUniverse"], false, false);
+                        NetworkManager.Instance.MessageAllClients(HES.Localization.Sentences["SavingUniverse"], false, false);
+                        NetworkManager.Instance.MessageAllClients(HES.Localization.Sentences["SavedUniverse"], false, false);
                     }
 
                     new TaskFactory().StartNew(() =>
@@ -203,7 +203,7 @@ namespace HellionExtendedServer.Managers
             Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
-            new NetworkController(m_server.NetworkController);
+            new NetworkManager(m_server.NetworkController);
             //Load Permission
             m_permissionmanager = new PermissionManager();
             //Load Events

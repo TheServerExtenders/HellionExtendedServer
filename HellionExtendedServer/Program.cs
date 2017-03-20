@@ -30,7 +30,7 @@ namespace HellionExtendedServer
     {
 
 
-        public static string GameVersion = "0.1.5";
+        public static string GameVersion = "0.1.7+";
         public static string BuildBranch = "Dev";
 
         #region Fields

@@ -150,6 +150,9 @@
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
+    <Compile Include="Managers\Plugins\Config\ConfigConstructor.cs" />
+    <Compile Include="Managers\Plugins\Config\ConfigSelection.cs" />
+    <Compile Include="Managers\TestingClass.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
@@ -179,8 +182,6 @@
     <Compile Include="Managers\Plugins\PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modules\Updater.cs" />
-    <Content Include="steamdiscussionOP.txt" />
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
     </EmbeddedResource>
@@ -197,7 +198,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Content Include="HellionForumsOP.html" />
     <Content Include="hesicon.ico" />
     <None Include="Chances.md" />
     <None Include="packages.config" />
@@ -210,7 +210,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="README.md" />
+    <None Include="Test.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -13,7 +13,6 @@ using ZeroGravity.Objects;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-using YamlDotNet.Samples.Helpers;
 
 namespace HellionExtendedServer.Managers.Plugins
 {

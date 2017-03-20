@@ -17,6 +17,8 @@ using ZeroGravity;
 using ZeroGravity.Data;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
+using NLog.Config;
+using NLog;
 
 using static ZeroGravity.Network.NetworkController;
 using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
@@ -67,6 +69,8 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
+            LogManager.Configuration = new XmlLoggingConfiguration(System.IO.Path.Combine(System.Environment.CurrentDirectory, "hes", "NLog.config"));
+
             //Init the log for HES
             new Log();
 

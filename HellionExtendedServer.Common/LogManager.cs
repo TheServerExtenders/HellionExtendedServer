@@ -18,6 +18,8 @@ namespace HellionExtendedServer.Common
 
         public Log()
         {
+            
+
             Instance = LogManager.GetCurrentClassLogger();
         }
     }

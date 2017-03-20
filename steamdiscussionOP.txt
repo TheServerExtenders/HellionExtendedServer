@@ -1,75 +1,117 @@
-[h1]Hellion Extended Server - Version 0.0.1.7[/h1]
+[h1]Hellion Extended Server [/h1] 
+OP last updated March 19th
+
+
+HES Forums: https://hellionextendedserver.com/index.php
+
+HES Jenkins: http://jenkins.hellionextendedserver.com:8080
+
+HES Plugins: https://hellionextendedserver.com/index.php?resources/
+Plugin Help: https://hellionextendedserver.com/index.php#plugins.7
+
+Hellion Official Forums Discussion: https://www.playhellion.com/forum/discussion/132/program-hellion-extended-server-hes-a-dedicated-server-extender?new=1
 
 http://steamcommunity.com/sharedfiles/filedetails/?id=878106669
 
 HES Server Name : ! {XTT}[US-Little Rock] [HellionExtendedServer] Hellion Service Development
-Always runs the latest extender!
+Always runs the latest master branch extender!
 
-Latest Release: https://github.com/generalwrex/HellionExtendedServer/releases/tag/0.0.1.7
+[h1] What The Hell Is It? [/h1]
 
-Hellion Official Forums Discussion: https://www.playhellion.com/forum/discussion/132/program-hellion-extended-server-hes-a-dedicated-server-extender?new=1
-
-Hey all, I'm currently working on a dedicated server enhancer for Hellion Dedicated!
-
-So far it adds chat functionality to the server, you can send chat by typing into HellionServerExtender.exe's console window, and you can read players chat.
-
-It's very minimalistic right now, but soon it will have a GUI, a plugin system, and much more!
+We're currently working on a dedicated server enhancer for Hellion Dedicated!
 
 [i]
-Hellion Extended Server uses reflection to enhance Hellions Dedicated Server by adding in a GUI (TODO) for control of game objects within Hellion in realtime and adding server side chat for communicating with people playing on your server, it will include; 
+Hellion Extended Server uses reflectionto enhance Hellions Dedicated Server by adding in a GUI (TODO) for control of game objects within Hellion in realtime and adding server side chat for communicating with people playing on your server, it will include; 
 [/i]
 
 [h1]Current Features[/h1]
 [b] Send and recieve chat from the console window[/b]
 [b] On Demand Saving[/b]
 [b] Announces Spawns on the server [/b]
-
+[b] Simple Plugin system  ( for now! Events are being added in )[/b]
+[b] Chat commands [/b]
+[b] Console Commands [/b]
 
 [code]
-Console Commands ( commands start with /)
+Type directly into the console to chat with online players.
 
-     /players - shows the amount of online players
-     /help - will have actual help soon!
-     /save - forces a save
+/help
+/save - forces a universe save
+/start - start the server
+/stop - stop the server
+/opengui - open the gui
+/players 
+     -count - returns the current amount of online players .
+      -list - returns the full list of connected players.
+      -all - returns every player that has ever been on the server. And if they're online.
+/send (name) text - send a message to the specified player
+/kick (name) - kick the specified player from the server
 [/code]
 
 [h1]Upcoming Features[/h1]
-[b] Finding out if the server has full communication access to help with Offline issues.[/b]
+[b] Finding out if the server has full communication access to help with Offline issues.(HARD)[/b]
 [b]Automatic timed backups [/b] 
 [b]Message of the Day[/b]  
 [b]Adverts[/b] 
 [b]Hotloading Plugins[/b] with an easy to use API so you can create your own plugins to modify the world of hellion to give the people playing on your server a new experience from other servers!
 
 
+[h1] Downloads[/h1]
+
+You can find the latest releases on our jenkins of the master branch, dev branch, and the experimental branch. These are updated everytime we make a change to the repository, but soon it will only do it on certian style commits so we're not sending updates to hes out every 5 minutes.
+
+These will be used for the update feature on HES, and you'll be able to choose which branch you would like to use from within hes. 
+
+We'll always try to keep master stable! Dev will always get the changes before Master, and Experimental will be used for the crazy stuff!
+
+Remember to always backup your server before using HES!
+
+
+Master: 
+[url=http://jenkins.hellionextendedserver.com:8080/job/HES%20-%20Master%20Branch/lastSuccessfulBuild/artifact/update.zip]Download[/url] - [url=http://jenkins.hellionextendedserver.com:8080/job/HES%20-%20Master%20Branch/changes]ChangeLog[/url]
+
+Dev:
+ [url=http://jenkins.hellionextendedserver.com:8080/job/HES%20-%20Dev%20Branch/lastSuccessfulBuild/artifact/update.zip]Download[/url] - [url=http://jenkins.hellionextendedserver.com:8080/job/HES%20-%20Dev%20Branch/changes]ChangeLog[/url]
+
+Experimental: 
+[url=http://jenkins.hellionextendedserver.com:8080/job/HES%20-%20Experimental%20Branch/lastSuccessfulBuild/artifact/update.zip]Download[/url] - [url=http://jenkins.hellionextendedserver.com:8080/job/HES%20-%20Experimental%20Branch/changes]ChangeLog[/url]
+
+
+
 [u]Remember to backup your server before using Hellion Extended Server![/u]
 
 GitHub Repository: https://github.com/generalwrex/HellionExtendedServer
 
-Releases: https://github.com/generalwrex/HellionExtendedServer/releases
 
 [h1]Installation[/h1]
 
 [code]
 
-Just drop the 4 files from the zip archive into your Hellion Dedicated Server directory
+Just drop the files from the zip archive into your Hellion Dedicated Server directory
 
      HellionExtendedServer.exe
-     HellionExtendedServer.exe.config
-     HellionExtendedServer.Common.dll
-     NLog.dll
-
+     HellionExtendedServer.exe.config        
+     Hes/
+           Nlog.config
+           localization
+           plugins
+           logs
+           bin/
+              HellionExtendedServer.Common.dll
+              NLog.dll
+                 
 To start the server, just run HellionServerExtender.exe ( make sure the files above exist with HellionExtendedServer.exe)
 
 [/code]
 
-[h1] Active Developers for HES[/h1]
-[XTT] General Wrex
+[h1] Active Developers[/h1]
  afro -1 (yungtechboy1)
+[XTT] General Wrex
+
+[b] Part time developers because of College!
 TheCaptain
 
 
-
 [h1] Contributions[/h1]
-If you would like to help just let me know! You can also fork the repository if you want to try your hand!
+If you would like to help just let us know! You can also fork the repository if you want to try your hand!  Come on we don't bite!
 
-Remember, there's not that much to do right now. But with help.. this will be awesome for everyone!

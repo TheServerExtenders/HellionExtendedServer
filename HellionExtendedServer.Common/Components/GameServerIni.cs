@@ -313,6 +313,8 @@ namespace HellionExtendedServer.Common.Components
                 else
                 {
                     Log.Instance.Warn("GameServer.Ini wasn't found! Creating a new one based on Defaults. ");
+                    LoadDefaults();
+                    Save(true, false);
                 }
             }
             catch (Exception ex)

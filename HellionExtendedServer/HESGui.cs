@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HellionExtendedServer.Managers;
-using HellionExtendedServer.Controllers;
+using HellionExtendedServer.Managers;
 
 namespace HellionExtendedServer
 {
@@ -170,7 +170,7 @@ namespace HellionExtendedServer
         {
             if(e.KeyCode == Keys.Enter & !String.IsNullOrEmpty(cpc_messagebox.Text))
             {
-                NetworkController.Instance.MessageAllClients(cpc_messagebox.Text, true, true);
+                NetworkManager.Instance.MessageAllClients(cpc_messagebox.Text, true, true);
                 cpc_messagebox.Text = "";
 
                 e.Handled = e.SuppressKeyPress = true;
@@ -183,7 +183,7 @@ namespace HellionExtendedServer
         {
             if (!String.IsNullOrEmpty(cpc_messagebox.Text))
             {
-                NetworkController.Instance.MessageAllClients(cpc_messagebox.Text, true, true);
+                NetworkManager.Instance.MessageAllClients(cpc_messagebox.Text, true, true);
                 cpc_messagebox.Text = "";
             }          
                            

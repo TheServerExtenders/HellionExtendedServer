@@ -5,7 +5,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using HellionExtendedServer.Common;
 
-namespace HellionExtendedServer.Modules
+namespace HellionExtendedServer.Managers
 {
     public class Update
     {
@@ -20,8 +20,6 @@ namespace HellionExtendedServer.Modules
 
         public void DownloadLatestRelease()
         {
-            //Seriously guys ! 
-            //If it's not updated you say it's update ?????
             if (!m_Release.IsUpdate)
             {
                 Console.WriteLine("HES is up to date!");

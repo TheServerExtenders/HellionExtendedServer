@@ -109,6 +109,7 @@
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\GameLibraries\NLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -141,6 +142,14 @@
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />
+    <Compile Include="Managers\Plugins\Browser\BBCodeHTML.cs" />
+    <Compile Include="Managers\Plugins\Browser\BrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Managers\Plugins\Browser\BrowserForm.Designer.cs">
+      <DependentUpon>BrowserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
@@ -156,10 +165,11 @@
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
     <Compile Include="GUI\Objects\Vessel.cs" />
+    <Compile Include="Managers\Plugins\Browser\Resources.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />
-    <Compile Include="Controllers\NetworkController.cs" />
+    <Compile Include="Managers\NetworkManager.cs" />
     <Compile Include="HESGui.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,6 +183,9 @@
     <Content Include="steamdiscussionOP.txt" />
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Managers\Plugins\Browser\BrowserForm.resx">
+      <DependentUpon>BrowserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -218,15 +231,15 @@
     <ProjectReference Include="..\HellionExtendedServer.Common\HellionExtendedServer.Common.csproj">
       <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
       <Name>HellionExtendedServer.Common</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <NativeReference Include="Microsoft.Windows.DebuggersAndTools, Version=1.0.0.0, ProcessorArchitecture=amd64, Type=win32">
-      <Name>dbghelp.dll</Name>
-      <HintPath>..\packages\dbghelp.dll</HintPath>
-    </NativeReference>
+    <Folder Include="API\Chat\" />
+    <Folder Include="API\Players\" />
+    <Folder Include="API\Vessels\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>@echo off

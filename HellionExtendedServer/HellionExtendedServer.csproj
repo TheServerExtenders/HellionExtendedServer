@@ -139,14 +139,15 @@
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />
-    <Compile Include="Managers\Plugins\Browser\BBCodeHTML.cs" />
-    <Compile Include="Managers\Plugins\Browser\BrowserForm.cs">
+    <Compile Include="GUI\Browser\BBCodeHTML.cs" />
+    <Compile Include="GUI\Browser\BrowserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Managers\Plugins\Browser\BrowserForm.Designer.cs">
+    <Compile Include="GUI\Browser\BrowserForm.Designer.cs">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
+    <Compile Include="GUI\Browser\PluginFile.cs" />
+    <Compile Include="GUI\Browser\PluginBrowser.cs" />
     <Compile Include="Modules\Config.cs" />
     <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
@@ -161,8 +162,8 @@
     <Compile Include="Managers\Plugins\PluginHelper.cs" />
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
-    <Compile Include="GUI\Objects\Vessel.cs" />
-    <Compile Include="Managers\Plugins\Browser\Resources.cs" />
+    <Compile Include="GUI\GameObjects\Vessel.cs" />
+    <Compile Include="GUI\Browser\Resources.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />
@@ -180,7 +181,7 @@
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Managers\Plugins\Browser\BrowserForm.resx">
+    <EmbeddedResource Include="GUI\Browser\BrowserForm.resx">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

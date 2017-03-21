@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace HellionExtendedServer.Managers.Plugins.Browser
+namespace HellionExtendedServer.GUI.Browser
 {
     public partial class BrowserForm : Form
     {

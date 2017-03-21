@@ -2,17 +2,29 @@
 using System.IO;
 using System.Net;
 
-namespace HellionExtendedServer.Managers.Plugins.Browser
+namespace HellionExtendedServer.GUI.Browser
 {
-    internal static class PluginBrowser
+    public class PluginFile : IEquatable<PluginFile>
     {
-        public static void DownloadPlugin(string fileName, string url)
+        public string Author { get; set; }
+        public long CreatedData { get; set; }
+        public string Description { get; set; }
+        public int DownloadCount { get; set; }
+        public string DownloadURL { get; set; }
+        public int Id { get; set; }
+        public long LastUpdateDate { get; set; }
+        public string Name { get; set; }
+        public string RatingAVG { get; set; }
+        public string RatingSUM { get; set; }
+        public string TimesRated { get; set; }
+        public string Version { get; set; }
+        public int VersionId { get; set; }
+
+        public void Download()
         {
             try
             {
-                Console.WriteLine("Trying to download the file..");
-
-                var request = WebRequest.Create(url) as HttpWebRequest;
+                var request = WebRequest.Create(DownloadURL) as HttpWebRequest;
                 request.Method = "GET";
                 request.Proxy = null;
                 request.CookieContainer = new CookieContainer();
@@ -23,7 +35,7 @@ namespace HellionExtendedServer.Managers.Plugins.Browser
                 {
                     var buffer = new byte[1024];
 
-                    var fileStream = File.OpenWrite(fileName);
+                    var fileStream = File.OpenWrite(Name);
                     using (Stream input = response.GetResponseStream())
                     {
                         var size = input.Read(buffer, 0, buffer.Length);
@@ -35,7 +47,7 @@ namespace HellionExtendedServer.Managers.Plugins.Browser
                             size = input.Read(buffer, 0, buffer.Length);
                         }
 
-                        Console.WriteLine("File downloaded! : " + fileName + "| Size: " + received / 1024 + "Kb");
+                        Console.WriteLine("File downloaded! : " + Name + "| Size: " + received / 1024 + "Kb");
                     }
 
                     fileStream.Flush();
@@ -46,6 +58,11 @@ namespace HellionExtendedServer.Managers.Plugins.Browser
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+
+        public bool Equals(PluginFile other)
+        {
+            return Id == other.Id;
         }
     }
 }

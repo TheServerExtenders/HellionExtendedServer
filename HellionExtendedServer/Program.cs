@@ -30,7 +30,7 @@ namespace HellionExtendedServer
     {
 
 
-        public static string GameVersion = "0.1.7+";
+        public static string GameVersion = "0.1.7";
         public static string BuildBranch = "Dev";
 
         #region Fields
@@ -169,7 +169,9 @@ namespace HellionExtendedServer
 
                     string cmmd = cmd.Split(" ".ToCharArray())[0].Replace("/", "");
                     string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
-                    if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args)) continue;
+                    
+                    if (ServerInstance.Instance.CommandManager != null)
+                        if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args)) continue;
 
                     string[] strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
                     List<string> stringList = new List<string>();

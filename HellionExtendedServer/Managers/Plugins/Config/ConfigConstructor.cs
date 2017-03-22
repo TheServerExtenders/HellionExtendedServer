@@ -35,7 +35,7 @@ namespace HellionExtendedServer.Managers.Plugins.Config
         {
             J = jo;
         }
-
+/*TODO Maybe....
         /// <summary>
         /// Allows for keys with '.'
         /// Example test.key.key2
@@ -58,7 +58,7 @@ namespace HellionExtendedServer.Managers.Plugins.Config
             if (value.Type != JTokenType.Object && value.Type != JTokenType.Array) return null;
             JSaver njs = new JSaver(value);
             return J[key];
-        }
+        }*/
 
     }
 

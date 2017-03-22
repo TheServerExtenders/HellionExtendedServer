@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HellionExtendedServer.API;
 using HellionExtendedServer.Common;
 using NLog;
 using ZeroGravity;
@@ -22,6 +23,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
         public Server GetServer { get { return svr; } }
         public Logger GetLogger { get { return Log.Instance; } }
+        public HesApi API { get { return HesApi.API; } }
 
         public PluginHelper(Server server)
         {

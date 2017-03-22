@@ -123,10 +123,12 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="YamlDotNet">
-      <HintPath>..\packages\YamlDotNet.dll</HintPath>
+      <HintPath>..\GameLibraries\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Chat.cs" />
+    <Compile Include="API\HESApi.cs" />
     <Compile Include="CrashDump.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
@@ -149,7 +151,6 @@
     <Compile Include="GUI\Browser\BrowserForm.Designer.cs">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
     <Compile Include="Managers\Plugins\Config\ConfigConstructor.cs" />
     <Compile Include="Managers\Plugins\Config\ConfigSelection.cs" />
     <Compile Include="Managers\TestingClass.cs" />
@@ -236,37 +237,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="API\Chat\" />
-    <Folder Include="API\Players\" />
-    <Folder Include="API\Vessels\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>@echo off
-
-echo Running build event for $(ProjectName)..
-
-if not exist "$(ProjectDir)bin\HESRelease"                              md "$(ProjectDir)bin\HESRelease"
-if not exist "$(ProjectDir)bin\HESRelease\Hes"                      md "$(ProjectDir)bin\HESRelease\Hes"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\bin "              md "$(ProjectDir)bin\HESRelease\Hes\bin"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\localization" md "$(ProjectDir)bin\HESRelease\Hes\localization"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\updates"       md "$(ProjectDir)bin\HESRelease\Hes\updates"
-if not exist  "$(ProjectDir)bin\HESRelease\Hes\plugins"       md  "$(ProjectDir)bin\HESRelease\Hes\plugins"
-
-xcopy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)bin\HESRelease\"  /y
-xcopy "$(TargetDir)$(TargetFileName).config" "$(ProjectDir)bin\HESRelease\" /y
-
-xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-xcopy "$(TargetDir)NLog.config" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-
-echo $(ProjectName) files have been copied to "$(ProjectDir)bin\HESRelease\".
-
-echo This is used to build the proper folder/file structure for releases to be zipped up.
-
-REM Dont remove this line below! VS hates when you dont exit 0!
-EXIT 0</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

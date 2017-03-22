@@ -35,30 +35,30 @@ namespace HellionExtendedServer.Managers.Plugins.Config
         {
             J = jo;
         }
-/*TODO Maybe....
-        /// <summary>
-        /// Allows for keys with '.'
-        /// Example test.key.key2
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public object GetValue(int key)
-        {
-            
-        }
-        public object GetValue(string key)
-        {
-            if (key == null) return null;
-            if (J.KeyExists(key)) return J[key];
-            string[] keys = key.Split(".".ToCharArray());
-            if (keys.Length <= 0) return null;
-            string newkey = String.Join(".",keys);
-            if (!J.KeyExists(keys[0])) return null;
-            JToken value = J[keys[0]];
-            if (value.Type != JTokenType.Object && value.Type != JTokenType.Array) return null;
-            JSaver njs = new JSaver(value);
-            return J[key];
-        }*/
+        /*TODO Maybe....
+                /// <summary>
+                /// Allows for keys with '.'
+                /// Example test.key.key2
+                /// </summary>
+                /// <param name="key"></param>
+                /// <returns></returns>
+                public object GetValue(int key)
+                {
+
+                }
+                public object GetValue(string key)
+                {
+                    if (key == null) return null;
+                    if (J.KeyExists(key)) return J[key];
+                    string[] keys = key.Split(".".ToCharArray());
+                    if (keys.Length <= 0) return null;
+                    string newkey = String.Join(".",keys);
+                    if (!J.KeyExists(keys[0])) return null;
+                    JToken value = J[keys[0]];
+                    if (value.Type != JTokenType.Object && value.Type != JTokenType.Array) return null;
+                    JSaver njs = new JSaver(value);
+                    return J[key];
+                }*/
 
     }
 
@@ -76,6 +76,11 @@ namespace HellionExtendedServer.Managers.Plugins.Config
             return "";
         }
 
+        public static bool KeyExists(this JArray JO, int key)
+        {
+            if (JO[key] != null) return true;
+            return false;
+        }
         public static bool KeyExists(this JObject JO, string key)
         {
             if (JO[key] != null) return true;
@@ -83,19 +88,49 @@ namespace HellionExtendedServer.Managers.Plugins.Config
         }
 
 
-        public static object Get(JObject J, string key)
+        public static object Get(this JArray J, string key)
         {
+            int i;
             if (key == null) return null;
-            if (J.KeyExists(key)) return J[key];
             string[] keys = key.Split(".".ToCharArray());
             if (keys.Length <= 0) return null;
             string newkey = String.Join(".", keys.Skip(1));
-            if (!J.KeyExists(keys[0])) return null;
-            JToken value = J[keys[0]];
-            if (value.Type != JTokenType.Object) return null;
-            JObject jo = value as JObject;
-            //TODO check if Int?
-            return jo.GetValue(newkey);
+            Boolean itp = int.TryParse(keys[0], out i);
+            JToken value = itp ? J[i] : J[keys[0]];
+            if (value.Type == JTokenType.Object)
+            {
+                JObject jo = value as JObject;
+                return jo.Get(newkey);
+            }
+            else if (value.Type == JTokenType.Array)
+            {
+                JArray ja = value as JArray;
+                return ja.Get(newkey);
+            }
+            return value;
+        }
+        public static object Get(this JObject J, string key)
+        {
+            int i;
+            if (key == null) return null;
+            //if (J.KeyExists(key)) return J[key];
+            string[] keys = key.Split(".".ToCharArray());
+            if (keys.Length <= 0) return null;
+            string newkey = String.Join(".", keys.Skip(1));
+            //if (!J.KeyExists(keys[0])) return null;
+            Boolean itp = int.TryParse(keys[0], out i);
+            JToken value = itp ? J[i] : J[keys[0]];
+            if (value.Type == JTokenType.Object)
+            {
+                JObject jo = value as JObject;
+                return jo.Get(newkey);
+            }
+            else if (value.Type == JTokenType.Array)
+            {
+                JArray ja = value as JArray;
+                return ja.Get(newkey);
+            }
+            return value;
         }
 
         public static void Save(this JObject JO, string file)

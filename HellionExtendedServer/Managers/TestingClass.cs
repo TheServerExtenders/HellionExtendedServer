@@ -17,11 +17,11 @@ namespace HellionExtendedServer.Managers
 
         public static void PreStartEvent()
         {
-            PreE1();
+            //PreE1();
         }
         public static void PostStartEvent()
         {
-            PostE1();
+            //PostE1();
         }
 
         public static void PostE1()

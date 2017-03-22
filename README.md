@@ -1,15 +1,11 @@
 # HellionExtendedServer
 An Extended Dedicated Server for Hellion http://www.playhellion.com 
 
-### Websites
-**Jenkins** - jenkins.hellionextendedserver.com:8080
-
-**Forums and Plugins** - https://hellionextendedserver.com
 
 [![Build status](https://ci.appveyor.com/api/projects/status/phdspum8g0d3ics9/branch/master?svg=true)](https://ci.appveyor.com/project/yungtechboy1/hellionextendedserver/branch/master)
 
 ### Websites
-**Jenkins** - jenkins.hellionextendedserver.com:8080
+**Jenkins** - http://jenkins.hellionextendedserver.com:8080
 
 **Forums and Plugins** - https://hellionextendedserver.com
 
@@ -18,7 +14,7 @@ An Extended Dedicated Server for Hellion http://www.playhellion.com
 **Hellion Forum Topic** - https://www.playhellion.com/forum/discussion/132/program-hellion-extended-server-hes-a-dedicated-server-extender
 
 
-THIS IS A WORK IN PROGRESS.
+_***THIS IS A WORK IN PROGRESS.***_
 
 It's very minimalistic right now, 
 you can chat with people on the server by just typing into the command prompt
@@ -49,7 +45,7 @@ commands start with /
      /players -list - returns the full list of connected players
      /players -count - returns the current amount of online players
      /players -all - returns every player that has ever been on the server. And if they're online.
-     /help - will have help soon
+     /help - Shows all available commands 
      /save - forces a universe save
      /save -send - forces a universe save, and tells connected players
      /send (name) text - send a message to the specified player
@@ -59,5 +55,7 @@ If you would like to help, fork or message me!
 
 # Contributors
 Generalwrex
+
 TheCaptain
+
 Yungtechboy1

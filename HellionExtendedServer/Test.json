@@ -1,0 +1,19 @@
+﻿{
+  "Table1": [
+    {
+      "id": 0,
+      "item": "item 0"
+    },
+    {
+      "id": 1,
+      "item": "item 1"
+    }
+  ],
+
+  "CPU": "Intel",
+  "Drives": [
+    "DVD read/writer",
+    "500 gigabyte hard drive"
+  ],
+  "TESTING": 50 
+}

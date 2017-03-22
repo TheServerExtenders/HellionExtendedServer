@@ -180,6 +180,8 @@ namespace HellionExtendedServer.Managers
                     "",
                 };
 
+            TestingClass.PreStartEvent();
+
             m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
 
             m_serverWrapper.Init();
@@ -202,6 +204,8 @@ namespace HellionExtendedServer.Managers
             }
             Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
+            //Where I keep all the testing stuff at!
+            TestingClass.PostStartEvent();
 
             new NetworkManager(m_server.NetworkController);
             //Load Permission

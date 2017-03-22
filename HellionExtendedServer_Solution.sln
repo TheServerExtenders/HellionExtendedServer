@@ -1,13 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HellionExtendedServer", "HellionExtendedServer\HellionExtendedServer.csproj", "{C0C5B3FF-D475-4237-AB7D-69851F591A22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HellionExtendedServer.Common", "HellionExtendedServer.Common\HellionExtendedServer.Common.csproj", "{05BB1DF9-3F9D-4170-984B-F90DD8AC83AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPlugin", "HellionExtendedServer\Plugins\TestPlugin\TestPlugin\TestPlugin.csproj", "{CA9D9BFF-5AA0-4372-9D4C-DC1C093D1803}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E7D4C30E-2818-45D9-8A48-AABCFC2FE47B}"
+	ProjectSection(SolutionItems) = preProject
+		HellionForumsOP.txt = HellionForumsOP.txt
+		README.md = README.md
+		steamdiscussionOP.txt = steamdiscussionOP.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

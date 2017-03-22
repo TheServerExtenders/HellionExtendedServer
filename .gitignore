@@ -15,6 +15,7 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+update/
 x64/
 x86/
 bld/
@@ -252,3 +253,4 @@ paket-files/
 *.sln.iml
 
 GameLibraries/
+/build

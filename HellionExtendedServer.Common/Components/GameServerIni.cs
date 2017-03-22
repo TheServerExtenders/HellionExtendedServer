@@ -117,7 +117,8 @@ namespace HellionExtendedServer.Common.Components
             get { return solarSystemTime; }
             set { solarSystemTime = value; }
         }
-
+        //TODO: This. THIS..we're not going to include them anymore to the ini as its a silent server killer...
+        /* 
         [ReadOnly(true)]
         [Description("The IP Address of the Main Server (Disabled)")]
         [Category("Settings")]
@@ -146,7 +147,7 @@ namespace HellionExtendedServer.Common.Components
         {
             get { return false; }           
         }
-
+        */
         [ReadOnly(false)]
         [Description("The name of the server shown to clients in the server browser. (Default: Hellion Dedicated Server)")]
         [Category("Required Settings")]

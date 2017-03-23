@@ -248,20 +248,21 @@
 		$(PostBuildEventDependsOn);
 		PostBuildMacros;
   </PostBuildEventDependsOn>
-    <PostBuildEvent>xcopy $(TargetDir)HellionExtendedServer.Common.dll $(TargetDir)Hes\bin\ /y
-xcopy $(TargetDir)NLog.dll $(TargetDir)Hes\bin\ /y
+    <PostBuildEvent>xcopy "$(TargetDir)HellionExtendedServer.Common.dll" "$(TargetDir)Hes\bin\"  /y
+xcopy "$(TargetDir)NLog.dll" "$(TargetDir)Hes\bin\"  /y
 
 echo DO NOT EDIT VERSION FILE
-echo @(VersionNumber) &gt;$(SolutionDir)VERSION
+echo @(VersionNumber) &gt;"$(SolutionDir)VERSION"
+
 	</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if not EXIST $(TargetDir)Hes mkdir $(TargetDir)Hes
+    <PreBuildEvent>if not EXIST "$(TargetDir)Hes" mkdir "$(TargetDir)Hes"
 
-if not EXIST $(TargetDir)Hes\bin mkdir  $(TargetDir)Hes\bin
-if not EXIST $(TargetDir)Hes\localization mkdir  $(TargetDir)Hes\localization
-if not EXIST $(TargetDir)Hes\plugins mkdir  $(TargetDir)Hes\plugins
-if not EXIST $(TargetDir)Hes\logs mkdir  $(TargetDir)Hes\logs
+if not EXIST "$(TargetDir)Hes\bin" mkdir  "$(TargetDir)Hes\bin"
+if not EXIST "$(TargetDir)Hes\localization" mkdir  "$(TargetDir)Hes\localization"
+if not EXIST "$(TargetDir)Hes\plugins" mkdir  "$(TargetDir)Hes\plugins"
+if not EXIST "$(TargetDir)Hes\logs" mkdir  "$(TargetDir)Hes\logs"
 
 </PreBuildEvent>
   </PropertyGroup>

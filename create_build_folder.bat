@@ -15,9 +15,11 @@ cd bin
 
 cd ../../../HellionExtendedServer\bin\Debug
 
+REM Binaries and config
 xcopy HellionExtendedServer.exe ..\..\..\build\ /y
 xcopy HellionExtendedServer.exe.config ..\..\..\build\ /y
-xcopy NLog.config ..\..\..\build\hes\ /y
+
+REM Hes\bin
 xcopy HellionExtendedServer.Common.dll ..\..\..\build\hes\bin\ /y
 xcopy NLog.dll ..\..\..\build\hes\bin\ /y
 

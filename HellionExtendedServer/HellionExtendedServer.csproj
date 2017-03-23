@@ -80,6 +80,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Server\</OutputPath>
@@ -107,9 +109,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\GameLibraries\NLog.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.4\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -201,7 +202,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="hesicon.ico" />
-    <None Include="Chances.md" />
+    <None Include="Changes.md" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -241,8 +242,26 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEventDependsOn>
+		$(PostBuildEventDependsOn);
+		PostBuildMacros;
+  </PostBuildEventDependsOn>
+    <PostBuildEvent>xcopy $(TargetDir)HellionExtendedServer.Common.dll $(TargetDir)Hes\bin\ /y
+xcopy $(TargetDir)NLog.dll $(TargetDir)Hes\bin\ /y
+
+echo DO NOT EDIT VERSION FILE
+echo @(VersionNumber) &gt;$(SolutionDir)VERSION
+	</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if not EXIST $(TargetDir)Hes mkdir $(TargetDir)Hes
+
+if not EXIST $(TargetDir)Hes\bin mkdir  $(TargetDir)Hes\bin
+if not EXIST $(TargetDir)Hes\localization mkdir  $(TargetDir)Hes\localization
+if not EXIST $(TargetDir)Hes\plugins mkdir  $(TargetDir)Hes\plugins
+if not EXIST $(TargetDir)Hes\logs mkdir  $(TargetDir)Hes\logs
+
+</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -251,4 +270,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+  </Target>
 </Project>

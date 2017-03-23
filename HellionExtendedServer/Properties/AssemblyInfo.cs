@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Hellion Extended Server")]
 [assembly: AssemblyDescription("An Hellion Dedicated Server Enhancement")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("The Community!")]
+[assembly: AssemblyCompany(@"https://github.com/HellionCommunity/HellionExtendedServer")]
 [assembly: AssemblyProduct("HellionExtendedServer")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
-[assembly: AssemblyTrademark("XTT")]
+[assembly: AssemblyCopyright("Copyright HellionCommunity ©  2017")]
+[assembly: AssemblyTrademark("HES")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.2.0")]
-[assembly: AssemblyFileVersion("0.1.2.0")]
+[assembly: AssemblyVersion("0.1.3.0")]
+[assembly: AssemblyFileVersion("0.1.3.0")]

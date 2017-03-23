@@ -30,7 +30,7 @@ namespace HellionExtendedServer
     {
 
 
-        public static string GameVersion = "0.1.7";
+        public static string GameVersion = "0.1.8";
         public static string BuildBranch = "Dev";
 
         #region Fields
@@ -69,8 +69,6 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
-            LogManager.Configuration = new XmlLoggingConfiguration(System.IO.Path.Combine(System.Environment.CurrentDirectory, "hes", "NLog.config"));
-
             //Init the log for HES
             new Log();
 

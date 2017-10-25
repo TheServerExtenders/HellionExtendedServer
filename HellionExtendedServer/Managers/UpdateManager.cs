@@ -7,13 +7,13 @@ using HellionExtendedServer.Common;
 
 namespace HellionExtendedServer.Managers
 {
-    public class Update
+    public class UpdateManager
     {
         public Release m_Release;
 
-        private static string LatestReleaseURL = @"https://api.github.com/repos/generalwrex/HellionExtendedServer/releases/latest";
+        private static string LatestReleaseURL = @"https://api.github.com/repos/HellionCommunity/HellionExtendedServer/releases/latest";
 
-        public Update()
+        public UpdateManager()
         {
             ServicePointManager.DefaultConnectionLimit = 4;
         }

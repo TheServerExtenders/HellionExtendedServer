@@ -67,7 +67,7 @@ namespace HellionExtendedServer.Managers.Commands
 
         public bool HandleConsoleCommand(string cmd, string[] args)
         {
-            Console.WriteLine(String.Format("Handeling Console Cmd /{0} with arge: {1}", cmd, String.Join(" ", args)));
+            Console.WriteLine(String.Format("Handling Console Command /{0} with arg: {1}", cmd, String.Join(" ", args)));
             //TODO check Permmissions
             if (!commandDictionary.ContainsKey(cmd)) return false;
             Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server });
@@ -88,8 +88,8 @@ namespace HellionExtendedServer.Managers.Commands
         }
         public void HandlePlayerCommand(string cmd, string[] args, Player sender)
         {
-            Console.WriteLine(String.Format("Handeling String /{0} with arge: {1}", cmd, String.Join(" ",args)));
-            //TODO check Permmissions
+            Console.WriteLine(String.Format("Handling String /{0} with arge: {1}", cmd, String.Join(" ",args)));
+            //TODO check Permissions
             if (!commandDictionary.ContainsKey(cmd)) return;
             Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server});
             if (c == null) return;

@@ -123,7 +123,7 @@ namespace HellionExtendedServer.Common.Components
         [Description("The description to the server. (Default: None)")]
         [Category("Server Settings")]
         [DisplayName("Server Description")]
-        public string server_description
+        public string description
         {
             get { return serverDescription; }
             set { serverDescription = value; }
@@ -363,7 +363,6 @@ namespace HellionExtendedServer.Common.Components
                 serverTickCount = 64;
                 solarSystemTime = -1;
                 saveInterval = 900;
-
                 serverRestartTime = -1;
                 f_vessel_collision_damage_multiplier = 1;
                 f_vessel_explosion_radius_multiplier = 1;        //(Default: 1)                    Damage radius for exploding vessels

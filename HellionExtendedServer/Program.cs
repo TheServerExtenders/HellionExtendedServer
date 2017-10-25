@@ -30,7 +30,7 @@ namespace HellionExtendedServer
     {
 
 
-        public static string GameVersion = "0.1.7+";
+        public static string GameVersion = "0.2.5";
         public static string BuildBranch = "Dev";
 
         #region Fields
@@ -145,6 +145,11 @@ namespace HellionExtendedServer
                     autoStart = true;
                     Log.Instance.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
                 }
+
+                if (arg.Equals("-updatehes"))
+                {
+                    Log.Instance.Info("HellionExtendedServer: Arg: -updatehes or HESGui's Auto Update Hes Checkbox was Checked)");
+                }
             }
 
             if (m_useGui)            
@@ -154,6 +159,8 @@ namespace HellionExtendedServer
 
             if (autoStart | Properties.Settings.Default.AutoStart)
                 ServerInstance.Instance.Start();
+
+
 
             ReadConsoleCommands();
         }
@@ -178,6 +185,8 @@ namespace HellionExtendedServer
 
                     string cmmd = cmd.Split(" ".ToCharArray())[0].Replace("/", "");
                     string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
+
+
                     if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args)) continue;
 
                     string[] strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
@@ -266,7 +275,7 @@ namespace HellionExtendedServer
                             Console.WriteLine(HES.m_localization.Sentences["NoPlayerName"]);
                     }
 
-                    if (stringList[1] == "kick" && stringList.Count > 2)
+                    if (stringList[1] == "kick" && stringList.Count > 2 & Server.IsRunning)
                     {
                         flag = true;
                         if (stringList[3].Contains("(") && stringList[3].Contains(")"))

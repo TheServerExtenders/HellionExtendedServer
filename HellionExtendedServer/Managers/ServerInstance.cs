@@ -100,9 +100,16 @@ namespace HellionExtendedServer.Managers
             m_serverThread = null;
             m_serverInstance = this;
 
-            m_assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe"));
-            m_serverWrapper = new ServerWrapper(m_assembly);
+            string gameExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe");
 
+            if (System.IO.File.Exists(gameExePath))
+            {
+                m_assembly = Assembly.LoadFile(gameExePath);
+                m_serverWrapper = new ServerWrapper(m_assembly);
+            }
+            else
+                Console.WriteLine($"HELLION_Dedicated.exe not detected at {gameExePath}.\r\n Press any key to close.");
+            
             m_gameServerIni = new GameServerIni();
         }
 
@@ -169,6 +176,12 @@ namespace HellionExtendedServer.Managers
         /// </summary>
         public void Start(int wait = 0)
         {
+            if(m_assembly == null)
+            {
+                Console.WriteLine($"HELLION_Dedicated.exe does not exist.\r\n Cannot start the server.");
+                return;
+            }
+
             if (wait > 0)
                 Thread.Sleep(wait);
 

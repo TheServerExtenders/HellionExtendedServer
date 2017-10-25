@@ -43,7 +43,6 @@ namespace HellionExtendedServer
         private static EventHandler _handler;
         private static Boolean m_useGui = true;
         private static Thread uiThread;
-
         #endregion Fields
 
         #region Properties
@@ -69,7 +68,17 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
-            LogManager.Configuration = new XmlLoggingConfiguration(System.IO.Path.Combine(System.Environment.CurrentDirectory, "hes", "NLog.config"));
+
+            string configPath = System.IO.Path.Combine(System.Environment.CurrentDirectory, "hes", "NLog.config");
+
+            if (!System.IO.File.Exists(configPath))
+            {
+                Console.WriteLine($"NLog.config not detected at {configPath}.\r\n Press any key to close.");
+                Console.ReadKey();
+                return;
+            }
+                              
+            LogManager.Configuration = new XmlLoggingConfiguration(configPath);
 
             //Init the log for HES
             new Log();
@@ -120,7 +129,7 @@ namespace HellionExtendedServer
             m_serverInstance = new ServerInstance();
             m_serverInstance.Config.Load();
 
-            var autoStart = false;
+            bool autoStart = false;
             foreach (string arg in args)
             {
                 if (arg.Equals("-nogui"))
@@ -131,7 +140,7 @@ namespace HellionExtendedServer
                         Log.Instance.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
                 }
 
-                if (arg.Equals("-autostart") | Properties.Settings.Default.AutoStart)
+                if (arg.Equals("-autostart"))
                 {
                     autoStart = true;
                     Log.Instance.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");

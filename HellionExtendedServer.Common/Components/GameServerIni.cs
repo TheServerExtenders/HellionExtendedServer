@@ -1,9 +1,12 @@
-﻿using System;
+﻿#pragma warning disable IDE1006
+
+using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
 using HellionExtendedServer.Common;
+
 
 namespace HellionExtendedServer.Common.Components
 {
@@ -15,21 +18,39 @@ namespace HellionExtendedServer.Common.Components
         public Dictionary<string, string> Settings = new Dictionary<string, string>();
 
         #region Fields
+
+        // Server Options
         private static string serverName;
-        private static string serverPass;
-        private static int statusPort;
         private static int clientPort;
+        private static int statusPort;
         private static int maxPlayers;
+        private static string serverPass;
+        private static string serverDescription;
+        private static int saveInterval;
         private static int maxSaveFileCount;
+        private static int serverRestartTime;
+        private static bool printDebugObjects;
+
+        // Game Options
+
+        private static int f_vessel_collision_damage_multiplier;        //(Default: 1)					Damage multiplier for vessel collision
+        private static int f_vessel_explosion_radius_multiplier;        //(Default: 1)                    Damage radius for exploding vessels
+        private static int f_vessel_explosion_damage_multiplier;        //(Default: 1)					Damage multiplier for exploding vessels
+        private static float f_vessel_decay_rate;                         //(Default: 0.05)                 Vessel decay rate in HPs per second
+        private static int f_activate_repair_point_chance_multiplier;   //(Default: 1)						If value is less then 1 (0-0,9) then chance for is lowered if number is higher than 1 chance is increased 
+        private static int f_doomed_ship_spawn_frequency;               //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
+        private static int f_doomed_ship_timer_min;                     //(Default: 1800)					Doomed outpust minimum despawn time, value in seconds // 1800 = 30 minutes
+        private static int f_doomed_ship_timer_max;                     //(Default: 3600)					Doomed outpust maximum despawn time, value in seconds // 3600 = 1 hour
+        private static float f_doomed_ship_spawn_chance;                  //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
+        private static bool f_spawn_manager_print_categories;            //(Default: false)				Spawn manager debug information
+        private static bool f_spawn_manager_print_spawn_rules;           //(Default: false)				Spawn manager debug information
+        private static bool f_spawn_manager_print_item_attach_points;    //(Default: false)				Spawn manager debug information
+        private static bool f_spawn_manager_print_item_type_ids;         //(Default: false)				Spawn manager debug information
+
+
         private static int serverTickCount;
         private static int solarSystemTime;
-        private static int saveInterval;
-        private static string mainServerIP;
-        private static int mainServerPort;        
-        private static double shipDespawnTime;
-        private static double shipDespawnDistress;
-        private static double shipDespawnDistressChance;
-        private static int spawnRandomShipsCount;
+
         #endregion
 
         public GameServerIni()
@@ -40,7 +61,7 @@ namespace HellionExtendedServer.Common.Components
         #region ServerConfig Properties
         [ReadOnly(false)]
         [Description("The max amount of save files that can exist at once. (Set lower to save drive space)")]
-        [Category("Settings")]
+        [Category("Server Settings")]
         [DisplayName("Max Save Files")]
         public int number_of_save_file
         {
@@ -49,48 +70,8 @@ namespace HellionExtendedServer.Common.Components
         }
 
         [ReadOnly(false)]
-        [Description("Ship de-spawn time. (Default: 259200) Value in seconds // 259200=72 hours")]
-        [Category("Settings")]
-        [DisplayName("Ship Despawn Time")]
-        public double ship_despawn_time
-        {
-            get { return shipDespawnTime; }
-            set { shipDespawnTime = value; }
-        }
-
-        [ReadOnly(false)]
-        [Description("(?) Ship despawn distress in seconds. (Default: 10800) Value in seconds // 10800=3 hours")]
-        [Category("Settings")]
-        [DisplayName("Ship Despawn Distress")]
-        public double ship_despawn_distress
-        {
-            get { return shipDespawnDistress; }
-            set { shipDespawnDistress = value; }
-        }
-
-        [ReadOnly(false)]
-        [Description("(?) Ship despawn distress in seconds.  (Default: 0.05) Value in % (0-1)")]
-        [Category("Settings")]
-        [DisplayName("Ship Despawn Distress Chance")]
-        public double ship_despawn_distress_chance
-        {
-            get { return shipDespawnDistressChance; }
-            set { shipDespawnDistressChance = value; }
-        }
-
-        [ReadOnly(false)]
-        [Description("(?) How many random ships to spawn. (Default 0)")]
-        [Category("Settings")]
-        [DisplayName("Spawn Random Ships Count")]
-        public int spawn_random_ships_count
-        {
-            get { return spawnRandomShipsCount; }
-            set { spawnRandomShipsCount = value; }
-        }
-
-        [ReadOnly(false)]
         [Description("How many times the server is allowed to update per second (Default: 64)")]
-        [Category("Settings")]
+        [Category("Server Settings")]
         [DisplayName("Server Tick Count")]
         public int server_tick_count
         {
@@ -100,7 +81,7 @@ namespace HellionExtendedServer.Common.Components
 
         [ReadOnly(false)]
         [Description("How long the time in between saves in seconds. (Default: 900) (-1 = Off)")]
-        [Category("Settings")]
+        [Category("Server Settings")]
         [DisplayName("Save Interval")]
         public int save_interval
         {
@@ -110,43 +91,14 @@ namespace HellionExtendedServer.Common.Components
 
         [ReadOnly(false)]
         [Description("The time of the solar systems birth (Default: -1) (-1 = Random)")]
-        [Category("Settings")]
+        [Category("Server Settings")]
         [DisplayName("Solar System Time")]
         public int solar_system_time
         {
             get { return solarSystemTime; }
             set { solarSystemTime = value; }
         }
-
-        [ReadOnly(true)]
-        [Description("The IP Address of the Main Server (Disabled)")]
-        [Category("Settings")]
-        [DisplayName("Main Server IP")]
-        public string main_server_ip
-        {
-            get { return mainServerIP; }
-            set { mainServerIP = value; }
-        }
-
-        [ReadOnly(true)]
-        [Description("The Port of the Main Server (Disabled)")]
-        [Category("Settings")]
-        [DisplayName("Main Server Port")]
-        public int main_server_port
-        {
-            get { return mainServerPort; }
-            set { mainServerPort = value; }
-        }
-
-        [ReadOnly(true)]
-        [Description("Enable SSL of Main Server (Disabled)")]
-        [Category("Settings")]
-        [DisplayName("Main Server SSL")]
-        public bool main_server_ssl
-        {
-            get { return false; }           
-        }
-
+ 
         [ReadOnly(false)]
         [Description("The name of the server shown to clients in the server browser. (Default: Hellion Dedicated Server)")]
         [Category("Required Settings")]
@@ -161,10 +113,20 @@ namespace HellionExtendedServer.Common.Components
         [Description("The password to the server. (Default: None)")]
         [Category("Required Settings")]
         [DisplayName("Server Password")]
-        public string server_pass
+        public string server_password
         {
             get { return serverPass; }
             set { serverPass = value; }
+        }
+
+        [ReadOnly(false)]
+        [Description("The description to the server. (Default: None)")]
+        [Category("Server Settings")]
+        [DisplayName("Server Description")]
+        public string server_description
+        {
+            get { return serverDescription; }
+            set { serverDescription = value; }
         }
 
         [ReadOnly(false)]
@@ -197,6 +159,176 @@ namespace HellionExtendedServer.Common.Components
             set { maxPlayers = value; }
         }
 
+        [ReadOnly(false)]
+        [Description("Automatic server restart, value in seconds (Default: -1) (-1 = Disabled)")]
+        [Category("Server Settings")]
+        [DisplayName("Spawn Manager Print Item Attach Points")]
+        public int server_restart_time
+        {
+            get
+            {
+                if (serverRestartTime == 0)
+                    serverRestartTime = -1;
+
+                return serverRestartTime;
+            }
+            set { serverRestartTime = value; }
+
+        }//(Default: -1) (-1 = Disabled)	Automatic server restart, value in seconds
+
+        [ReadOnly(false)]
+        [Description("Set to true for objects on server print (Default: false)	")]
+        [Category("Server Settings")]
+        [DisplayName("Spawn Manager Print Item Attach Points")]
+        public bool print_debug_objects
+        {
+            get { return printDebugObjects; }
+            set { printDebugObjects = value; }
+        }//(Default: false)				Set to true for objects on server print
+
+        [ReadOnly(false)]
+        [Description("Damage multiplier for vessel collision (Default: 1)")]
+        [Category("Game Settings")]
+        [DisplayName("Vessel Collision Damage Multiplier")]
+        public int vessel_collision_damage_multiplier
+        {
+            get { return f_vessel_collision_damage_multiplier; }
+            set { f_vessel_collision_damage_multiplier = value; }
+        }
+
+        [ReadOnly(false)]
+        [Description("Damage radius for exploding vessels (Default: 1)")]
+        [Category("Game Settings")]
+        [DisplayName("Vessel Explosion Radius Multiplier")]
+        public int vessel_explosion_radius_multiplier        //(Default: 1)                    
+        {
+            get { return f_vessel_explosion_radius_multiplier; }
+            set { f_vessel_explosion_radius_multiplier = value; }
+        }
+        
+
+        [ReadOnly(false)]
+        [Description("Damage multiplier for exploding vessels (Default: 1)")]
+        [Category("Game Settings")]
+        [DisplayName("Vessel Explosion Damage Multiplier")]
+        public int vessel_explosion_damage_multiplier
+        {
+            get { return f_vessel_explosion_damage_multiplier; }
+            set { f_vessel_explosion_damage_multiplier = value; }
+        }
+        //(Default: 1)					Damage multiplier for exploding vessels
+
+        [ReadOnly(false)]
+        [Description("Vessel decay rate in HPs per second (Default: 0.05) ")]
+        [Category("Game Settings")]
+        [DisplayName("Vessel Decay Rate")]
+        public float vessel_decay_rate
+        {
+            get { return f_vessel_decay_rate; }
+            set { f_vessel_decay_rate = value; }
+        }
+        //(Default: 0.05)                 Vessel decay rate in HPs per second
+
+        [ReadOnly(false)]
+        [Description("If value is less then 1 (0-0,9) then chance for is lowered if number is higher than 1 chance is increased  (Default: 1)")]
+        [Category("Game Settings")]
+        [DisplayName("Activate Repair Point Chance Multiplier")]
+        public int activate_repair_point_chance_multiplier
+        {
+            get { return f_activate_repair_point_chance_multiplier; }
+            set { f_activate_repair_point_chance_multiplier = value; }
+        }
+        //(Default: 1)						If value is less then 1 (0-0,9) then chance for is lowered if number is higher than 1 chance is increased 
+
+        [ReadOnly(false)]
+        [Description("Doomed outpost spawn interval, value in seconds // 10800 = 3 hours (Default: 10800)")]
+        [Category("Game Settings")]
+        [DisplayName("Doomed Ship Spawn Frequency")]
+        public int doomed_ship_spawn_frequency
+        {
+            get { return f_doomed_ship_spawn_frequency; }
+            set { f_doomed_ship_spawn_frequency = value; }
+        }
+        //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
+
+        [ReadOnly(false)]
+        [Description("Doomed outpost minimum despawn time, value in seconds // 1800 = 30 minutes (Default: 1800)")]
+        [Category("Game Settings")]
+        [DisplayName("Doomed Ship Timer Min")]
+        public int doomed_ship_timer_min
+        {
+            get { return f_doomed_ship_timer_min; }
+            set { doomed_ship_timer_min = value; }
+        }
+        //(Default: 1800)					Doomed outpust minimum despawn time, value in seconds // 1800 = 30 minutes
+
+        [ReadOnly(false)]
+        [Description("Doomed outpost maximum despawn time, value in seconds // 3600 = 1 hour (Default: 3600)")]
+        [Category("Game Settings")]
+        [DisplayName("Doomed Ship Timer Max")]
+        public int doomed_ship_timer_max
+        {
+            get { return f_doomed_ship_timer_max; }
+            set { f_doomed_ship_timer_max = value; }
+        }
+        //(Default: 3600)					Doomed outpust maximum despawn time, value in seconds // 3600 = 1 hour
+
+        [ReadOnly(false)]
+        [Description("Doomed outpost spawn chance, value in % (0-1) (Default: 0.5)")]
+        [Category("Game Settings")]
+        [DisplayName("Doomed Ship Spawn Chance")]
+        public float doomed_ship_spawn_chance
+        {
+            get { return f_doomed_ship_spawn_chance; }
+            set { doomed_ship_spawn_chance = value; }
+        }
+        //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
+
+        [ReadOnly(false)]
+        [Description("Spawn manager debug information (Default: false)")]
+        [Category("Game Settings")]
+        [DisplayName("Spawn Manager Print Categories")]
+        public bool spawn_manager_print_categories
+        {
+            get { return f_spawn_manager_print_categories; }
+            set { f_spawn_manager_print_categories = value; }
+        }
+        //(Default: false)				Spawn manager debug information
+
+        [ReadOnly(false)]
+        [Description("Spawn manager debug information (Default: false)")]
+        [Category("Game Settings")]
+        [DisplayName("Spawn Manager Print Spawn Rules")]
+        public bool spawn_manager_print_spawn_rules
+        {
+            get { return f_spawn_manager_print_spawn_rules; }
+            set { f_spawn_manager_print_spawn_rules = value; }
+        }
+        //(Default: false)				Spawn manager debug information
+
+        [ReadOnly(false)]
+        [Description("Spawn manager debug information (Default: false)")]
+        [Category("Game Settings")]
+        [DisplayName("Spawn Manager Print Item Attach Points")]
+        public bool spawn_manager_print_item_attach_points
+        {
+            get { return f_spawn_manager_print_item_attach_points; }
+            set { f_spawn_manager_print_item_attach_points = value; }
+        }
+        //(Default: false)				Spawn manager debug information
+
+        [ReadOnly(false)]
+        [Description("Spawn manager debug information (Default: false)")]
+        [Category("Game Settings")]
+        [DisplayName("Spawn Manager Print Item Attach Points")]
+        public bool spawn_manager_print_item_type_ids
+        {
+            get { return f_spawn_manager_print_item_type_ids; }
+            set { f_spawn_manager_print_item_type_ids = value; }
+        }
+        //(Default: false)				Spawn manager debug information
+
+
         private object this[string property]
         {
             get
@@ -219,34 +351,62 @@ namespace HellionExtendedServer.Common.Components
         #region Methods
         public void LoadDefaults()
         {
-            serverName = "Hellion Dedicated Server";
-            serverPass = "";
-            statusPort = 5970;
-            clientPort = 5969;
-            maxPlayers = 20;
-            maxSaveFileCount = 10;
-            serverTickCount = 64;
-            solarSystemTime = -1;
-            saveInterval = 900;
-            mainServerIP = "0.0.0.0";
-            mainServerPort = 0;
-            shipDespawnTime = 259200;
-            shipDespawnDistress = 10800;
-            shipDespawnDistressChance = 0.05;
-            spawnRandomShipsCount = 0;
+            try
+            {
+                serverName = "Hellion Dedicated Server";
+                serverPass = "";
+                serverDescription = "";
+                statusPort = 5970;
+                clientPort = 5969;
+                maxPlayers = 20;
+                maxSaveFileCount = 10;
+                serverTickCount = 64;
+                solarSystemTime = -1;
+                saveInterval = 900;
 
-            SetSettings();           
+                serverRestartTime = -1;
+                f_vessel_collision_damage_multiplier = 1;
+                f_vessel_explosion_radius_multiplier = 1;        //(Default: 1)                    Damage radius for exploding vessels
+                f_vessel_explosion_damage_multiplier = 1;        //(Default: 1)					Damage multiplier for exploding vessels
+                f_vessel_decay_rate = 0.05F;                         //(Default: 0.05)                 Vessel decay rate in HPs per second
+                f_activate_repair_point_chance_multiplier = 1;   //(Default: 1)						If value is less then 1 (0-0,9) then chance for is lowered if number is higher than 1 chance is increased 
+                f_doomed_ship_spawn_frequency = 10800;               //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
+                f_doomed_ship_timer_min = 1800;                     //(Default: 1800)					Doomed outpust minimum despawn time, value in seconds // 1800 = 30 minutes
+                f_doomed_ship_timer_max = 3600;                     //(Default: 3600)					Doomed outpust maximum despawn time, value in seconds // 3600 = 1 hour
+                f_doomed_ship_spawn_chance = 0.5F;                  //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
+                f_spawn_manager_print_categories = false;            //(Default: false)				Spawn manager debug information
+                f_spawn_manager_print_spawn_rules = false;           //(Default: false)				Spawn manager debug information
+                f_spawn_manager_print_item_attach_points = false;    //(Default: false)				Spawn manager debug information
+                f_spawn_manager_print_item_type_ids = false;         //(Default: false)				Spawn manager debug information
+
+
+
+                SetSettings();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: [LoadDefaults]" + ex.StackTrace);
+            }
+            
         }
 
 
         private void SetSettings()
         {
-            object obj = m_instance;
-
-            foreach (PropertyInfo prop in obj.GetType().GetProperties())
+            try
             {
-                Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
+                object obj = m_instance;
+
+                foreach (PropertyInfo prop in obj.GetType().GetProperties())
+                {
+                    Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
+                }
             }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: [SetSettings]" + ex.StackTrace);
+            }
+           
         }
 
         public bool Save(bool ignoreFileExists = false, bool backupIni = true)

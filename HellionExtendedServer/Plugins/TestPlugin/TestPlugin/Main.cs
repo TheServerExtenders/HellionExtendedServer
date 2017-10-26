@@ -40,6 +40,21 @@ namespace TestPlugin
             {
                 GetPluginHelper.SendMessageToClient(p, "Test Command Success!");
                 Console.WriteLine("TEST COMMAND SENT!");
+            }else if (command.ToLower() == "pos")
+            {
+                GetPluginHelper.SendMessageToClient(p, "Your current Postion to string " + p.LocalPosition.ToString());
+            }
+            else if (command.ToLower() == "tp")
+            {
+                p.LocalPosition.X = 10;
+                p.LocalPosition.Z = 10;
+                p.LocalPosition.Y = 10;
+                GetPluginHelper.SendMessageToClient(p, "Your current Postion to string " + p.LocalPosition.ToString());
+                long guid = p.GUID;
+                SpawnObjectsResponse spawnObjectsResponse = new SpawnObjectsResponse();
+                spawnObjectsResponse.Data.Add(p.GetSpawnResponseData((Player)null));
+                GetServer.NetworkController.SendToGameClient(guid, spawnObjectsResponse);
+                GetPluginHelper.SendMessageToClient(p, "Your current Postion to string " + p.LocalPosition.ToString());
             }
         }
 

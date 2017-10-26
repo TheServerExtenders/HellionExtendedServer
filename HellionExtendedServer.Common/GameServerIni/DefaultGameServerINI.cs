@@ -70,7 +70,9 @@ namespace HellionExtendedServer.Common.GameServerIni
                         {
                             setting.Type = typeof(string);
                             setting.DefaultValue = string.Empty;
-                        }                      
+                        }
+
+                       
                     }
 
                     // if the default or description of the setting contains the string (Required)
@@ -78,16 +80,37 @@ namespace HellionExtendedServer.Common.GameServerIni
                         setting.Required = true;
                     else
                         setting.Required = false;
+                                                     
+                    //TODO: Parse the description
+                    setting.Description = Regex.Replace(description, @"\s+", " "); 
+                 
+                    if (name == "server_name")
+                    {
+                        setting.DefaultValue = "Hellion Game Server";
+                        setting.Type = typeof(string);
+                    }
+                    else if (name == "game_client_port")
+                    {
+                        setting.DefaultValue = 5969;
+                        setting.Type = typeof(int);
+                    }
+                    else if (name == "status_port")
+                    {
+                        setting.DefaultValue = 5970;
+                        setting.Type = typeof(int);
+                    }
 
                     setting.Line = line;
                     setting.Name = name;
                     setting.Enabled = false;
                     setting.Value = setting.DefaultValue;
-                    
-                    //TODO: Parse the description
-                    setting.Description = Regex.Replace(description, @"\s+", " "); 
 
-                    Console.WriteLine($"name: {setting.Name} | value: {setting.Value} | type: {setting.Type} | enabled: {setting.Enabled}| required: {setting.Required} | description: {setting.Description}");
+                    Console.WriteLine($"name: {setting.Name} " +
+                        $"| value: {setting.Value} " +
+                        $"| type: {setting.Type} " +
+                        $"| enabled: {setting.Enabled}" +
+                        $"| required: {setting.Required} " +
+                        $"| description: {setting.Description}");
 
                     settings.Add(setting);
                 }

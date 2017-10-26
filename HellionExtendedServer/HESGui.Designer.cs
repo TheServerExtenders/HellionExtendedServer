@@ -146,6 +146,7 @@
             this.serverconfig_properties.LineColor = System.Drawing.SystemColors.ControlDark;
             this.serverconfig_properties.Location = new System.Drawing.Point(0, 0);
             this.serverconfig_properties.Name = "serverconfig_properties";
+            this.serverconfig_properties.PropertySort = System.Windows.Forms.PropertySort.NoSort;
             this.serverconfig_properties.Size = new System.Drawing.Size(798, 398);
             this.serverconfig_properties.TabIndex = 0;
             // 

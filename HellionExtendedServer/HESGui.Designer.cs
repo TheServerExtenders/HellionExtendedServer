@@ -43,6 +43,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.serverconfig_properties = new System.Windows.Forms.PropertyGrid();
+            this.server_config_reload = new System.Windows.Forms.Button();
             this.server_config_debugmode = new System.Windows.Forms.CheckBox();
             this.server_config_setdefaults = new System.Windows.Forms.Button();
             this.server_config_cancel = new System.Windows.Forms.Button();
@@ -126,6 +127,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.server_config_reload);
             this.splitContainer1.Panel2.Controls.Add(this.server_config_debugmode);
             this.splitContainer1.Panel2.Controls.Add(this.server_config_setdefaults);
             this.splitContainer1.Panel2.Controls.Add(this.server_config_cancel);
@@ -140,10 +142,23 @@
             // serverconfig_properties
             // 
             this.serverconfig_properties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serverconfig_properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.serverconfig_properties.LineColor = System.Drawing.SystemColors.ControlDark;
             this.serverconfig_properties.Location = new System.Drawing.Point(0, 0);
             this.serverconfig_properties.Name = "serverconfig_properties";
             this.serverconfig_properties.Size = new System.Drawing.Size(798, 398);
             this.serverconfig_properties.TabIndex = 0;
+            // 
+            // server_config_reload
+            // 
+            this.server_config_reload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.server_config_reload.Location = new System.Drawing.Point(571, 37);
+            this.server_config_reload.Name = "server_config_reload";
+            this.server_config_reload.Size = new System.Drawing.Size(120, 23);
+            this.server_config_reload.TabIndex = 6;
+            this.server_config_reload.Text = "Reload Config";
+            this.server_config_reload.UseVisualStyleBackColor = true;
+            this.server_config_reload.Click += new System.EventHandler(this.server_config_reload_Click);
             // 
             // server_config_debugmode
             // 
@@ -495,6 +510,7 @@
         private System.Windows.Forms.Button cpc_chat_send;
         private System.Windows.Forms.TextBox cpc_messagebox;
         public System.Windows.Forms.Button server_config_startserver;
+        private System.Windows.Forms.Button server_config_reload;
     }
 }
 

@@ -10,17 +10,27 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Managers;
+using HellionExtendedServer.Common.GameServerIni;
+using System.Globalization;
 
 namespace HellionExtendedServer
 {
     public partial class HESGui : Form
     {
 
+        private GameServerSettings Settings = new GameServerSettings();
+
         public HESGui()
         {
             InitializeComponent();
 
-            serverconfig_properties.SelectedObject = ServerInstance.Instance.Config;
+            var properties = new Common.GameServerIni.Properties();
+            properties.LoadDefaults();
+
+            foreach (var property in properties.Settings)
+                Settings.Add(new GameServerProperty(new CultureInfo("en-US").TextInfo.ToTitleCase(property.Name.Replace("_"," ")), property.Description, property.Value, property.Type, false, true));
+
+
 
             cpc_chat_list.Enabled = true;
             cpc_chat_list.ReadOnly = true;
@@ -40,6 +50,8 @@ namespace HellionExtendedServer
             ServerInstance.Instance.OnServerStopped += Instance_OnServerStopped;
 
             cpc_chat_list.AppendText("Waiting for server to start..\r\n");
+
+            serverconfig_properties.SelectedObject = Settings;
 
         }
 
@@ -107,6 +119,12 @@ namespace HellionExtendedServer
             ServerInstance.Instance.Config.LoadDefaults();
             serverconfig_properties.Refresh();
             StatusBar.Text = "Config Defaults Loaded.";
+        }
+
+        private void server_config_reload_Click(object sender, EventArgs e)
+        {
+            ServerInstance.Instance.Config.Load();
+            serverconfig_properties.SelectedObject = ServerInstance.Instance.Config;
         }
 
         private void server_config_startserver_Click(object sender, EventArgs e)
@@ -195,6 +213,7 @@ namespace HellionExtendedServer
         {
             StatusBar.Text = "GUI Settings Changed";
         }
+
 
     }
 }

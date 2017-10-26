@@ -9,10 +9,13 @@ namespace HellionExtendedServer.Managers
 {
     public class UpdateManager
     {
-        public Release m_Release;
+        private Release m_currentRelease;
+
+        public Release CurrentRelease { get => m_currentRelease; set => m_currentRelease = value; }
 
         private static string LatestReleaseURL = @"https://api.github.com/repos/HellionCommunity/HellionExtendedServer/releases/latest";
 
+        
         public UpdateManager()
         {
             ServicePointManager.DefaultConnectionLimit = 4;
@@ -20,7 +23,9 @@ namespace HellionExtendedServer.Managers
 
         public void DownloadLatestRelease()
         {
-            if (!m_Release.IsUpdate)
+            Console.WriteLine("Checking for updates...");
+
+            if (!m_currentRelease.IsUpdate)
             {
                 Console.WriteLine("HES is up to date!");
                 return;
@@ -30,7 +35,7 @@ namespace HellionExtendedServer.Managers
 
             WebClient client = new WebClient();
             client.DownloadDataCompleted += new DownloadDataCompletedEventHandler(ReleaseDownloaded);
-            client.DownloadDataAsync(new Uri(m_Release.URL));
+            client.DownloadDataAsync(new Uri(m_currentRelease.URL));
 
         }
 
@@ -46,8 +51,7 @@ namespace HellionExtendedServer.Managers
 
             try
             {
-                Console.WriteLine("Checking for updates...");
-
+                
                 HttpWebRequest request = WebRequest.Create(LatestReleaseURL) as HttpWebRequest;
                 request.Method = "GET";
                 request.Proxy = null;
@@ -63,7 +67,8 @@ namespace HellionExtendedServer.Managers
 
                 dynamic task = JObject.Parse(json);
 
-                m_Release = new Release(
+                m_currentRelease = new Release(
+                    (string)task["name"],
                     (string)task["assets"][0]["browser_download_url"],
                     (string)task["tag_name"],
                     (int)task["assets"][0]["download_count"],
@@ -80,15 +85,19 @@ namespace HellionExtendedServer.Managers
 
     public class Release
     {
+        public string Name;
         public string URL;
+        public string Version { get; private set; }
         public int DLCount;
         public string Description;
         public bool IsUpdate;
 
 
-        public Release(string url, string version, int dlCount, string description)
+        public Release(string name, string url, string version, int dlCount, string description)
         {
+            Name = name;
             URL = url;
+            Version = version;
             DLCount = dlCount;
             IsUpdate = new Version(version) > HES.Version;
             Description = description;

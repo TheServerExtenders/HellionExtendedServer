@@ -204,6 +204,10 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="hesicon.ico" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="GameServer_example.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -256,13 +260,15 @@ if not exist "$(ProjectDir)bin\HESRelease\Hes\bin "              md "$(ProjectDi
 if not exist "$(ProjectDir)bin\HESRelease\Hes\localization" md "$(ProjectDir)bin\HESRelease\Hes\localization"
 if not exist "$(ProjectDir)bin\HESRelease\Hes\updates"       md "$(ProjectDir)bin\HESRelease\Hes\updates"
 if not exist  "$(ProjectDir)bin\HESRelease\Hes\plugins"       md  "$(ProjectDir)bin\HESRelease\Hes\plugins"
+if not exist  "$(ProjectDir)bin\HESRelease\Hes\config"       md  "$(ProjectDir)bin\HESRelease\Hes\config"
 
 xcopy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)bin\HESRelease\"  /y
 xcopy "$(TargetDir)$(TargetFileName).config" "$(ProjectDir)bin\HESRelease\" /y
 
 xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
 xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-xcopy "$(TargetDir)NLog.config" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
+xcopy "$(TargetDir)NLog.config" "$(ProjectDir)bin\HESRelease\Hes" /y
+xcopy "$(TargetDir)Newtonsoft.Json.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
 
 echo $(ProjectName) files have been copied to "$(ProjectDir)bin\HESRelease\".
 

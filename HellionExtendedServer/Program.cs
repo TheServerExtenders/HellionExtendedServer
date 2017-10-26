@@ -37,6 +37,7 @@ namespace HellionExtendedServer
 
         private static HES m_instance;
         private static Config m_config;
+        private static UpdateManager updateManager;
         private static Localization m_localization;
         private static HESGui m_form;
         private static ServerInstance m_serverInstance;
@@ -92,6 +93,9 @@ namespace HellionExtendedServer
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
 
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
+
+            updateManager = new UpdateManager();
+            updateManager.GetLatestRelease();
 
             m_config = new Config();
             m_config.Load();
@@ -187,7 +191,7 @@ namespace HellionExtendedServer
                     string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
 
 
-                    if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args)) continue;
+                    //if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args)) continue;
 
                     string[] strArray = Regex.Split(cmd, "^/([a-z]+) (\\([a-zA-Z\\(\\)\\[\\]. ]+\\))|([a-zA-Z\\-]+)");
                     List<string> stringList = new List<string>();
@@ -204,6 +208,39 @@ namespace HellionExtendedServer
                     if (stringList[1] == "help")
                     {
                         HES.PrintHelp();
+                        flag = true;
+                    }
+
+                    if (stringList[1] == "update")
+                    {
+
+
+                        if (stringList[2] == "get")
+                        {
+                            updateManager.DownloadLatestRelease();
+                            flag = true;
+                        }
+
+                        if (stringList[2] == "info")
+                        {
+                            Console.WriteLine("-Current Release-");
+
+                            Console.WriteLine($"Name: {updateManager.CurrentRelease.Name}");
+                            Console.WriteLine($"Version: {updateManager.CurrentRelease.Version}");                         
+                            Console.WriteLine($"Download Count: {updateManager.CurrentRelease.DLCount}" );
+                            Console.WriteLine($"URL: {updateManager.CurrentRelease.URL}");
+                            Console.WriteLine($"Description: {updateManager.CurrentRelease.Description}");
+
+                            flag = true;
+                        }
+
+                    }
+
+                    if(stringList[1] == "initest")
+                    {
+                        var test = Common.GameServerIni.DefaultGameServerINI.ParseSettings();
+
+                        Console.WriteLine($"Found {test.Count} Settings in the GameServer Example INI file.");
                         flag = true;
                     }
 

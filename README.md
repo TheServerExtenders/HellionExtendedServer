@@ -1,6 +1,8 @@
 # HellionExtendedServer
 An Extended Dedicated Server for Hellion http://www.playhellion.com 
 
+**Discord Group** - https://discord.gg/Sr48Vbe
+
 ### Websites
 ~~**Jenkins** - jenkins.hellionextendedserver.com:8080~~
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -20,101 +18,112 @@ namespace HellionExtendedServer.Common.GameServerIni
             if (!File.Exists(exampleFileName))
                 return settings;
 
-            foreach (string line in File.ReadLines(exampleFileName))
+            string category = "2. Server Settings";
+
+            try
             {
-                //#save_interval (Default: 900) (-1 = Disabled)	Automatic server save, value in seconds
-
-                // parse and split
-                var regex = @"(#[a-z_]+(?:[a-zA-Z]+))\s+(\(Default\:\ (?:[-a-z0-9._]+)\)|\(Required\))(.+)";
-                Match match = Regex.Match(line, regex);
-                if (match.Success)
+                foreach (string line in File.ReadLines(exampleFileName))
                 {
-                    string name = match.Groups[1].Value.Replace("#","");
-                    string defaultText = match.Groups[2].Value;
-                    string description = match.Groups[3].Value ?? string.Empty;
+                    //#save_interval (Default: 900) (-1 = Disabled)	Automatic server save, value in seconds
 
-                    Setting setting = new Setting();
+                    if (line.Contains("#Server Options"))
+                        category = "2. Server Settings";
 
-                    // match the default setting
-                    var defaultRegex = @"(?:\(Default\:\s+|\S+)([-0-9._]+|false|true|_blank_)\)";
-                    Match match2 = Regex.Match(defaultText, defaultRegex);
-                    if (match2.Success)
+                    if (line.Contains("#Game Optipons") || line.Contains("#Game Options"))
+                        category = "3. Game Options";
+
+                    // parse and split
+                    var regex = @"(#[a-z_]+(?:[a-zA-Z]+))\s+(\(Default\:\ (?:[-a-z0-9._]+)\)|\(Required\))(.+)";
+                    Match match = Regex.Match(line, regex);
+                    if (match.Success)
                     {
-                        string defaultValue = match2.Groups[1].Value;
+                        string name = match.Groups[1].Value.Replace("#", "");
+                        string defaultText = match.Groups[2].Value;
+                        string description = match.Groups[3].Value ?? string.Empty;
 
-                        int intParseRes;
-                        float floatParseRes;
-                        bool boolParseRes;
+                        Setting setting = new Setting();
 
-                        if (int.TryParse(defaultValue, out intParseRes))
+                        // match the default setting
+                        var defaultRegex = @"(?:\(Default\:\s+|\S+)([-0-9._]+|false|true|_blank_)\)";
+                        Match match2 = Regex.Match(defaultText, defaultRegex);
+                        if (match2.Success)
                         {
-                            setting.Type = typeof(int);
-                            setting.DefaultValue = intParseRes;
+                            string defaultValue = match2.Groups[1].Value;
+
+                            int intParseRes;
+                            float floatParseRes;
+                            bool boolParseRes;
+
+                            if (int.TryParse(defaultValue, out intParseRes))
+                            {
+                                setting.Type = typeof(int);
+                                setting.DefaultValue = intParseRes;
+                            }
+                            else if (float.TryParse(defaultValue, out floatParseRes))
+                            {
+                                setting.Type = typeof(float);
+                                setting.DefaultValue = floatParseRes;
+                            }
+                            else if (bool.TryParse(defaultValue, out boolParseRes))
+                            {
+                                setting.Type = typeof(bool);
+                                setting.DefaultValue = boolParseRes;
+                            }
+                            else if (defaultValue.Contains("_blank_"))
+                            {
+                                setting.Type = typeof(string);
+                                setting.DefaultValue = string.Empty;
+                            }
+                            else
+                            {
+                                setting.Type = typeof(string);
+                                setting.DefaultValue = string.Empty;
+                            }
+                            setting.Category = category;
                         }
-                        else if (float.TryParse(defaultValue, out floatParseRes))
-                        {
-                            setting.Type = typeof(float);
-                            setting.DefaultValue = floatParseRes;
-                        }
-                        else if (bool.TryParse(defaultValue, out boolParseRes))
-                        {
-                            setting.Type = typeof(bool);
-                            setting.DefaultValue = boolParseRes;
-                        }
-                        else if (defaultValue.Contains("_blank_"))
-                        {
-                            setting.Type = typeof(string);
-                            setting.DefaultValue = string.Empty;
-                        }
+
+                        // if the default or description of the setting contains the string (Required)
+                        if (defaultText.Contains("(Required)") || description.Contains("(Required)"))
+                            setting.Required = true;
                         else
+                            setting.Required = false;
+
+                        //TODO: Parse the description
+                        setting.Description = Regex.Replace(description, @"\s+", " ");
+
+                        if (name == "server_name")
                         {
+                            setting.DefaultValue = "Hellion Game Server";
                             setting.Type = typeof(string);
-                            setting.DefaultValue = string.Empty;
+                            setting.Category = "1. Required Settings";
+                        }
+                        else if (name == "game_client_port")
+                        {
+                            setting.DefaultValue = 5969;
+                            setting.Type = typeof(int);
+                            setting.Category = "1. Required Settings";
+                        }
+                        else if (name == "status_port")
+                        {
+                            setting.DefaultValue = 5970;
+                            setting.Type = typeof(int);
+                            setting.Category = "1. Required Settings";
                         }
 
-                       
-                    }
+                        setting.Line = line;
+                        setting.Name = name;
+                        setting.Enabled = false;
+                        setting.Value = setting.DefaultValue;
 
-                    // if the default or description of the setting contains the string (Required)
-                    if (defaultText.Contains("(Required)") || description.Contains("(Required)"))
-                        setting.Required = true;
-                    else
-                        setting.Required = false;
-                                                     
-                    //TODO: Parse the description
-                    setting.Description = Regex.Replace(description, @"\s+", " "); 
-                 
-                    if (name == "server_name")
-                    {
-                        setting.DefaultValue = "Hellion Game Server";
-                        setting.Type = typeof(string);
+                        settings.Add(setting);
                     }
-                    else if (name == "game_client_port")
-                    {
-                        setting.DefaultValue = 5969;
-                        setting.Type = typeof(int);
-                    }
-                    else if (name == "status_port")
-                    {
-                        setting.DefaultValue = 5970;
-                        setting.Type = typeof(int);
-                    }
-
-                    setting.Line = line;
-                    setting.Name = name;
-                    setting.Enabled = false;
-                    setting.Value = setting.DefaultValue;
-
-                    Console.WriteLine($"name: {setting.Name} " +
-                        $"| value: {setting.Value} " +
-                        $"| type: {setting.Type} " +
-                        $"| enabled: {setting.Enabled}" +
-                        $"| required: {setting.Required} " +
-                        $"| description: {setting.Description}");
-
-                    settings.Add(setting);
                 }
             }
+            catch (System.Exception ex)
+            {
+                Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
+            }
+
             return settings;
         }
     }

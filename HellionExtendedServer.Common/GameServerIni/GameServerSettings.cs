@@ -159,14 +159,18 @@ namespace HellionExtendedServer.Common.GameServerIni
     public class GameServerProperty
     {
         private string sName = string.Empty;
+        private string sDisplayName = string.Empty;
         private bool bReadOnly = false;
         private bool bVisible = true;
         private string sDescription = string.Empty;
+        private string sCategory = string.Empty;
         private object objValue = null;
 
-        public GameServerProperty(string sName, string sDescription,object value, Type type, bool bReadOnly, bool bVisible)
+        public GameServerProperty(string sName, string sDisplayName,string sCategory, string sDescription,object value, Type type, bool bReadOnly, bool bVisible)
         {
             this.sName = sName;
+            this.sDisplayName = sDisplayName;
+            this.sCategory = sCategory;
             this.objValue = value;
             this.type = type;
             this.bReadOnly = bReadOnly;
@@ -193,6 +197,14 @@ namespace HellionExtendedServer.Common.GameServerIni
             get
             {
                 return sName;
+            }
+        }
+
+        public string DisplayName
+        {
+            get
+            {
+                return sDisplayName;
             }
         }
 
@@ -227,6 +239,18 @@ namespace HellionExtendedServer.Common.GameServerIni
                 sDescription = value;
             }
         }
+
+        public string Category
+        {
+            get
+            {
+                return sCategory;
+            }
+            set
+            {
+                sCategory = value;
+            }
+        }
     }
 
 
@@ -250,7 +274,7 @@ namespace HellionExtendedServer.Common.GameServerIni
 
         public override Type ComponentType
         {
-            get { return null; }
+            get { return m_Property.Type; }
         }
 
         public override object GetValue(object component)
@@ -265,12 +289,12 @@ namespace HellionExtendedServer.Common.GameServerIni
 
         public override string Category
         {
-            get { return string.Empty; }
+            get { return m_Property.Category; }
         }
 
         public override string DisplayName
         {
-            get { return m_Property.Name; }
+            get { return m_Property.DisplayName; }
         }
 
         public override bool IsReadOnly

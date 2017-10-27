@@ -13,12 +13,13 @@ namespace HellionExtendedServer.Common.GameServerIni
         public string Name;
         public bool Enabled;
         public bool Required;
+        public string Category;
         public Type Type;
         public object DefaultValue;
         public object Value;
         public string Description;
         public string Line;
-
+        public bool Valid;
 
 
         public GameServerProperty this[int index]

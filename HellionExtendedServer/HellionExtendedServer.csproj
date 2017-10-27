@@ -204,7 +204,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="hesicon.ico" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="GameServer_example.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

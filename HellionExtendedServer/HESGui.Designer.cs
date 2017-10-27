@@ -141,14 +141,16 @@
             // 
             // serverconfig_properties
             // 
+            this.serverconfig_properties.CommandsBorderColor = System.Drawing.SystemColors.ControlLight;
             this.serverconfig_properties.Dock = System.Windows.Forms.DockStyle.Fill;
             this.serverconfig_properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.serverconfig_properties.LineColor = System.Drawing.SystemColors.ControlDark;
             this.serverconfig_properties.Location = new System.Drawing.Point(0, 0);
             this.serverconfig_properties.Name = "serverconfig_properties";
-            this.serverconfig_properties.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.serverconfig_properties.PropertySort = System.Windows.Forms.PropertySort.Categorized;
             this.serverconfig_properties.Size = new System.Drawing.Size(798, 398);
             this.serverconfig_properties.TabIndex = 0;
+            this.serverconfig_properties.ViewBorderColor = System.Drawing.SystemColors.ControlLight;
             // 
             // server_config_reload
             // 

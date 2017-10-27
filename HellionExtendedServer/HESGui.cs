@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HellionExtendedServer.Managers;
-using HellionExtendedServer.Managers;
+using HellionExtendedServer.Common.GameServerIni;
 using HellionExtendedServer.Common.GameServerIni;
 using System.Globalization;
 
@@ -24,12 +24,7 @@ namespace HellionExtendedServer
         {
             InitializeComponent();
 
-            var properties = new Common.GameServerIni.Properties();
-            properties.LoadDefaults();
-
-            foreach (var property in properties.Settings)
-                Settings.Add(new GameServerProperty(new CultureInfo("en-US").TextInfo.ToTitleCase(property.Name.Replace("_"," ")), property.Description, property.Value, property.Type, false, true));
-
+           
 
 
             cpc_chat_list.Enabled = true;
@@ -51,8 +46,7 @@ namespace HellionExtendedServer
 
             cpc_chat_list.AppendText("Waiting for server to start..\r\n");
 
-            serverconfig_properties.SelectedObject = Settings;
-
+            SetSettings();
         }
 
         private void Instance_OnServerStopped(ZeroGravity.Server server)
@@ -89,7 +83,9 @@ namespace HellionExtendedServer
 
         private void server_config_save_Click(object sender, EventArgs e)
         {
-            if (ServerInstance.Instance.Config.Save())
+            ServerInstance.Instance.GameServerProperties.Save();
+            /*
+            if ()
             {
                 StatusBar.Text = "Config Saved.";
             }else
@@ -105,7 +101,23 @@ namespace HellionExtendedServer
                     StatusBar.Text = "Config Defaults saved to GameServer.Ini. Change the settings then Save!";
                 }
             }
-            
+            */
+        }
+
+        private void SetSettings()
+        {
+            Settings.Clear();
+            ServerInstance.Instance.GameServerProperties.Load();
+
+            foreach (var property in ServerInstance.Instance.GameServerProperties.Settings)
+                Settings.Add(new GameServerProperty(
+                    property.Name,
+                    new CultureInfo("en-US").TextInfo.ToTitleCase(property.Name.Replace("_", " ")),
+                    property.Category, property.Description, property.Value, property.Type, false, true));
+
+            serverconfig_properties.SelectedObject = Settings;
+
+            serverconfig_properties.Refresh();
         }
 
         private void server_config_cancel_Click(object sender, EventArgs e)
@@ -116,15 +128,29 @@ namespace HellionExtendedServer
 
         private void server_config_setdefaults_Click(object sender, EventArgs e)
         {
-            ServerInstance.Instance.Config.LoadDefaults();
+            SetSettings();
+
+            Settings = new GameServerSettings();
+
+            ServerInstance.Instance.GameServerProperties.LoadDefaults();
+
+            foreach (var property in ServerInstance.Instance.GameServerProperties.DefaultSettings)
+                Settings.Add(new GameServerProperty(
+                    property.Name,
+                    new CultureInfo("en-US").TextInfo.ToTitleCase(property.Name.Replace("_", " ")),
+                    property.Category, property.Description, property.Value, property.Type, false, true));
+
+            serverconfig_properties.SelectedObject = Settings;
+
             serverconfig_properties.Refresh();
+
             StatusBar.Text = "Config Defaults Loaded.";
         }
 
         private void server_config_reload_Click(object sender, EventArgs e)
         {
-            ServerInstance.Instance.Config.Load();
-            serverconfig_properties.SelectedObject = ServerInstance.Instance.Config;
+            SetSettings();
+            StatusBar.Text = "Config reloaded from GameServer.ini";
         }
 
         private void server_config_startserver_Click(object sender, EventArgs e)

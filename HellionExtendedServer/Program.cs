@@ -103,6 +103,7 @@ namespace HellionExtendedServer
             m_localization = new Localization();
             m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
 
+
             var program = new HES(args);
             program.Run(args);
         }
@@ -236,11 +237,20 @@ namespace HellionExtendedServer
 
                     }
 
-                    if(stringList[1] == "initest")
+                    if(stringList[1] == "defaultinitest")
                     {
                         var test = Common.GameServerIni.DefaultGameServerINI.ParseSettings();
 
                         Console.WriteLine($"Found {test.Count} Settings in the GameServer Example INI file.");
+                        flag = true;
+                    }
+
+                    if (stringList[1] == "initest")
+                    {
+                        
+                       // var test = Common.GameServerIni.GameServerINI.ParseSettings();
+
+                        //Console.WriteLine($"Found {test.Count} Settings in the GameServer Example INI file.");
                         flag = true;
                     }
 

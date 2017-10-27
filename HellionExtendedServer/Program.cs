@@ -239,7 +239,7 @@ namespace HellionExtendedServer
 
                     if(stringList[1] == "defaultinitest")
                     {
-                        var test = Common.GameServerIni.DefaultGameServerINI.ParseSettings();
+                        var test = Common.GameServerIni.GameServerINI.ParseDefaultSettings();
 
                         Console.WriteLine($"Found {test.Count} Settings in the GameServer Example INI file.");
                         flag = true;

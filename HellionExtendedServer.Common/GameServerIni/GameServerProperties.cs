@@ -28,14 +28,33 @@ namespace HellionExtendedServer.Common.GameServerIni
         {
             List<Setting> newSettings = new List<Setting>();
 
+           
+
             try
             {
                 if (File.Exists(m_fileName))
                 {
-                    m_defaultSettings = DefaultGameServerINI.ParseSettings();
+                    m_defaultSettings = GameServerINI.ParseDefaultSettings();
+                    //var pageSettings = GameServerINI.ParseSettings();
 
+
+                    // read file contents
+                    string theWholeFile = File.ReadAllText(m_fileName);
+                    foreach (var setting in m_settings)
+                    {
+                        if (setting.Valid)
+                        {
+                            theWholeFile = theWholeFile.Replace(
+                           $"{setting.Name}={Convert.ChangeType(setting.Value, setting.Type)}",
+                           $"{setting.Name}={Convert.ChangeType(setting.Value, setting.Type)}");
+                        }
+                       
+                    }
+                    File.WriteAllText("test.txt", theWholeFile);
+
+                    /*
                     using (StreamWriter file = new StreamWriter(m_fileName + ".txt"))
-                        foreach (var entry in m_settings)
+                        foreach (var entry in pageSettings)
                         {
 
                             var defaultSetting = entry;
@@ -48,7 +67,7 @@ namespace HellionExtendedServer.Common.GameServerIni
                                 file.WriteLine("{0}{1}={2}", entry.Enabled ? "" : "#", entry.Name, entry.Value);
                             }
                         }
-                         
+                      */   
 
                 }
                 else
@@ -58,7 +77,8 @@ namespace HellionExtendedServer.Common.GameServerIni
             }
             catch (Exception ex)
             {
-                Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
+                throw;
+                //Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
             }
         }
 
@@ -116,7 +136,7 @@ namespace HellionExtendedServer.Common.GameServerIni
         {
             try
             {
-                m_defaultSettings = DefaultGameServerINI.ParseSettings();
+                m_defaultSettings = GameServerINI.ParseDefaultSettings();
             }
             catch (Exception ex)
             {

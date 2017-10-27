@@ -32,7 +32,7 @@ namespace HellionExtendedServer.Common.GameServerIni
             {
                 if (File.Exists(m_fileName))
                 {
-                    LoadDefaults();
+                    m_defaultSettings = DefaultGameServerINI.ParseSettings();
 
                     using (StreamWriter file = new StreamWriter(m_fileName + ".txt"))
                         foreach (var entry in m_settings)

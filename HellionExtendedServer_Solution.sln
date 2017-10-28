@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HellionExtendedServer.Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPlugin", "HellionExtendedServer\Plugins\TestPlugin\TestPlugin\TestPlugin.csproj", "{CA9D9BFF-5AA0-4372-9D4C-DC1C093D1803}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HELLION_Dedicated", "HellionSrc\HELLION_Dedicated\HELLION_Dedicated.csproj", "{F7FDED67-15D7-41B6-9495-3547A6D088B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Build|Any CPU = Build|Any CPU
@@ -97,6 +99,29 @@ Global
 		{CA9D9BFF-5AA0-4372-9D4C-DC1C093D1803}.Server|x64.Build.0 = Release|Any CPU
 		{CA9D9BFF-5AA0-4372-9D4C-DC1C093D1803}.Server|x86.ActiveCfg = Release|Any CPU
 		{CA9D9BFF-5AA0-4372-9D4C-DC1C093D1803}.Server|x86.Build.0 = Release|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Build|Any CPU.Build.0 = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Build|x64.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Build|x64.Build.0 = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Build|x86.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Build|x86.Build.0 = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Debug|x64.Build.0 = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Debug|x86.Build.0 = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Release|x64.ActiveCfg = Release|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Release|x64.Build.0 = Release|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Release|x86.ActiveCfg = Release|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Release|x86.Build.0 = Release|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Server|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Server|Any CPU.Build.0 = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Server|x64.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Server|x64.Build.0 = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Server|x86.ActiveCfg = Debug|Any CPU
+		{F7FDED67-15D7-41B6-9495-3547A6D088B1}.Server|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

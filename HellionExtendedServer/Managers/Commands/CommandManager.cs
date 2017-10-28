@@ -98,12 +98,9 @@ namespace HellionExtendedServer.Managers.Commands
         {
             Console.WriteLine(String.Format("Handling String /{0} with arge: {1}", cmd, String.Join(" ", args)));
             //TODO check Permissions
-            Console.WriteLine("Sending command to all plugins!");
             //Run command on each plugin!
             foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins)
             {
-                //Sends to all plugins!
-                Console.WriteLine("Sending to "+pi.MainClass.GetName);
                 pi.MainClass.OnCommand(sender, cmd, args);
             }
             if (!commandDictionary.ContainsKey(cmd)) return;

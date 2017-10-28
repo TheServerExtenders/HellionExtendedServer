@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: Extension]
 [assembly: AssemblyTitle("HELLION_Dedicated")]
 [assembly: AssemblyDescription("HELLION Dedicated Server")]
 [assembly: AssemblyConfiguration("")]

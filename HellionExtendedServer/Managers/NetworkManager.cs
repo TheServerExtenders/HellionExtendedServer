@@ -57,6 +57,7 @@ namespace HellionExtendedServer.Managers
                 Player player;
                 if (playersOnServerRequest == null || ConnectedPlayer(playersOnServerRequest.Sender, out player))
                     return;
+                //TODO Add setting to Enabele and Disable Welcome Message
                 Console.WriteLine(string.Format(HES.Localization.Sentences["NewPlayer"], ClientList[playersOnServerRequest.Sender].Player.Name));
                 MessageAllClients(string.Format(HES.Localization.Sentences["Welcome"], ClientList[playersOnServerRequest.Sender].Player.Name, Server.Instance.ServerName), true, true);
             }

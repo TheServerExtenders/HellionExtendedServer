@@ -36,10 +36,11 @@ namespace TestPlugin
 
         public override void OnCommand(Player p, string command, string[] args)
         {
+            Console.WriteLine("OVERRIDE!!!!!!!");
             if (command.ToLower() == "test")
             {
                 GetPluginHelper.SendMessageToClient(p, "Test Command Success!");
-                Console.WriteLine("TEST COMMAND SENT!");
+                Console.WriteLine("TEST COMMAND SENT1!");
             }else if (command.ToLower() == "pos")
             {
                 GetPluginHelper.SendMessageToClient(p, "Your current Postion to string " + p.LocalPosition.ToString());

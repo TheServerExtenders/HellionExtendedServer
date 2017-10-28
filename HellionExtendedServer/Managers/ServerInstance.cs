@@ -115,6 +115,8 @@ namespace HellionExtendedServer.Managers
             
             m_gameServerIni = new GameServerIni();
             m_gameServerProperties = new GameServerProperties();
+
+            m_gameServerProperties.Load();
         }
 
         #region Methods

@@ -100,6 +100,8 @@ namespace HellionExtendedServer
             m_config = new Config();
             m_config.Load();
 
+
+
             m_localization = new Localization();
             m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
 
@@ -164,7 +166,6 @@ namespace HellionExtendedServer
 
             if (autoStart | Properties.Settings.Default.AutoStart)
                 ServerInstance.Instance.Start();
-
 
 
             ReadConsoleCommands();

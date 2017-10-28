@@ -1,74 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Threading;
 
 namespace HellionExtendedServer.Common.GameServerIni
 {
     public class GameServerProperties
     {
         private static string m_fileName = "GameServer.ini";
-        private List<Setting> m_defaultSettings = new List<Setting>();
-        private List<Setting> m_settings = new List<Setting>();
-        
+        private static string m_originalFileName = "hes\\GameServer.ini.original";
+        private static string m_backupFileName = "hes\\GameServer.ini.backup";
 
-        public List<Setting> Settings => m_settings;
-        public List<Setting> DefaultSettings => m_defaultSettings;
+        private List<Setting> m_settings = new List<Setting>();
+
+        public List<Setting> Settings { get { return m_settings; } set { m_settings = value; } }
 
         public GameServerProperties()
         {
-            if (!File.Exists(m_fileName + ".original"))
-                File.Copy(m_fileName, m_fileName + ".original");
-
-            LoadDefaults();
+            CopyFiles();
             Load();
         }
 
-        public void Save()
+        private void CopyFiles()
         {
-            List<Setting> newSettings = new List<Setting>();
+            if (!File.Exists(m_fileName))
+            {
+                if (File.Exists(m_backupFileName))
+                {
+                    Log.Instance.Warn("GameServer.Ini wasn't found! Creating one from a backup made on " +
+                        File.GetLastWriteTime(m_backupFileName));
 
-           
+                    File.Copy(m_backupFileName, m_fileName);
+                }
+                else
+                {
+                    Log.Instance.Warn("GameServer.Ini wasn't found! Creating one from the original made on " +
+                        File.GetLastWriteTime(m_originalFileName));
 
+                    File.Copy(m_originalFileName, m_fileName);
+                }
+            }
+
+            if (!File.Exists(m_originalFileName))
+                File.Copy(m_fileName, m_originalFileName);
+        }
+
+        public bool Save()
+        {
             try
             {
                 if (File.Exists(m_fileName))
                 {
-                    m_defaultSettings = GameServerINI.ParseDefaultSettings();
-                    //var pageSettings = GameServerINI.ParseSettings();
+                    // pull in the current settings in the file
+                    List<Setting> prevSettings = GameServerINI.ParseSettings();
+                    // the list that will be saved to the GameServer.Ini
+                    List<Setting> outSettings = new List<Setting>();
 
-
-                    // read file contents
-                    string theWholeFile = File.ReadAllText(m_fileName);
-                    foreach (var setting in m_settings)
+                    foreach (Setting setting in prevSettings)
                     {
-                        if (setting.Valid)
+                        Setting newSetting = setting;
+                        Setting inSetting = setting;
+
+                        if (m_settings.Exists(x => x.Name.Equals(setting.Name)))
+                            inSetting = m_settings.Find(x => x.Name.Equals(setting.Name));
+
+                        if (inSetting.Valid)
                         {
-                            theWholeFile = theWholeFile.Replace(
-                           $"{setting.Name}={Convert.ChangeType(setting.Value, setting.Type)}",
-                           $"{setting.Name}={Convert.ChangeType(setting.Value, setting.Type)}");
+                            outSettings.Add(inSetting);
+                            Console.WriteLine(string.Format($"Changing value of { (inSetting.Enabled ? "" : "#") }{setting.Name}={setting.Value} to {inSetting.Enabled}{inSetting.Value}"));
+                        }                      
+                        else
+                        {
+                            outSettings.Add(setting);
                         }
-                       
+                           
+
                     }
-                    File.WriteAllText("test.txt", theWholeFile);
 
-                    /*
-                    using (StreamWriter file = new StreamWriter(m_fileName + ".txt"))
-                        foreach (var entry in pageSettings)
-                        {
+                    File.Copy(m_fileName, m_backupFileName, true);
 
-                            var defaultSetting = entry;
+                    using (StreamWriter file = new StreamWriter(m_fileName))
+                        foreach (var entry in outSettings)
+                            file.WriteLine(entry.ToString());
 
-                             if (m_defaultSettings.Exists(x => x.Name == entry.Name))
-                                    defaultSetting = m_defaultSettings.Find(x => x.Name == entry.Name);
-
-                            if (entry.Value != defaultSetting.Value)
-                            {
-                                file.WriteLine("{0}{1}={2}", entry.Enabled ? "" : "#", entry.Name, entry.Value);
-                            }
-                        }
-                      */   
-
+                    return true;
                 }
                 else
                 {
@@ -77,66 +92,56 @@ namespace HellionExtendedServer.Common.GameServerIni
             }
             catch (Exception ex)
             {
-                throw;
-                //Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
+                Log.Instance.Error($"[ERROR] Hellion Extended Server[Save]: {ex.Message} Trace:{ex.StackTrace}");
             }
+
+            return false;
         }
 
-        // build list from default settings, update default setting with settings from gameserver.ini
-
-        public void Load()
+        public bool Load()
         {
             m_settings = GameServerINI.ParseSettings();
 
             try
             {
-                
                 List<Setting> tmp = new List<Setting>();
 
-                foreach(Setting defaultSetting in m_defaultSettings)
+                foreach (Setting defaultSetting in GameServerINI.ParseDefaultSettings())
                 {
                     Setting setting = defaultSetting;
 
-                    if(m_settings.Exists(x => x.Name == defaultSetting.Name))
+                    if (m_settings.Exists(x => x.Name == defaultSetting.Name))
                         setting = m_settings.Find(x => x.Name == defaultSetting.Name);
 
                     var newSetting = defaultSetting;
 
-
-                    if (setting.Value != defaultSetting.Value)
+                    if (setting.Value != defaultSetting.Value && setting.Valid)
                     {
-
-                        //if (setting.Valid)
-                        //{                           
                         newSetting.Value = setting.Value;
                         newSetting.Enabled = setting.Enabled;
-                        //newSetting.
-
+                        newSetting.Valid = setting.Valid;
                         tmp.Add(newSetting);
-                        //}
-
                     }
                     else
-                    {
                         tmp.Add(defaultSetting);
-                    }
-                 
                 }
 
                 m_settings = tmp;
 
+                return true;
             }
             catch (Exception ex)
             {
                 Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
             }
+            return false;
         }
 
         public void LoadDefaults()
         {
             try
             {
-                m_defaultSettings = GameServerINI.ParseDefaultSettings();
+                m_settings = GameServerINI.ParseDefaultSettings();
             }
             catch (Exception ex)
             {

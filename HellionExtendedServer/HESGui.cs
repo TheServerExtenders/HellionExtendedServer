@@ -3,15 +3,14 @@ using HellionExtendedServer.Managers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace HellionExtendedServer
 {
     public partial class HESGui : Form
     {
-        private GameServerSettings Settings = new GameServerSettings();
+        public GameServerSettings Settings = new GameServerSettings();
 
         public HESGui()
         {
@@ -36,7 +35,6 @@ namespace HellionExtendedServer
 
             cpc_chat_list.AppendText("Waiting for server to start..\r\n");
 
-            
             SetSettings();
         }
 
@@ -71,9 +69,10 @@ namespace HellionExtendedServer
 
         private void server_config_save_Click(object sender, EventArgs e)
         {
-            //List<Setting> tmp = new List<Setting>();
+            /*
+            List<Setting> tmp = new List<Setting>();
             foreach (GameServerProperty property in Settings)
-            {
+           {
                 if (ServerInstance.Instance.GameServerProperties.Settings.Exists(x => x.Name == property.Name))
                 {
                     Setting setting = ServerInstance.Instance.GameServerProperties.Settings.Find(x => x.Name == property.Name);
@@ -82,18 +81,29 @@ namespace HellionExtendedServer
                     {
                         if (property.Value != setting.DefaultValue)
                         {
-
-                            AddChatLine(string.Format($"Changing value of {setting.Name} from {setting.Value} to {property.Value}"));
+                           
 
                             setting.Value = property.Value;
-                        
+                            setting.Enabled = true;
                         }
                     }
                 }
             }
+            */
+           // List<Setting> outSettings = new List<Setting>();
+
+            //foreach (GameServerProperty property in Settings)
+            //{
 
 
-            if (ServerInstance.Instance.GameServerProperties.Save())
+
+                //outSettings.Add(property.Setting);
+            //}
+
+            
+
+            
+            if (ServerInstance.Instance.GameServerProperties.Save(GetSettings()))
             {
                 StatusBar.Text = "Config Saved.";
             }
@@ -104,12 +114,13 @@ namespace HellionExtendedServer
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                 if (result == DialogResult.Yes)
                 {
-                    ServerInstance.Instance.GameServerProperties.LoadDefaults();
-                    ServerInstance.Instance.GameServerProperties.Save();
+                    //ServerInstance.Instance.GameServerProperties.LoadDefaults();
+                    //ServerInstance.Instance.GameServerProperties.Save();
                     serverconfig_properties.Refresh();
                     StatusBar.Text = "Config Defaults saved to GameServer.Ini. Change the settings then Save!";
                 }
-            }
+        }
+        
         }
 
         private void SetSettings()
@@ -117,14 +128,23 @@ namespace HellionExtendedServer
             Settings.Clear();
 
             foreach (var setting in ServerInstance.Instance.GameServerProperties.Settings)
-                Settings.Add(new GameServerProperty(
-                    setting.Name,
-                    new CultureInfo("en-US").TextInfo.ToTitleCase(setting.Name.Replace("_", " ")),
-                    setting.Category, setting.Description, setting.Value, setting.Type, false, true));
+                Settings.Add(new GameServerProperty().SetFromSetting(setting));
 
             serverconfig_properties.SelectedObject = Settings;
 
             serverconfig_properties.Refresh();
+        }
+
+        private List<Setting> GetSettings()
+        {
+            List<Setting> outSettings = new List<Setting>();
+
+            foreach (GameServerProperty property in Settings)
+            {
+                outSettings.Add(property.GetAsSetting());
+            }
+                
+            return outSettings;
         }
 
         private void server_config_cancel_Click(object sender, EventArgs e)

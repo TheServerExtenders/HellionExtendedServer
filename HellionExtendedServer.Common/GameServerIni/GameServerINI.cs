@@ -71,6 +71,9 @@ namespace HellionExtendedServer.Common.GameServerIni
                                 currentSetting.Value = settingValue;
                             }                         
                         }
+
+                        
+
                         settings.Add(currentSetting);
                     }
                 }

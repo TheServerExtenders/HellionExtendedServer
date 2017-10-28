@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace HellionExtendedServer.Common.GameServerIni
@@ -45,7 +46,7 @@ namespace HellionExtendedServer.Common.GameServerIni
                 File.Copy(m_fileName, m_originalFileName);
         }
 
-        public bool Save()
+        public bool Save(List<Setting> mySettings)
         {
             try
             {
@@ -56,25 +57,33 @@ namespace HellionExtendedServer.Common.GameServerIni
                     // the list that will be saved to the GameServer.Ini
                     List<Setting> outSettings = new List<Setting>();
 
+
+                    //foreach(Setting setting in mySettings)
+                    //{
+                     //   Console.WriteLine(setting.ToString());
+                    //}
+
                     foreach (Setting setting in prevSettings)
                     {
+                        
                         Setting newSetting = setting;
                         Setting inSetting = setting;
 
-                        if (m_settings.Exists(x => x.Name.Equals(setting.Name)))
-                            inSetting = m_settings.Find(x => x.Name.Equals(setting.Name));
-
-                        if (inSetting.Valid)
+                        if (mySettings.Exists(x => x.Name == setting.Name))
                         {
+                            inSetting = mySettings.First(x => x.Name == setting.Name);
+                        }          
+                                                      
+                                                                          
+                        if (inSetting.Valid)
+                        {                          
                             outSettings.Add(inSetting);
-                            Console.WriteLine(string.Format($"Changing value of { (inSetting.Enabled ? "" : "#") }{setting.Name}={setting.Value} to {inSetting.Enabled}{inSetting.Value}"));
                         }                      
                         else
                         {
                             outSettings.Add(setting);
                         }
                            
-
                     }
 
                     File.Copy(m_fileName, m_backupFileName, true);
@@ -119,7 +128,6 @@ namespace HellionExtendedServer.Common.GameServerIni
                     {
                         newSetting.Value = setting.Value;
                         newSetting.Enabled = setting.Enabled;
-                        newSetting.Valid = setting.Valid;
                         tmp.Add(newSetting);
                     }
                     else

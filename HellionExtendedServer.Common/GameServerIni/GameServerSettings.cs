@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace HellionExtendedServer.Common.GameServerIni
 {
@@ -52,8 +52,8 @@ namespace HellionExtendedServer.Common.GameServerIni
             }
         }
 
-
         #region "TypeDescriptor Implementation"
+
         /// <summary>
         /// Get Class Name
         /// </summary>
@@ -149,12 +149,12 @@ namespace HellionExtendedServer.Common.GameServerIni
         {
             return this;
         }
-        #endregion
 
+        #endregion "TypeDescriptor Implementation"
     }
 
     /// <summary>
-    /// Custom property class 
+    /// Custom property class
     /// </summary>
     public class GameServerProperty
     {
@@ -165,8 +165,10 @@ namespace HellionExtendedServer.Common.GameServerIni
         private string sDescription = string.Empty;
         private string sCategory = string.Empty;
         private object objValue = null;
+        private Setting setting = new Setting();
 
-        public GameServerProperty(string sName, string sDisplayName,string sCategory, string sDescription,object value, Type type, bool bReadOnly, bool bVisible)
+        public GameServerProperty() { }
+        public GameServerProperty(string sName, string sDisplayName, string sCategory, string sDescription, object value, Type type, bool bReadOnly, bool bVisible)
         {
             this.sName = sName;
             this.sDisplayName = sDisplayName;
@@ -179,6 +181,7 @@ namespace HellionExtendedServer.Common.GameServerIni
         }
 
         private Type type;
+
         public Type Type
         {
             get { return type; }
@@ -251,15 +254,54 @@ namespace HellionExtendedServer.Common.GameServerIni
                 sCategory = value;
             }
         }
-    }
 
+        public Setting Setting
+        {
+            get
+            {
+                setting = GetAsSetting();
+                return setting;
+            }
+            set
+            {
+                SetFromSetting(value);
+            }
+        }
+
+        public Setting GetAsSetting()
+        {
+            setting.Name = Name;
+            setting.Category = Category;
+            setting.Description = Description;
+            setting.Type = Type;
+            setting.Value = Value;
+            setting.Valid = true;
+
+            return setting;
+        }
+
+        public GameServerProperty SetFromSetting(Setting value)
+        {
+            sName = value.Name;
+            sDisplayName = new CultureInfo("en-US").TextInfo.ToTitleCase(value.Name.Replace("_", " "));
+            sCategory = value.Category;
+            sDescription = value.Description;
+            type = value.Type;
+            objValue = value.Value;
+
+            setting = value;
+
+            return this;
+        }
+    }
 
     /// <summary>
     /// Custom PropertyDescriptor
     /// </summary>
     public class GameServerPropertyDescriptor : PropertyDescriptor
     {
-        GameServerProperty m_Property;
+        private GameServerProperty m_Property;
+
         public GameServerPropertyDescriptor(ref GameServerProperty myProperty, Attribute[] attrs) : base(myProperty.Name, attrs)
         {
             m_Property = myProperty;
@@ -322,8 +364,6 @@ namespace HellionExtendedServer.Common.GameServerIni
             get { return m_Property.Type; }
         }
 
-        #endregion
-
-
+        #endregion PropertyDescriptor specific
     }
 }

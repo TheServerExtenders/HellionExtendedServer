@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using HellionExtendedServer.Common;
-using HellionExtendedServer.Common.Components;
 using HellionExtendedServer.Common.GameServerIni;
 using ZeroGravity;
 using HellionExtendedServer.Managers.Commands;
@@ -31,7 +30,6 @@ namespace HellionExtendedServer.Managers
         private DateTime m_launchedTime;
         private Server m_server;
         private ServerWrapper m_serverWrapper;
-        private GameServerIni m_gameServerIni;
         private GameServerProperties m_gameServerProperties;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
@@ -50,7 +48,6 @@ namespace HellionExtendedServer.Managers
         public TimeSpan Uptime { get { return DateTime.Now - m_launchedTime; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
-        public GameServerIni Config { get { return m_gameServerIni; } }
         public GameServerProperties GameServerProperties { get { return m_gameServerProperties; } }
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
@@ -113,9 +110,7 @@ namespace HellionExtendedServer.Managers
             else
                 Console.WriteLine($"HELLION_Dedicated.exe not detected at {gameExePath}.\r\n Press any key to close.");
             
-            m_gameServerIni = new GameServerIni();
             m_gameServerProperties = new GameServerProperties();
-
             m_gameServerProperties.Load();
         }
 

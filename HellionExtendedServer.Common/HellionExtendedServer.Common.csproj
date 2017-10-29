@@ -70,7 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\GameServerIni.cs" />
     <Compile Include="GameServerIni\GameServerINI.cs" />
     <Compile Include="GameServerIni\GameServerSettings.cs" />
     <Compile Include="GameServerIni\GameServerProperties.cs" />

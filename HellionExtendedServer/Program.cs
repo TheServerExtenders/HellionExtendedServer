@@ -112,21 +112,10 @@ namespace HellionExtendedServer
            
             string configPath = System.IO.Path.Combine(Globals.GetFolderPath(HESFolderName.Config), "NLog.config");
 
-            if (!System.IO.File.Exists(configPath))
-            {
-                Console.WriteLine($"NLog.config not detected at {configPath}.\r\n Press any key to close.");
-                Console.ReadKey();
-                return;
-            }
-
-            
-
             LogManager.Configuration = new XmlLoggingConfiguration(configPath);
 
             new Log();
-
-           
-                            
+                                       
         }
 
         /// <summary>
@@ -142,8 +131,8 @@ namespace HellionExtendedServer
             m_localization = new Localization();
             m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
 
-            if (!new SteamCMD().GetSteamCMD())
-                return;
+            new SteamCMD().GetSteamCMD();
+                
 
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
@@ -151,7 +140,6 @@ namespace HellionExtendedServer
             updateManager.GetLatestRelease();
 
             m_serverInstance = new ServerInstance();
-            m_serverInstance.Config.Load();
 
             bool autoStart = false;
             foreach (string arg in args)

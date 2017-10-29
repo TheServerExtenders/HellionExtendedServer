@@ -11,7 +11,7 @@ namespace HellionExtendedServer.Modules
 {
     public class SteamCMD
     {
-        private const string SteamCMDDir = "steamcmd";
+        private const string SteamCMDDir = "Hes\\steamcmd";
         private static string SteamCMDExe = $"{SteamCMDDir}\\steamcmd.exe";
         private static string SteamCMDZip = $"{SteamCMDDir}\\steamcmd.zip";
 
@@ -22,11 +22,12 @@ namespace HellionExtendedServer.Modules
 
         public bool GetSteamCMD()
         {
+
             if (!Directory.Exists(SteamCMDDir))
                 Directory.CreateDirectory(SteamCMDDir);
 
             if (!File.Exists(SteamCMDExe))
-            {             
+            {
                 try
                 {
                     Log.Instance.Info("SteamCMD does not exist, downloading!");
@@ -34,7 +35,7 @@ namespace HellionExtendedServer.Modules
                     using (var client = new WebClient())
                         client.DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip", SteamCMDZip);
 
-                    Log.Instance.Info("Done! Unpacking and starting SteamCMD to install Hellion_Dedicated.exe");
+                    Log.Instance.Info("Done! Unpacking and starting SteamCMD to install Hellion Dedicated Server");
 
                     ZipFile.ExtractToDirectory(SteamCMDZip, SteamCMDDir);
                     File.Delete(SteamCMDZip);
@@ -46,27 +47,20 @@ namespace HellionExtendedServer.Modules
                 }
             }
 
+            string script = @" +login anonymous +force_install_dir ../../ +app_update 598850 validate +quit";
 
             try
             {
-                string script = $" +@ShutdownOnFailedCommand 1 " +
-                    $"+@NoPromptForPassword 1 " +
-                    $"+@sSteamCmdForcePlatformType windows " +
-                    $"+login anonymous +force_install_dir {Environment.CurrentDirectory} " +
-                    $"+app_update 598850 validate +quit";
-                
+                Log.Instance.Info("Installing Hellion_Dedicated.exe");
 
-                var steamCmdinfo = new ProcessStartInfo(SteamCMDExe , script)
+                var steamCmdinfo = new ProcessStartInfo(SteamCMDExe, script)
                 {
                     WorkingDirectory = Path.GetFullPath(SteamCMDDir),
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     StandardOutputEncoding = Encoding.ASCII
                 };
-
-                Console.WriteLine(steamCmdinfo.Arguments);
-
-                var steamCmd = Process.Start(steamCmdinfo);
+                Process steamCmd = Process.Start(steamCmdinfo);
 
                 while (!steamCmd.HasExited)
                 {
@@ -79,6 +73,8 @@ namespace HellionExtendedServer.Modules
                 Log.Instance.Error("Could not start SteamCMD. Going into manual mode. Please run SteamCMD manually!");
                 return false;
             }
+
+            Log.Instance.Info("Hellion Dedicated has been successfully installed!");
 
             return true;
         }

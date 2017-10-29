@@ -167,7 +167,10 @@ namespace HellionExtendedServer.Common.GameServerIni
         private object objValue = null;
         private Setting setting = new Setting();
 
-        public GameServerProperty() { }
+        public GameServerProperty()
+        {
+        }
+
         public GameServerProperty(string sName, string sDisplayName, string sCategory, string sDescription, object value, Type type, bool bReadOnly, bool bVisible)
         {
             this.sName = sName;
@@ -259,23 +262,23 @@ namespace HellionExtendedServer.Common.GameServerIni
         {
             get
             {
-                setting = GetAsSetting();
                 return setting;
             }
             set
             {
-                SetFromSetting(value);
+                setting = value;
             }
         }
 
         public Setting GetAsSetting()
         {
+
+
             setting.Name = Name;
             setting.Category = Category;
             setting.Description = Description;
             setting.Type = Type;
             setting.Value = Value;
-            setting.Valid = true;
 
             return setting;
         }

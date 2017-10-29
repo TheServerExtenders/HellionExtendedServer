@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace HellionExtendedServer.Common.GameServerIni
 {
     public class GameServerProperties
     {
         private static string m_fileName = "GameServer.ini";
-        private static string m_originalFileName = "hes\\GameServer.ini.original";
-        private static string m_backupFileName = "hes\\GameServer.ini.backup";
+        private static string m_originalFileName = "hes\\config\\GameServer.ini.original";
+        private static string m_backupFileName = "hes\\config\\GameServer.ini.backup";
 
         private List<Setting> m_settings = new List<Setting>();
 
@@ -48,49 +47,45 @@ namespace HellionExtendedServer.Common.GameServerIni
 
         public bool Save(List<Setting> mySettings)
         {
+            m_settings = mySettings;
+
             try
             {
                 if (File.Exists(m_fileName))
                 {
+                    // pull in the default settings
+                    List<Setting> defSettings = GameServerINI.ParseDefaultSettings();
                     // pull in the current settings in the file
                     List<Setting> prevSettings = GameServerINI.ParseSettings();
                     // the list that will be saved to the GameServer.Ini
                     List<Setting> outSettings = new List<Setting>();
 
-
-                    //foreach(Setting setting in mySettings)
-                    //{
-                     //   Console.WriteLine(setting.ToString());
-                    //}
-
                     foreach (Setting setting in prevSettings)
                     {
-                        
                         Setting newSetting = setting;
                         Setting inSetting = setting;
+                        Setting defSetting = setting;
 
-                        if (mySettings.Exists(x => x.Name == setting.Name))
-                        {
-                            inSetting = mySettings.First(x => x.Name == setting.Name);
-                        }          
-                                                      
-                                                                          
+                        if (m_settings.Exists(x => x.Name.Equals(setting.Name)))
+                            inSetting = m_settings.First(x => x.Name.Equals(setting.Name));
+
+                        if (defSettings.Exists(x => x.Name.Equals(setting.Name)))
+                            defSetting = defSettings.First(x => x.Name.Equals(setting.Name));
+
                         if (inSetting.Valid)
-                        {                          
-                            outSettings.Add(inSetting);
-                        }                      
+                            newSetting = inSetting;
                         else
-                        {
-                            outSettings.Add(setting);
-                        }
-                           
+                            newSetting = setting;
+
+
+                        outSettings.Add(newSetting);
                     }
 
                     File.Copy(m_fileName, m_backupFileName, true);
 
                     using (StreamWriter file = new StreamWriter(m_fileName))
                         foreach (var entry in outSettings)
-                            file.WriteLine(entry.ToString());
+                            file.WriteLine(entry.ToLine());
 
                     return true;
                 }
@@ -123,9 +118,9 @@ namespace HellionExtendedServer.Common.GameServerIni
                         setting = m_settings.Find(x => x.Name == defaultSetting.Name);
 
                     var newSetting = defaultSetting;
-
+                  
                     if (setting.Value != defaultSetting.Value && setting.Valid)
-                    {
+                    {                       
                         newSetting.Value = setting.Value;
                         newSetting.Enabled = setting.Enabled;
                         tmp.Add(newSetting);

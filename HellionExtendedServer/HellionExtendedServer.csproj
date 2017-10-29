@@ -123,6 +123,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -135,6 +136,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrashDump.cs" />
+    <Compile Include="Modules\FolderStructure.cs" />
+    <Compile Include="Globals.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Help.cs" />
@@ -158,7 +161,6 @@
     </Compile>
     <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
     <Compile Include="Modules\Config.cs" />
-    <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
     <Compile Include="Managers\Commands\CommandAttribute.cs" />
@@ -187,6 +189,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
+    <EmbeddedResource Include="Resources\HellionExtendedServer.Common.dll" />
+    <EmbeddedResource Include="Resources\NLog.dll" />
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
     </EmbeddedResource>
@@ -204,9 +208,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="hesicon.ico" />
-    <None Include="GameServer_example.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -218,6 +219,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="README.md" />
+    <EmbeddedResource Include="Resources\GameServer_example.ini" />
+    <EmbeddedResource Include="Resources\NLog.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -253,21 +256,21 @@
 
 echo Running build event for $(ProjectName)..
 
-if not exist "$(ProjectDir)bin\HESRelease"                              md "$(ProjectDir)bin\HESRelease"
-if not exist "$(ProjectDir)bin\HESRelease\Hes"                      md "$(ProjectDir)bin\HESRelease\Hes"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\bin "              md "$(ProjectDir)bin\HESRelease\Hes\bin"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\localization" md "$(ProjectDir)bin\HESRelease\Hes\localization"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\updates"       md "$(ProjectDir)bin\HESRelease\Hes\updates"
-if not exist  "$(ProjectDir)bin\HESRelease\Hes\plugins"       md  "$(ProjectDir)bin\HESRelease\Hes\plugins"
-if not exist  "$(ProjectDir)bin\HESRelease\Hes\config"       md  "$(ProjectDir)bin\HESRelease\Hes\config"
+rem if not exist "$(ProjectDir)bin\HESRelease"                              md "$(ProjectDir)bin\HESRelease"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes"                      md "$(ProjectDir)bin\HESRelease\Hes"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes\bin "              md "$(ProjectDir)bin\HESRelease\Hes\bin"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes\localization" md "$(ProjectDir)bin\HESRelease\Hes\localization"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes\updates"       md "$(ProjectDir)bin\HESRelease\Hes\updates"
+rem if not exist  "$(ProjectDir)bin\HESRelease\Hes\plugins"       md  "$(ProjectDir)bin\HESRelease\Hes\plugins"
+rem if not exist  "$(ProjectDir)bin\HESRelease\Hes\config"       md  "$(ProjectDir)bin\HESRelease\Hes\config"
 
 xcopy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)bin\HESRelease\"  /y
 xcopy "$(TargetDir)$(TargetFileName).config" "$(ProjectDir)bin\HESRelease\" /y
 
-xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-xcopy "$(TargetDir)NLog.config" "$(ProjectDir)bin\HESRelease\Hes" /y
-xcopy "$(TargetDir)Newtonsoft.Json.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
+xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)Resources" /y
+xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)Resources" /y
+xcopy "$(TargetDir)NLog.config" "$(ProjectDir)Resources" /y
+
 
 echo $(ProjectName) files have been copied to "$(ProjectDir)bin\HESRelease\".
 

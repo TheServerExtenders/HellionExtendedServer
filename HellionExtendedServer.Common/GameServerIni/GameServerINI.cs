@@ -46,6 +46,8 @@ namespace HellionExtendedServer.Common.GameServerIni
                             currentSetting.Enabled = settingEnabled;
                             currentSetting.Name = settingName;
 
+                            
+
                             int intParseRes;
                             float floatParseRes;
                             bool boolParseRes;
@@ -72,7 +74,11 @@ namespace HellionExtendedServer.Common.GameServerIni
                             }                         
                         }
 
-                        
+                        //if (currentSetting.Valid)
+                            
+
+                        //if(settings.Exists(x => x.Line != currentSetting.Line))
+                            //Console.WriteLine(currentSetting.ToLine());
 
                         settings.Add(currentSetting);
                     }
@@ -94,7 +100,7 @@ namespace HellionExtendedServer.Common.GameServerIni
         {
             List<Setting> settings = new List<Setting>();
 
-            if (!File.Exists(fileName))
+            if(!File.Exists(m_exampleFileName))            
                 return settings;
 
             string category = "2. Server Settings";

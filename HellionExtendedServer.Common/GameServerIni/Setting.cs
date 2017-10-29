@@ -37,7 +37,7 @@ namespace HellionExtendedServer.Common.GameServerIni
             Valid = false;
         }
 
-        public override string ToString()
+        public string ToLine()
         {
             try
             {
@@ -52,7 +52,7 @@ namespace HellionExtendedServer.Common.GameServerIni
             {
                 Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
             }
-            return base.ToString();
+            return string.Empty;
         }
     }
 }

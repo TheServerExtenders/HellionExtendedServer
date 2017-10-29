@@ -1,35 +1,25 @@
-﻿using HellionExtendedServer.Common.Components;
+﻿using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers;
-using HellionExtendedServer.Common;
 using HellionExtendedServer.Modules;
+using NLog;
+using NLog.Config;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using HellionExtendedServer;
-using HellionExtendedServer.Managers.Event;
-using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
-using ZeroGravity.Data;
-using ZeroGravity.Network;
 using ZeroGravity.Objects;
-using NLog.Config;
-using NLog;
-
-using static ZeroGravity.Network.NetworkController;
 using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
-
 
 namespace HellionExtendedServer
 {
     public class HES
     {
-
-
         public static string GameVersion = "0.2.5";
         public static string BuildBranch = "Dev";
 
@@ -44,6 +34,8 @@ namespace HellionExtendedServer
         private static EventHandler _handler;
         private static Boolean m_useGui = true;
         private static Thread uiThread;
+        private static FolderStructure m_folderStructure;
+
         #endregion Fields
 
         #region Properties
@@ -69,48 +61,33 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
-
-            string configPath = System.IO.Path.Combine(System.Environment.CurrentDirectory, "hes", "NLog.config");
-
-            if (!System.IO.File.Exists(configPath))
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, rArgs) =>
             {
-                Console.WriteLine($"NLog.config not detected at {configPath}.\r\n Press any key to close.");
-                Console.ReadKey();
-                return;
-            }
-                              
-            LogManager.Configuration = new XmlLoggingConfiguration(configPath);
+                string assemblyName = new AssemblyName(rArgs.Name).Name;
+                if (assemblyName.EndsWith(".resources"))
+                    return null;
 
-            //Init the log for HES
-            new Log();
+                string dllName = assemblyName + ".dll";
+                string dllFullPath = Path.Combine(Path.GetFullPath(Globals.GetFolderPath(HESFolderName.Bin)), dllName);
 
-            // Setup the handler for closing HES properly and saving
-            _handler += new EventHandler(Handler);
-            SetConsoleCtrlHandler(_handler, true);
+                using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources." + dllName))
+                {
+                    byte[] data = new byte[s.Length];
+                    s.Read(data, 0, data.Length);
+                    File.WriteAllBytes(dllFullPath, data);
+                }
 
-            Console.Title = WindowTitle;
+                return Assembly.LoadFrom(dllFullPath);
+            };
 
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
-
-            Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
-
-            updateManager = new UpdateManager();
-            updateManager.GetLatestRelease();
-
-            m_config = new Config();
-            m_config.Load();
-
-
-
-            m_localization = new Localization();
-            m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
-
+            new FolderStructure().Build();
 
             var program = new HES(args);
             program.Run(args);
         }
 
         #region Methods
+
         private static void SetupGUI()
         {
             if (uiThread != null)
@@ -124,6 +101,37 @@ namespace HellionExtendedServer
         public HES(string[] args)
         {
             m_instance = this;
+
+            _handler += new EventHandler(Handler);
+            SetConsoleCtrlHandler(_handler, true);
+
+            Console.Title = WindowTitle;
+
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
+           
+            string configPath = System.IO.Path.Combine(Globals.GetFolderPath(HESFolderName.Config), "NLog.config");
+
+            if (!System.IO.File.Exists(configPath))
+            {
+                Console.WriteLine($"NLog.config not detected at {configPath}.\r\n Press any key to close.");
+                Console.ReadKey();
+                return;
+            }
+
+            LogManager.Configuration = new XmlLoggingConfiguration(configPath);
+
+            new Log();
+
+            Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
+
+            updateManager = new UpdateManager();
+            updateManager.GetLatestRelease();
+
+            m_config = new Config();
+            m_config.Load();
+
+            m_localization = new Localization();
+            m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
         }
 
         /// <summary>
@@ -159,7 +167,7 @@ namespace HellionExtendedServer
                 }
             }
 
-            if (m_useGui)            
+            if (m_useGui)
                 SetupGUI();
 
             Log.Instance.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
@@ -167,10 +175,8 @@ namespace HellionExtendedServer
             if (autoStart | Properties.Settings.Default.AutoStart)
                 ServerInstance.Instance.Start();
 
-
             ReadConsoleCommands();
         }
-
 
         /// <summary>
         /// This contains the console commands
@@ -191,7 +197,6 @@ namespace HellionExtendedServer
 
                     string cmmd = cmd.Split(" ".ToCharArray())[0].Replace("/", "");
                     string[] args = cmd.Split(" ".ToCharArray()).Skip(1).ToArray();
-
 
                     //if (ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args)) continue;
 
@@ -215,8 +220,6 @@ namespace HellionExtendedServer
 
                     if (stringList[1] == "update")
                     {
-
-
                         if (stringList[2] == "get")
                         {
                             updateManager.DownloadLatestRelease();
@@ -228,17 +231,16 @@ namespace HellionExtendedServer
                             Console.WriteLine("-Current Release-");
 
                             Console.WriteLine($"Name: {updateManager.CurrentRelease.Name}");
-                            Console.WriteLine($"Version: {updateManager.CurrentRelease.Version}");                         
-                            Console.WriteLine($"Download Count: {updateManager.CurrentRelease.DLCount}" );
+                            Console.WriteLine($"Version: {updateManager.CurrentRelease.Version}");
+                            Console.WriteLine($"Download Count: {updateManager.CurrentRelease.DLCount}");
                             Console.WriteLine($"URL: {updateManager.CurrentRelease.URL}");
                             Console.WriteLine($"Description: {updateManager.CurrentRelease.Description}");
 
                             flag = true;
                         }
-
                     }
 
-                    if(stringList[1] == "defaultinitest")
+                    if (stringList[1] == "defaultinitest")
                     {
                         var test = Common.GameServerIni.GameServerINI.ParseDefaultSettings();
 
@@ -248,8 +250,7 @@ namespace HellionExtendedServer
 
                     if (stringList[1] == "initest")
                     {
-                        
-                       // var test = Common.GameServerIni.GameServerINI.ParseSettings();
+                        // var test = Common.GameServerIni.GameServerINI.ParseSettings();
 
                         //Console.WriteLine($"Found {test.Count} Settings in the GameServer Example INI file.");
                         flag = true;
@@ -295,7 +296,6 @@ namespace HellionExtendedServer
 
                     if (stringList[1] == "save" & Server.IsRunning)
                     {
-
                         ServerInstance.Instance.Save((stringList.Count > 2 && stringList[2] == "-show"));
                         flag = true;
                     }
@@ -372,7 +372,6 @@ namespace HellionExtendedServer
                 }
             }
         }
-
 
         /// <summary>
         /// Loads the gui into its own thread

@@ -1,21 +1,21 @@
-﻿using System;
-using System.Linq;
-using System.Net;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
-using Newtonsoft.Json.Linq;
-using HellionExtendedServer.Common;
+using System.IO.Compression;
+using System.Net;
+using HellionExtendedServer;
 
 namespace HellionExtendedServer.Managers
 {
     public class UpdateManager
     {
+        private const string UpdateFileName = "update.zip";
+        private const string LatestReleaseURL = @"https://api.github.com/repos/HellionCommunity/HellionExtendedServer/releases/latest";
+
         private Release m_currentRelease;
 
         public Release CurrentRelease { get => m_currentRelease; set => m_currentRelease = value; }
 
-        private static string LatestReleaseURL = @"https://api.github.com/repos/HellionCommunity/HellionExtendedServer/releases/latest";
-
-        
         public UpdateManager()
         {
             ServicePointManager.DefaultConnectionLimit = 4;
@@ -36,12 +36,16 @@ namespace HellionExtendedServer.Managers
             WebClient client = new WebClient();
             client.DownloadDataCompleted += new DownloadDataCompletedEventHandler(ReleaseDownloaded);
             client.DownloadDataAsync(new Uri(m_currentRelease.URL));
+        }
 
+        public void UnpackRelease()
+        {
+            ZipFile.ExtractToDirectory(UpdateFileName, Globals.GetFolderPath(HESFolderName.Updates));
         }
 
         private void ReleaseDownloaded(object sender, DownloadDataCompletedEventArgs e)
         {
-            File.WriteAllBytes(@"Hes/updates/update.zip", e.Result);
+            File.WriteAllBytes(Path.Combine(Globals.GetFolderPath(HESFolderName.Updates), UpdateFileName), e.Result);
             Console.WriteLine("Update Downloaded!");
         }
 
@@ -51,7 +55,6 @@ namespace HellionExtendedServer.Managers
 
             try
             {
-                
                 HttpWebRequest request = WebRequest.Create(LatestReleaseURL) as HttpWebRequest;
                 request.Method = "GET";
                 request.Proxy = null;
@@ -72,13 +75,12 @@ namespace HellionExtendedServer.Managers
                     (string)task["assets"][0]["browser_download_url"],
                     (string)task["tag_name"],
                     (int)task["assets"][0]["download_count"],
-                    (string)task["body"]                                       
-                );               
+                    (string)task["body"]
+                );
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-
             }
         }
     }
@@ -92,7 +94,6 @@ namespace HellionExtendedServer.Managers
         public string Description;
         public bool IsUpdate;
 
-
         public Release(string name, string url, string version, int dlCount, string description)
         {
             Name = name;
@@ -102,6 +103,5 @@ namespace HellionExtendedServer.Managers
             IsUpdate = new Version(version) > HES.Version;
             Description = description;
         }
-
     }
 }

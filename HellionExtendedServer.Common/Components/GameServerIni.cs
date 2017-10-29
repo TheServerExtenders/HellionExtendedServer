@@ -38,17 +38,16 @@ namespace HellionExtendedServer.Common.Components
         private static int f_vessel_explosion_damage_multiplier;        //(Default: 1)					Damage multiplier for exploding vessels
         private static float f_vessel_decay_rate;                         //(Default: 0.05)                 Vessel decay rate in HPs per second
         private static int f_activate_repair_point_chance_multiplier;   //(Default: 1)						If value is less then 1 (0-0,9) then chance for is lowered if number is higher than 1 chance is increased 
-        private static int f_doomed_ship_spawn_frequency;               //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
-        private static int f_doomed_ship_timer_min;                     //(Default: 1800)					Doomed outpust minimum despawn time, value in seconds // 1800 = 30 minutes
-        private static int f_doomed_ship_timer_max;                     //(Default: 3600)					Doomed outpust maximum despawn time, value in seconds // 3600 = 1 hour
-        private static float f_doomed_ship_spawn_chance;                  //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
+        //private static int f_doomed_ship_spawn_frequency;               //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
+        //private static int f_doomed_ship_timer_min;                     //(Default: 1800)					Doomed outpust minimum despawn time, value in seconds // 1800 = 30 minutes
+        //private static int f_doomed_ship_timer_max;                     //(Default: 3600)					Doomed outpust maximum despawn time, value in seconds // 3600 = 1 hour
+        //private static float f_doomed_ship_spawn_chance;                  //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
         private static bool f_spawn_manager_print_categories;            //(Default: false)				Spawn manager debug information
         private static bool f_spawn_manager_print_spawn_rules;           //(Default: false)				Spawn manager debug information
         private static bool f_spawn_manager_print_item_attach_points;    //(Default: false)				Spawn manager debug information
         private static bool f_spawn_manager_print_item_type_ids;         //(Default: false)				Spawn manager debug information
 
 
-        private static int serverTickCount;
         private static int solarSystemTime;
 
         #endregion
@@ -56,6 +55,9 @@ namespace HellionExtendedServer.Common.Components
         public GameServerIni()
         {
             m_instance = this;
+
+            if (!File.Exists(FileName + ".original"))
+                File.Copy(FileName, FileName + ".original");
         }
 
         #region ServerConfig Properties
@@ -67,16 +69,6 @@ namespace HellionExtendedServer.Common.Components
         {
             get { return maxSaveFileCount; }
             set { maxSaveFileCount = value; }
-        }
-
-        [ReadOnly(false)]
-        [Description("How many times the server is allowed to update per second (Default: 64)")]
-        [Category("Server Settings")]
-        [DisplayName("Server Tick Count")]
-        public int server_tick_count
-        {
-            get { return serverTickCount; }
-            set { serverTickCount = value; }
         }
 
         [ReadOnly(false)]
@@ -239,7 +231,8 @@ namespace HellionExtendedServer.Common.Components
             set { f_activate_repair_point_chance_multiplier = value; }
         }
         //(Default: 1)						If value is less then 1 (0-0,9) then chance for is lowered if number is higher than 1 chance is increased 
-
+       
+        /*
         [ReadOnly(false)]
         [Description("Doomed outpost spawn interval, value in seconds // 10800 = 3 hours (Default: 10800)")]
         [Category("Game Settings")]
@@ -250,7 +243,7 @@ namespace HellionExtendedServer.Common.Components
             set { f_doomed_ship_spawn_frequency = value; }
         }
         //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
-
+        
         [ReadOnly(false)]
         [Description("Doomed outpost minimum despawn time, value in seconds // 1800 = 30 minutes (Default: 1800)")]
         [Category("Game Settings")]
@@ -283,6 +276,7 @@ namespace HellionExtendedServer.Common.Components
             set { doomed_ship_spawn_chance = value; }
         }
         //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
+        */
 
         [ReadOnly(false)]
         [Description("Spawn manager debug information (Default: false)")]
@@ -358,9 +352,8 @@ namespace HellionExtendedServer.Common.Components
                 serverDescription = "";
                 statusPort = 5970;
                 clientPort = 5969;
-                maxPlayers = 20;
+                maxPlayers = 100;
                 maxSaveFileCount = 10;
-                serverTickCount = 64;
                 solarSystemTime = -1;
                 saveInterval = 900;
                 serverRestartTime = -1;
@@ -369,10 +362,10 @@ namespace HellionExtendedServer.Common.Components
                 f_vessel_explosion_damage_multiplier = 1;        //(Default: 1)					Damage multiplier for exploding vessels
                 f_vessel_decay_rate = 0.05F;                         //(Default: 0.05)                 Vessel decay rate in HPs per second
                 f_activate_repair_point_chance_multiplier = 1;   //(Default: 1)						If value is less then 1 (0-0,9) then chance for is lowered if number is higher than 1 chance is increased 
-                f_doomed_ship_spawn_frequency = 10800;               //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
-                f_doomed_ship_timer_min = 1800;                     //(Default: 1800)					Doomed outpust minimum despawn time, value in seconds // 1800 = 30 minutes
-                f_doomed_ship_timer_max = 3600;                     //(Default: 3600)					Doomed outpust maximum despawn time, value in seconds // 3600 = 1 hour
-                f_doomed_ship_spawn_chance = 0.5F;                  //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
+                //f_doomed_ship_spawn_frequency = 10800;               //(Default: 10800)				Doomed outpust spawn interval, value in seconds // 10800 = 3 hours
+                //f_doomed_ship_timer_min = 1800;                     //(Default: 1800)					Doomed outpust minimum despawn time, value in seconds // 1800 = 30 minutes
+                //f_doomed_ship_timer_max = 3600;                     //(Default: 3600)					Doomed outpust maximum despawn time, value in seconds // 3600 = 1 hour
+                //f_doomed_ship_spawn_chance = 0.5F;                  //(Default: 0.5)					Doomed outpust spawn chance, value in % (0-1)
                 f_spawn_manager_print_categories = false;            //(Default: false)				Spawn manager debug information
                 f_spawn_manager_print_spawn_rules = false;           //(Default: false)				Spawn manager debug information
                 f_spawn_manager_print_item_attach_points = false;    //(Default: false)				Spawn manager debug information
@@ -400,6 +393,7 @@ namespace HellionExtendedServer.Common.Components
                 {
                     Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
                 }
+              
             }
             catch (Exception ex)
             {
@@ -420,9 +414,8 @@ namespace HellionExtendedServer.Common.Components
                 if (fileExists)
                 {
                     if (backupIni)
-                        if (!File.Exists(FileName + "hesbackup"))
-                            File.Copy(FileName, FileName + "hesbackup");
-                        
+                        File.Copy(FileName, FileName + ".hesprevious", true);
+
                     SetSettings();
 
                     using (StreamWriter file = new StreamWriter(FileName))
@@ -455,6 +448,7 @@ namespace HellionExtendedServer.Common.Components
             {
                 if (File.Exists(FileName))
                 {
+                   
                     foreach (string line in File.ReadLines(FileName))
                     {
                         try

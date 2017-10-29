@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HellionExtendedServer.Common;
 using HellionExtendedServer.Common.Components;
+using HellionExtendedServer.Common.GameServerIni;
 using ZeroGravity;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Event;
@@ -31,6 +32,7 @@ namespace HellionExtendedServer.Managers
         private Server m_server;
         private ServerWrapper m_serverWrapper;
         private GameServerIni m_gameServerIni;
+        private GameServerProperties m_gameServerProperties;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
         private PermissionManager m_permissionmanager;
@@ -49,6 +51,7 @@ namespace HellionExtendedServer.Managers
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
         public GameServerIni Config { get { return m_gameServerIni; } }
+        public GameServerProperties GameServerProperties { get { return m_gameServerProperties; } }
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
         public EventHelper EventHelper { get { return m_eventhelper; } }
@@ -111,6 +114,9 @@ namespace HellionExtendedServer.Managers
                 Console.WriteLine($"HELLION_Dedicated.exe not detected at {gameExePath}.\r\n Press any key to close.");
             
             m_gameServerIni = new GameServerIni();
+            m_gameServerProperties = new GameServerProperties();
+
+            m_gameServerProperties.Load();
         }
 
         #region Methods

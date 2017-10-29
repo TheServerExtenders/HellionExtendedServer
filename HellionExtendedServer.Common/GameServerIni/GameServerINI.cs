@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Linq;
+using System;
 
 namespace HellionExtendedServer.Common.GameServerIni
 {
@@ -9,19 +11,11 @@ namespace HellionExtendedServer.Common.GameServerIni
         private const string m_fileName = "GameServer.ini";
         private const string m_exampleFileName = "GameServer_example.ini";
 
-        public static bool SaveSettings(string fileName, List<Setting> inSettings)
-        {
-            List<Setting> prevSettings = ParseSettings();
-            List<Setting> outSettings = new List<Setting>();
-
-
-
-
-
-
-            return true;
-        }
-
+        /// <summary>
+        /// Parses the settings from the specified filename.
+        /// </summary>
+        /// <param name="fileName">The name of the file to parse the settings from</param>
+        /// <returns>The list of Settings that were parsed</returns>
         public static List<Setting> ParseSettings(string fileName = m_fileName)
         {
             List<Setting> settings = new List<Setting>();
@@ -34,6 +28,7 @@ namespace HellionExtendedServer.Common.GameServerIni
                 {
                     foreach (string line in File.ReadLines(m_fileName))
                     {
+
                         Setting currentSetting = new Setting();
 
                         currentSetting.Line = line;
@@ -50,6 +45,8 @@ namespace HellionExtendedServer.Common.GameServerIni
                             currentSetting.Valid = settingIsValid;
                             currentSetting.Enabled = settingEnabled;
                             currentSetting.Name = settingName;
+
+                            
 
                             int intParseRes;
                             float floatParseRes;
@@ -74,10 +71,16 @@ namespace HellionExtendedServer.Common.GameServerIni
                             {
                                 currentSetting.Type = typeof(string);
                                 currentSetting.Value = settingValue;
-                            }
-
-                            settings.Add(currentSetting);
+                            }                         
                         }
+
+                        //if (currentSetting.Valid)
+                            
+
+                        //if(settings.Exists(x => x.Line != currentSetting.Line))
+                            //Console.WriteLine(currentSetting.ToLine());
+
+                        settings.Add(currentSetting);
                     }
                 }
             }
@@ -88,11 +91,16 @@ namespace HellionExtendedServer.Common.GameServerIni
             return settings;
         }
       
+        /// <summary>
+        /// Parses the default settings from the specified filename
+        /// </summary>
+        /// <param name="fileName">The name of the defaults file to parse the settings from</param>
+        /// <returns></returns>
         public static List<Setting> ParseDefaultSettings(string fileName = m_exampleFileName)
         {
             List<Setting> settings = new List<Setting>();
 
-            if (!File.Exists(fileName))
+            if(!File.Exists(m_exampleFileName))            
                 return settings;
 
             string category = "2. Server Settings";

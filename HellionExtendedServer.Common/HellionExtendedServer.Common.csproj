@@ -75,6 +75,7 @@
     <Compile Include="GameServerIni\GameServerSettings.cs" />
     <Compile Include="GameServerIni\GameServerProperties.cs" />
     <Compile Include="GameServerIni\Setting.cs" />
+    <Compile Include="Globals.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

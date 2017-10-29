@@ -102,6 +102,7 @@ namespace HellionExtendedServer
         {
             m_instance = this;
 
+            
             _handler += new EventHandler(Handler);
             SetConsoleCtrlHandler(_handler, true);
 
@@ -118,20 +119,14 @@ namespace HellionExtendedServer
                 return;
             }
 
+            
+
             LogManager.Configuration = new XmlLoggingConfiguration(configPath);
 
             new Log();
 
-            Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
-
-            updateManager = new UpdateManager();
-            updateManager.GetLatestRelease();
-
-            m_config = new Config();
-            m_config.Load();
-
-            m_localization = new Localization();
-            m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
+           
+                            
         }
 
         /// <summary>
@@ -141,6 +136,20 @@ namespace HellionExtendedServer
         /// <param name="args"></param>
         private void Run(string[] args)
         {
+            m_config = new Config();
+            m_config.Load();
+
+            m_localization = new Localization();
+            m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
+
+            if (!new SteamCMD().GetSteamCMD())
+                return;
+
+            Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
+
+            updateManager = new UpdateManager();
+            updateManager.GetLatestRelease();
+
             m_serverInstance = new ServerInstance();
             m_serverInstance.Config.Load();
 

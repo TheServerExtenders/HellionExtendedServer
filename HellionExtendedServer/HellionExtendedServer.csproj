@@ -175,6 +175,7 @@
     <Compile Include="Managers\ServerInstance.cs" />
     <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="Managers\Plugins\Browser\Resources.cs" />
+    <Compile Include="Modules\SteamCMD.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />

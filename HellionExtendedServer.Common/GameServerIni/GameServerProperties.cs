@@ -10,6 +10,7 @@ namespace HellionExtendedServer.Common.GameServerIni
         private static string m_fileName = "GameServer.ini";
         private static string m_originalFileName = "hes\\config\\GameServer.ini.original";
         private static string m_backupFileName = "hes\\config\\GameServer.ini.backup";
+        private static string m_exampleFileName = "hes\\config\\GameServer_example.ini";
 
         private List<Setting> m_settings = new List<Setting>();
 
@@ -32,13 +33,21 @@ namespace HellionExtendedServer.Common.GameServerIni
 
                     File.Copy(m_backupFileName, m_fileName);
                 }
-                else
+                else if (File.Exists(m_originalFileName))
                 {
                     Log.Instance.Warn("GameServer.Ini wasn't found! Creating one from the original made on " +
                         File.GetLastWriteTime(m_originalFileName));
 
                     File.Copy(m_originalFileName, m_fileName);
                 }
+                else
+                {
+                    Log.Instance.Warn("GameServer.Ini wasn't found! Creating one from GameServer_example.Ini made on " +
+                        File.GetLastWriteTime(m_exampleFileName));
+
+                    File.Copy(m_exampleFileName, m_fileName);
+                }
+                   
             }
 
             if (!File.Exists(m_originalFileName))

@@ -51,7 +51,7 @@ namespace HellionExtendedServer.Modules
 
             try
             {
-                Log.Instance.Info("Installing Hellion_Dedicated.exe");
+                Log.Instance.Info("Updating Hellion Dedicated Server...");
 
                 var steamCmdinfo = new ProcessStartInfo(SteamCMDExe, script)
                 {
@@ -70,7 +70,7 @@ namespace HellionExtendedServer.Modules
             }
             catch (Exception)
             {
-                Log.Instance.Error("Could not start SteamCMD. Going into manual mode. Please run SteamCMD manually!");
+                Log.Instance.Error("Could not start SteamCMD. Going into manual mode. Please run SteamCMD manually to install or update the dedicated server!");
                 return false;
             }
 

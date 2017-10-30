@@ -136,8 +136,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrashDump.cs" />
-    <Compile Include="Modules\FolderStructure.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Modules\FolderStructure.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Help.cs" />

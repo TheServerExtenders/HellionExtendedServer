@@ -60,7 +60,8 @@ namespace HellionExtendedServer
 
         [STAThread]
         private static void Main(string[] args)
-        {
+        {          
+
             AppDomain.CurrentDomain.AssemblyResolve += (sender, rArgs) =>
             {
                 string assemblyName = new AssemblyName(rArgs.Name).Name;
@@ -68,7 +69,9 @@ namespace HellionExtendedServer
                     return null;
 
                 string dllName = assemblyName + ".dll";
-                string dllFullPath = Path.Combine(Path.GetFullPath(Globals.GetFolderPath(HESFolderName.Bin)), dllName);
+                string dllFullPath = Path.Combine(Path.GetFullPath("Hes\\bin"), dllName);
+
+                Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding missing assembly.");
 
                 using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources." + dllName))
                 {
@@ -102,20 +105,21 @@ namespace HellionExtendedServer
         {
             m_instance = this;
 
-            
             _handler += new EventHandler(Handler);
             SetConsoleCtrlHandler(_handler, true);
 
-            Console.Title = WindowTitle;
-
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
-           
-            string configPath = System.IO.Path.Combine(Globals.GetFolderPath(HESFolderName.Config), "NLog.config");
+
+            Console.Title = WindowTitle;
+                                          
+            string configPath = Globals.GetFilePath(HESFileName.NLogConfig);
 
             LogManager.Configuration = new XmlLoggingConfiguration(configPath);
 
             new Log();
-                                       
+
+            Log.Instance.Info("Hellion Extended Server Initializing....");
+
         }
 
         /// <summary>

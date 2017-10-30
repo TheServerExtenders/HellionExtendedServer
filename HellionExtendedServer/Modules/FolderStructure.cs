@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HellionExtendedServer.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -47,7 +48,7 @@ namespace HellionExtendedServer
                         {
                             case ".ini":
                             case ".config":
-                                path = Globals.GetFolderPath(HESFolderName.Config);
+                                path = Globals.GetFolderPath(HESFolderName.Config, false);
                                 break;
 
                             default:

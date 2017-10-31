@@ -35,7 +35,8 @@ namespace HellionExtendedServer
 
             cpc_chat_list.AppendText("Waiting for server to start..\r\n");
 
-            SetSettings();
+            SetSettings(ServerInstance.Instance.GameServerProperties.Load());
+           
         }
 
         private void Instance_OnServerStopped(ZeroGravity.Server server)
@@ -69,65 +70,33 @@ namespace HellionExtendedServer
 
         private void server_config_save_Click(object sender, EventArgs e)
         {
-            /*
-            List<Setting> tmp = new List<Setting>();
-            foreach (GameServerProperty property in Settings)
-           {
-                if (ServerInstance.Instance.GameServerProperties.Settings.Exists(x => x.Name == property.Name))
-                {
-                    Setting setting = ServerInstance.Instance.GameServerProperties.Settings.Find(x => x.Name == property.Name);
-
-                    if (property.Type == setting.Type)
-                    {
-                        if (property.Value != setting.DefaultValue)
-                        {
-                           
-
-                            setting.Value = property.Value;
-                            setting.Enabled = true;
-                        }
-                    }
-                }
-            }
-            */
-           // List<Setting> outSettings = new List<Setting>();
-
-            //foreach (GameServerProperty property in Settings)
-            //{
-
-
-
-                //outSettings.Add(property.Setting);
-            //}
-
-            
-
-            
-            if (ServerInstance.Instance.GameServerProperties.Save(GetSettings()))
+          
+            if (GameServerINI.SaveSettings(GetSettings()))
             {
                 StatusBar.Text = "Config Saved.";
             }
-            else
-            {
-                DialogResult result = MessageBox.Show("GameServer.Ini does not exist. Would you like to create one ?",
-                    "Server Settings Error",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                if (result == DialogResult.Yes)
-                {
-                    //ServerInstance.Instance.GameServerProperties.LoadDefaults();
-                    //ServerInstance.Instance.GameServerProperties.Save();
-                    serverconfig_properties.Refresh();
-                    StatusBar.Text = "Config Defaults saved to GameServer.Ini. Change the settings then Save!";
-                }
-        }
-        
+
+            //else
+            //{
+            //DialogResult result = MessageBox.Show("GameServer.Ini does not exist. Would you like to create one ?",
+            //    "Server Settings Error",
+            //    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+            //if (result == DialogResult.Yes)
+            //{
+            //      ServerInstance.Instance.GameServerProperties.LoadDefaults();
+            //      ServerInstance.Instance.GameServerProperties.Save();
+            //   serverconfig_properties.Refresh();
+            //    StatusBar.Text = "Config Defaults saved to GameServer.Ini. Change the settings then Save!";
+            //}
+            //}
+
         }
 
-        private void SetSettings()
+        private void SetSettings(List<Setting> settings)
         {
             Settings.Clear();
 
-            foreach (var setting in ServerInstance.Instance.GameServerProperties.Settings)
+            foreach (var setting in settings)
                 Settings.Add(new GameServerProperty().SetFromSetting(setting));
 
             serverconfig_properties.SelectedObject = Settings;
@@ -149,10 +118,7 @@ namespace HellionExtendedServer
 
         private void server_config_cancel_Click(object sender, EventArgs e)
         {
-            if (ServerInstance.Instance.GameServerProperties.Settings == null)
-                ServerInstance.Instance.GameServerProperties.Load();
-
-            SetSettings();
+            SetSettings(ServerInstance.Instance.GameServerProperties.Load());
             StatusBar.Text = "Reloaded the config from the GameServer.ini.";
         }
 
@@ -163,9 +129,7 @@ namespace HellionExtendedServer
                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
             {
-                ServerInstance.Instance.GameServerProperties.LoadDefaults();
-
-                SetSettings();
+                SetSettings(ServerInstance.Instance.GameServerProperties.LoadDefaults());
                 StatusBar.Text = "Config defaults loaded.";
             }
         }
@@ -177,8 +141,7 @@ namespace HellionExtendedServer
                    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
             if (result == DialogResult.Yes)
             {
-                ServerInstance.Instance.GameServerProperties.Load();
-                SetSettings();
+                SetSettings(ServerInstance.Instance.GameServerProperties.Load());
                 StatusBar.Text = "Config reloaded from GameServer.ini";
             }
         }

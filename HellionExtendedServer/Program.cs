@@ -135,7 +135,7 @@ namespace HellionExtendedServer
             m_localization = new Localization();
             m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
 
-            new SteamCMD().GetSteamCMD();
+            //new SteamCMD().GetSteamCMD();
                 
 
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");

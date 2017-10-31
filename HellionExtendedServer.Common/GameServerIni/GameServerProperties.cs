@@ -73,19 +73,17 @@ namespace HellionExtendedServer.Common.GameServerIni
                     {
                         Setting newSetting = setting;
                         Setting inSetting = setting;
-                        Setting defSetting = setting;
 
                         if (m_settings.Exists(x => x.Name.Equals(setting.Name)))
                             inSetting = m_settings.First(x => x.Name.Equals(setting.Name));
-
-                        if (defSettings.Exists(x => x.Name.Equals(setting.Name)))
-                            defSetting = defSettings.First(x => x.Name.Equals(setting.Name));
 
                         if (inSetting.Valid)
                             newSetting = inSetting;
                         else
                             newSetting = setting;
 
+                        if(newSetting.Valid)
+                            Console.WriteLine($"enabled:{newSetting.Enabled} name:{newSetting.Name} valid:{newSetting.Valid}");
 
                         outSettings.Add(newSetting);
                     }
@@ -111,54 +109,61 @@ namespace HellionExtendedServer.Common.GameServerIni
             return false;
         }
 
-        public bool Load()
+        public List<Setting> Load()
         {
-            m_settings = GameServerINI.ParseSettings();
+            var m_settings = GameServerINI.ParseSettings();
 
             try
             {
                 List<Setting> tmp = new List<Setting>();
 
+                // for every setting in the gameserver_example.ini
                 foreach (Setting defaultSetting in GameServerINI.ParseDefaultSettings())
                 {
+                    // then set the out setting to the default setting incase something goes wrong
                     Setting setting = defaultSetting;
 
+                    // if the setting exists, then get the setting from the gameserver.ini
                     if (m_settings.Exists(x => x.Name == defaultSetting.Name))
                         setting = m_settings.Find(x => x.Name == defaultSetting.Name);
 
+                    // set the new setting to have the values of the default setting
                     var newSetting = defaultSetting;
                   
-                    if (setting.Value != defaultSetting.Value && setting.Valid)
-                    {                       
+                    // if the values of the default setting and the current setting
+                    // are not the same, and the setting contains an '=' sign
+                    if (setting.Enabled)
+                    {                
+                        // set the new value to the current value
                         newSetting.Value = setting.Value;
+                        // pull if the line was orginally disabled ( starts with a '#' )
                         newSetting.Enabled = setting.Enabled;
+                        newSetting.Valid = setting.Valid;
+
+                        // add the new setting to the temp list that goes to the property panel
                         tmp.Add(newSetting);
                     }
                     else
+                    {
+                        // if the values are the same, then just add the default value to the list
                         tmp.Add(defaultSetting);
+                    }
+
                 }
 
-                m_settings = tmp;
-
-                return true;
+                return tmp;
             }
             catch (Exception ex)
             {
                 Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
             }
-            return false;
+
+            return null;
         }
 
-        public void LoadDefaults()
+        public List<Setting> LoadDefaults()
         {
-            try
-            {
-                m_settings = GameServerINI.ParseDefaultSettings();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Error($"[ERROR] Hellion Extended Server[{ex.TargetSite}]: {ex.StackTrace}");
-            }
+            return  GameServerINI.ParseDefaultSettings();           
         }
     }
 }

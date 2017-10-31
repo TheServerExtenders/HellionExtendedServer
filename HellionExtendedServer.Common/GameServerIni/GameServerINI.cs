@@ -1,15 +1,74 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Linq;
-using System;
 
 namespace HellionExtendedServer.Common.GameServerIni
 {
     public static class GameServerINI
     {
         private const string m_fileName = "GameServer.ini";
-        private const string m_exampleFileName = "GameServer_example.ini";
+        private const string m_originalFileName = "hes\\config\\GameServer.ini.original";
+        private const string m_backupFileName = "hes\\config\\GameServer.ini.backup";
+        private const string m_exampleFileName = "hes\\config\\GameServer_example.ini";
+
+        public static bool SaveSettings(List<Setting> newSettings)
+        {
+            try
+            {
+                if (File.Exists(m_fileName))
+                {
+                    var tmp = new List<Setting>();
+
+                    File.Copy(m_fileName, m_backupFileName, true);
+
+                    // for every setting in the current gameserver.ini
+                    foreach (Setting oldSetting in ParseSettings())
+                    {
+                        //Set the newSetting to be the old setting at first in case something goes wrong
+                        var newSetting = oldSetting;
+
+                        //Get the new setting if it exists from the propertygrid
+                        // and set the setting to save to the ini as the one from the grid
+                        if (newSettings.Exists(x => x.Name.Equals(oldSetting.Name)))
+                            newSetting = newSettings.Find(setting => setting.Name.Equals(oldSetting.Name));
+
+                        if (!tmp.Contains(newSetting))
+                        {
+                            if (newSetting.Value != oldSetting.Value)
+                            {
+                                newSetting.Valid = true;
+                                newSetting.Enabled = true;
+                            }
+                            else
+                            {
+                                newSetting.Enabled = false;
+                            }
+
+                            tmp.Add(newSetting);
+                        }
+                        else
+                            tmp.Add(oldSetting);
+                    }
+
+                    using (StreamWriter newFile = new StreamWriter(m_fileName))
+                        foreach (Setting theSetting in tmp)
+                            newFile.WriteLine(theSetting.ToLine());
+
+                    return true;
+                }
+                else
+                {
+                    Log.Instance.Warn("GameServer.Ini wasn't found! Creating a new one based on Defaults. ");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error($"[ERROR] Hellion Extended Server[Save]: {ex.Message} Trace:{ex.StackTrace}");
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Parses the settings from the specified filename.
@@ -28,7 +87,6 @@ namespace HellionExtendedServer.Common.GameServerIni
                 {
                     foreach (string line in File.ReadLines(m_fileName))
                     {
-
                         Setting currentSetting = new Setting();
 
                         currentSetting.Line = line;
@@ -46,23 +104,17 @@ namespace HellionExtendedServer.Common.GameServerIni
                             currentSetting.Enabled = settingEnabled;
                             currentSetting.Name = settingName;
 
-                            
-
-                            int intParseRes;
-                            float floatParseRes;
-                            bool boolParseRes;
-
-                            if (int.TryParse(settingValue, out intParseRes))
+                            if (int.TryParse(settingValue, out int intParseRes))
                             {
                                 currentSetting.Type = typeof(int);
                                 currentSetting.Value = intParseRes;
                             }
-                            else if (float.TryParse(settingValue, out floatParseRes))
+                            else if (float.TryParse(settingValue, out float floatParseRes))
                             {
                                 currentSetting.Type = typeof(float);
                                 currentSetting.Value = floatParseRes;
                             }
-                            else if (bool.TryParse(settingValue, out boolParseRes))
+                            else if (bool.TryParse(settingValue, out bool boolParseRes))
                             {
                                 currentSetting.Type = typeof(bool);
                                 currentSetting.Value = boolParseRes;
@@ -71,14 +123,13 @@ namespace HellionExtendedServer.Common.GameServerIni
                             {
                                 currentSetting.Type = typeof(string);
                                 currentSetting.Value = settingValue;
-                            }                         
+                            }
                         }
 
                         //if (currentSetting.Valid)
-                            
 
                         //if(settings.Exists(x => x.Line != currentSetting.Line))
-                            //Console.WriteLine(currentSetting.ToLine());
+                        //Console.WriteLine(currentSetting.ToLine());
 
                         settings.Add(currentSetting);
                     }
@@ -90,7 +141,7 @@ namespace HellionExtendedServer.Common.GameServerIni
             }
             return settings;
         }
-      
+
         /// <summary>
         /// Parses the default settings from the specified filename
         /// </summary>
@@ -100,7 +151,7 @@ namespace HellionExtendedServer.Common.GameServerIni
         {
             List<Setting> settings = new List<Setting>();
 
-            if(!File.Exists(m_exampleFileName))            
+            if (!File.Exists(m_exampleFileName))
                 return settings;
 
             string category = "2. Server Settings";

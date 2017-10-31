@@ -43,8 +43,8 @@ namespace HellionExtendedServer.Common.GameServerIni
             {
                 var regex = @"(#|)([a-z_]+|[a-zA-Z_-]+)(=|)(.+|)";
 
-                if (Type != null && Valid)
-                    return Regex.Replace(Line, regex, $"{(Enabled ? "" : "#")}{Name}=" + Convert.ChangeType(Value, Type) + "$'");
+                if (Type != null)
+                    return Regex.Replace(Line, regex, $"{((Enabled) ? "" : "#")}{Name}{((Valid) ? "=" : "")}" + Convert.ChangeType(Value, Type) + "$'");
                 else
                     return Line;
             }

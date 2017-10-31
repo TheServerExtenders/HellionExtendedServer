@@ -40,7 +40,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace HellionExtendedServer.Managers.Plugins.Browser
+namespace HellionExtendedServer.GUI.Forms.Browser
 {
     class taginfo_t
     {

@@ -18,8 +18,9 @@ namespace HellionExtendedServer.Common.GameServerIni
             {
                 if (File.Exists(m_fileName))
                 {
-                    var tmp = new List<Setting>();
+                    var settingsToSave = new List<Setting>();
 
+                    // copy the current gameserver.ini to backup
                     File.Copy(m_fileName, m_backupFileName, true);
 
                     // for every setting in the current gameserver.ini
@@ -28,31 +29,37 @@ namespace HellionExtendedServer.Common.GameServerIni
                         //Set the newSetting to be the old setting at first in case something goes wrong
                         var newSetting = oldSetting;
 
-                        //Get the new setting if it exists from the propertygrid
-                        // and set the setting to save to the ini as the one from the grid
+                        // if the setting actually exists, try to pull it from the settingsToSave
                         if (newSettings.Exists(x => x.Name.Equals(oldSetting.Name)))
                             newSetting = newSettings.Find(setting => setting.Name.Equals(oldSetting.Name));
 
-                        if (!tmp.Contains(newSetting))
+                        // if the new setting doesn't already exist in the gameserver.ini
+                        if (!settingsToSave.Contains(newSetting))
                         {
+                            // if the new settings value isn't the same as the old one
                             if (newSetting.Value != oldSetting.Value)
                             {
+                                // make sure the variable has a '='
                                 newSetting.Valid = true;
+                                // take away the '#' to make it get loaded by hellion
                                 newSetting.Enabled = true;
                             }
-                            else
+                            else // the new one is the same as the old one
                             {
+                                // then add a '#' to make sure hellion doesn't load it
+                                // this is supposed to comment out the settings if its the same as the default
                                 newSetting.Enabled = false;
                             }
 
-                            tmp.Add(newSetting);
+                            // add the new settings in place of the old one
+                            settingsToSave.Add(newSetting);
                         }
-                        else
-                            tmp.Add(oldSetting);
+                        else // if the setting already exists, then add the original setting line
+                            settingsToSave.Add(oldSetting);
                     }
 
                     using (StreamWriter newFile = new StreamWriter(m_fileName))
-                        foreach (Setting theSetting in tmp)
+                        foreach (Setting theSetting in settingsToSave)
                             newFile.WriteLine(theSetting.ToLine());
 
                     return true;

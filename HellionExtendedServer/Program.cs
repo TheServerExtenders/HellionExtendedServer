@@ -140,8 +140,8 @@ namespace HellionExtendedServer
 
             Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
 
-            updateManager = new UpdateManager();
-            updateManager.GetLatestRelease();
+            //updateManager = new UpdateManager();
+            //updateManager.GetLatestRelease();
 
             m_serverInstance = new ServerInstance();
 

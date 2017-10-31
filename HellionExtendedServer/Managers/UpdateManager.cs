@@ -1,26 +1,31 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.IO;
+﻿using HellionExtendedServer.Common;
 using Newtonsoft.Json.Linq;
-using HellionExtendedServer.Common;
+using System;
+using System.IO;
+using System.IO.Compression;
+using System.Net;
 
 namespace HellionExtendedServer.Managers
 {
-    public class Update
+    public class UpdateManager
     {
-        public Release m_Release;
+        private const string UpdateFileName = "update.zip";
+        private const string LatestReleaseURL = @"https://api.github.com/repos/HellionCommunity/HellionExtendedServer/releases/latest";
 
-        private static string LatestReleaseURL = @"https://api.github.com/repos/generalwrex/HellionExtendedServer/releases/latest";
+        private Release m_currentRelease;
 
-        public Update()
+        public Release CurrentRelease { get => m_currentRelease; set => m_currentRelease = value; }
+
+        public UpdateManager()
         {
             ServicePointManager.DefaultConnectionLimit = 4;
         }
 
         public void DownloadLatestRelease()
         {
-            if (!m_Release.IsUpdate)
+            Console.WriteLine("Checking for updates...");
+
+            if (!m_currentRelease.IsUpdate)
             {
                 Console.WriteLine("HES is up to date!");
                 return;
@@ -30,13 +35,17 @@ namespace HellionExtendedServer.Managers
 
             WebClient client = new WebClient();
             client.DownloadDataCompleted += new DownloadDataCompletedEventHandler(ReleaseDownloaded);
-            client.DownloadDataAsync(new Uri(m_Release.URL));
+            client.DownloadDataAsync(new Uri(m_currentRelease.URL));
+        }
 
+        public void UnpackRelease()
+        {
+            ZipFile.ExtractToDirectory(UpdateFileName, Globals.GetFolderPath(HESFolderName.Updates));
         }
 
         private void ReleaseDownloaded(object sender, DownloadDataCompletedEventArgs e)
         {
-            File.WriteAllBytes(@"Hes/updates/update.zip", e.Result);
+            File.WriteAllBytes(Path.Combine(Globals.GetFolderPath(HESFolderName.Updates), UpdateFileName), e.Result);
             Console.WriteLine("Update Downloaded!");
         }
 
@@ -46,8 +55,6 @@ namespace HellionExtendedServer.Managers
 
             try
             {
-                Console.WriteLine("Checking for updates...");
-
                 HttpWebRequest request = WebRequest.Create(LatestReleaseURL) as HttpWebRequest;
                 request.Method = "GET";
                 request.Proxy = null;
@@ -63,36 +70,38 @@ namespace HellionExtendedServer.Managers
 
                 dynamic task = JObject.Parse(json);
 
-                m_Release = new Release(
+                m_currentRelease = new Release(
+                    (string)task["name"],
                     (string)task["assets"][0]["browser_download_url"],
                     (string)task["tag_name"],
                     (int)task["assets"][0]["download_count"],
-                    (string)task["body"]                                       
-                );               
+                    (string)task["body"]
+                );
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-
             }
         }
     }
 
     public class Release
     {
+        public string Name;
         public string URL;
+        public string Version { get; private set; }
         public int DLCount;
         public string Description;
         public bool IsUpdate;
 
-
-        public Release(string url, string version, int dlCount, string description)
+        public Release(string name, string url, string version, int dlCount, string description)
         {
+            Name = name;
             URL = url;
+            Version = version;
             DLCount = dlCount;
             IsUpdate = new Version(version) > HES.Version;
             Description = description;
         }
-
     }
 }

@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HellionExtendedServer.API;
 using HellionExtendedServer.Common;
 using NLog;
 using ZeroGravity;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
-
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
-using YamlDotNet.Serialization;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -22,8 +16,7 @@ namespace HellionExtendedServer.Managers.Plugins
         private Server svr;
 
         public Server GetServer { get { return svr; } }
-        public Logger GetLogger { get { return Log.Instance; } }
-        public HesApi API { get { return HesApi.API; } }
+        public Logger GetLogger{ get { return Log.Instance; } }
 
         public PluginHelper(Server server)
         {
@@ -73,7 +66,7 @@ namespace HellionExtendedServer.Managers.Plugins
         {
             Player found = null;
             int delta = int.MaxValue;
-            foreach (Player player in ServerInstance.Instance.Server.AllPlayers)
+            foreach(Player player in ServerInstance.Instance.Server.AllPlayers)
             {
                 if (player.Name.ToLower().StartsWith(name))
                 {
@@ -90,25 +83,6 @@ namespace HellionExtendedServer.Managers.Plugins
                 }
             }
             return found;
-        }
-
-        public void LoadYMLFile(string yml)
-        {
-            var r = new StringReader(@"
-scalar: a scalar
-sequence:
-  - one
-  - two
-");
-            var deserializer = new Deserializer();
-            var yamlObject = deserializer.Deserialize(r);
-
-            var serializer = new SerializerBuilder()
-                .JsonCompatible()
-                .Build();
-
-            string json = serializer.Serialize(yamlObject);
-            
         }
 
     }

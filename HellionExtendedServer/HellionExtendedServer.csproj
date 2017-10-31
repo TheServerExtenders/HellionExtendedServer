@@ -28,6 +28,14 @@
     <ApplicationVersion>0.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ShouldCreateLogs>True</ShouldCreateLogs>
+    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>
+    </AssemblyVersionSettings>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -80,8 +88,6 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Server\</OutputPath>
@@ -100,21 +106,24 @@
     <Reference Include="BulletSharp, Version=2.83.7.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\BulletSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HELLION_Dedicated, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\3rd\NLog.dll</HintPath>
+    <Reference Include="NLog">
+      <HintPath>..\GameLibraries\NLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -124,15 +133,17 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="YamlDotNet, Version=4.1.1.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\3rd\YamlDotNet.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Chat.cs" />
-    <Compile Include="API\HESApi.cs" />
-    <Compile Include="CrashDump.cs" />
+    <Compile Include="Modules\CrashDump.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="GUI\Forms\Updater\UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Updater\UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\FolderStructure.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Help.cs" />
@@ -147,19 +158,15 @@
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />
-    <Compile Include="GUI\Browser\BBCodeHTML.cs" />
-    <Compile Include="GUI\Browser\BrowserForm.cs">
+    <Compile Include="GUI\Forms\Browser\BBCodeHTML.cs" />
+    <Compile Include="GUI\Forms\Browser\BrowserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Browser\BrowserForm.Designer.cs">
+    <Compile Include="GUI\Forms\Browser\BrowserForm.Designer.cs">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Plugins\Config\ConfigConstructor.cs" />
-    <Compile Include="Managers\Plugins\Config\ConfigSelection.cs" />
-    <Compile Include="Managers\TestingClass.cs" />
-    <Compile Include="GUI\Browser\PluginFile.cs" />
+    <Compile Include="GUI\Forms\Browser\PluginBrowser.cs" />
     <Compile Include="Modules\Config.cs" />
-    <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
     <Compile Include="Managers\Commands\CommandAttribute.cs" />
@@ -172,8 +179,9 @@
     <Compile Include="Managers\Plugins\PluginHelper.cs" />
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
-    <Compile Include="GUI\GameObjects\Vessel.cs" />
-    <Compile Include="GUI\Browser\Resources.cs" />
+    <Compile Include="GUI\Objects\Vessel.cs" />
+    <Compile Include="GUI\Forms\Browser\Resources.cs" />
+    <Compile Include="Modules\SteamCMD.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />
@@ -187,10 +195,16 @@
     <Compile Include="Managers\Plugins\PluginManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Managers\UpdateManager.cs" />
+    <EmbeddedResource Include="GUI\Forms\Updater\UpdateForm.resx">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\HellionExtendedServer.Common.dll" />
+    <EmbeddedResource Include="Resources\NLog.dll" />
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Browser\BrowserForm.resx">
+    <EmbeddedResource Include="GUI\Forms\Browser\BrowserForm.resx">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -215,7 +229,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Test.json" />
+    <None Include="README.md" />
+    <EmbeddedResource Include="Resources\GameServer_example.ini" />
+    <EmbeddedResource Include="Resources\NLog.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -240,31 +256,39 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="API\Chat\" />
+    <Folder Include="API\Players\" />
+    <Folder Include="API\Vessels\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEventDependsOn>
-		$(PostBuildEventDependsOn);
-		PostBuildMacros;
-  </PostBuildEventDependsOn>
-    <PostBuildEvent>xcopy "$(TargetDir)HellionExtendedServer.Common.dll" "$(TargetDir)Hes\bin\"  /y
-xcopy "$(TargetDir)NLog.dll" "$(TargetDir)Hes\bin\"  /y
+    <PostBuildEvent>@echo off
 
-echo DO NOT EDIT VERSION FILE
-echo @(VersionNumber) &gt;"$(SolutionDir)VERSION"
+echo Running build event for $(ProjectName)..
 
-	</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>if not EXIST "$(TargetDir)Hes" mkdir "$(TargetDir)Hes"
+rem if not exist "$(ProjectDir)bin\HESRelease"                              md "$(ProjectDir)bin\HESRelease"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes"                      md "$(ProjectDir)bin\HESRelease\Hes"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes\bin "              md "$(ProjectDir)bin\HESRelease\Hes\bin"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes\localization" md "$(ProjectDir)bin\HESRelease\Hes\localization"
+rem if not exist "$(ProjectDir)bin\HESRelease\Hes\updates"       md "$(ProjectDir)bin\HESRelease\Hes\updates"
+rem if not exist  "$(ProjectDir)bin\HESRelease\Hes\plugins"       md  "$(ProjectDir)bin\HESRelease\Hes\plugins"
+rem if not exist  "$(ProjectDir)bin\HESRelease\Hes\config"       md  "$(ProjectDir)bin\HESRelease\Hes\config"
 
-if not EXIST "$(TargetDir)Hes\bin" mkdir  "$(TargetDir)Hes\bin"
-if not EXIST "$(TargetDir)Hes\localization" mkdir  "$(TargetDir)Hes\localization"
-if not EXIST "$(TargetDir)Hes\plugins" mkdir  "$(TargetDir)Hes\plugins"
-if not EXIST "$(TargetDir)Hes\logs" mkdir  "$(TargetDir)Hes\logs"
+xcopy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)bin\HESRelease\"  /y
+xcopy "$(TargetDir)$(TargetFileName).config" "$(ProjectDir)bin\HESRelease\" /y
 
-</PreBuildEvent>
+xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)Resources" /y
+xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)Resources" /y
+xcopy "$(TargetDir)NLog.config" "$(ProjectDir)Resources" /y
+
+
+echo $(ProjectName) files have been copied to "$(ProjectDir)bin\HESRelease\".
+
+echo This is used to build the proper folder/file structure for releases to be zipped up.
+
+REM Dont remove this line below! VS hates when you dont exit 0!
+EXIT 0</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -273,12 +297,4 @@ if not EXIST "$(TargetDir)Hes\logs" mkdir  "$(TargetDir)Hes\logs"
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="PostBuildMacros">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="Targets" />
-    </GetAssemblyIdentity>
-    <ItemGroup>
-      <VersionNumber Include="@(Targets->'%(Version)')" />
-    </ItemGroup>
-  </Target>
 </Project>

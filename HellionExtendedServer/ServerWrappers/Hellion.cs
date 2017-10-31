@@ -179,16 +179,10 @@ namespace HellionExtendedServer.ServerWrappers
         {
             try
             {
-
                 Server.Properties = new ZeroGravity.Properties(Server.ConfigDir + "GameServer.ini");
 
-                Dbg.OutputDir = Server.ConfigDir;
-                Dbg.Initialize();
-
-                if (!CheckIniFields()) return;
-                    
-
                 m_server = new Server();
+
                 m_server.MainLoop();
             }
             catch (TypeInitializationException ex)
@@ -200,40 +194,6 @@ namespace HellionExtendedServer.ServerWrappers
                 Log.Instance.Fatal("Hellion Extended Server [START EXCEPTION] :  " + ex.Message);
             }
         }
-
-        private static bool CheckIniFields()
-        {
-            try
-            {
-                if (Server.Properties.GetProperty<string>("server_name").Trim().IsNullOrEmpty())
-                    throw new Exception();
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("GameServer.INI: Invalid 'server_name' field.");
-                return false;
-            }
-            try
-            {
-                int property = (int)Server.Properties.GetProperty<ushort>("game_client_port");
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("GameServer.INI: Invalid 'game_client_port' field.");
-                return false;
-            }
-            try
-            {
-                int property = (int)Server.Properties.GetProperty<ushort>("status_port");
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("GameServer.INI: Invalid 'status_port' field.");
-                return false;
-            }
-            return true;
-        }
-
 
         #endregion Methods
     }

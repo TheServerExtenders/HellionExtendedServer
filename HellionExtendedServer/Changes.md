@@ -1,17 +1,13 @@
-﻿# Changes To This Version
+﻿**Version 0.0.2.0**
+- Added in a Missing File Replacer class
+  - HES can now be ran with only the .exe in a folder, it will now automaticly generate any missing files
 
-- Version now 0.1.3.0
-- Removed NLog.config
-  - Created in-code via NLog's LoggingConfiguration in the LogManager.cs
 
-## Project Changes
+	
+# Changes To This Version
 
-- Edited Project file to generate a *VERSION* file
-  - File is created with a custom PostBuildMacro $(VersionNumber)
-  
-- PreBuildEvent now creates Hes folders in project output directory
-- PostBuildEvent now copies required binaries to Hes/bin
+- Added /help [page]
+  - Shows all the available commands to a player
+- Added Permission Manager
 
-- Updated NLog to latest version
-
-*Use this file to save all changes made in this branch*
+*Use this file to save all changes made in this branch, top is the latest*

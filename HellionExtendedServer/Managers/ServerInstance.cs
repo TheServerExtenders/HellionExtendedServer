@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using HellionExtendedServer.Common;
-using HellionExtendedServer.Common.Components;
+using HellionExtendedServer.Common.GameServerIni;
 using ZeroGravity;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Event;
@@ -30,7 +30,7 @@ namespace HellionExtendedServer.Managers
         private DateTime m_launchedTime;
         private Server m_server;
         private ServerWrapper m_serverWrapper;
-        private GameServerIni m_gameServerIni;
+        private GameServerProperties m_gameServerProperties;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
         private PermissionManager m_permissionmanager;
@@ -48,7 +48,7 @@ namespace HellionExtendedServer.Managers
         public TimeSpan Uptime { get { return DateTime.Now - m_launchedTime; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
-        public GameServerIni Config { get { return m_gameServerIni; } }
+        public GameServerProperties GameServerProperties { get { return m_gameServerProperties; } }
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
         public EventHelper EventHelper { get { return m_eventhelper; } }
@@ -100,10 +100,18 @@ namespace HellionExtendedServer.Managers
             m_serverThread = null;
             m_serverInstance = this;
 
-            m_assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe"));
-            m_serverWrapper = new ServerWrapper(m_assembly);
+            string gameExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe");
 
-            m_gameServerIni = new GameServerIni();
+            if (System.IO.File.Exists(gameExePath))
+            {
+                m_assembly = Assembly.LoadFile(gameExePath);
+                m_serverWrapper = new ServerWrapper(m_assembly);
+            }
+            else
+                Console.WriteLine($"HELLION_Dedicated.exe not detected at {gameExePath}.\r\n Press any key to close.");
+            
+            m_gameServerProperties = new GameServerProperties();
+            m_gameServerProperties.Load();
         }
 
         #region Methods
@@ -169,6 +177,12 @@ namespace HellionExtendedServer.Managers
         /// </summary>
         public void Start(int wait = 0)
         {
+            if(m_assembly == null)
+            {
+                Console.WriteLine($"HELLION_Dedicated.exe does not exist.\r\n Cannot start the server.");
+                return;
+            }
+
             if (wait > 0)
                 Thread.Sleep(wait);
 
@@ -179,8 +193,6 @@ namespace HellionExtendedServer.Managers
                 {
                     "",
                 };
-
-            TestingClass.PreStartEvent();
 
             m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
 
@@ -204,8 +216,6 @@ namespace HellionExtendedServer.Managers
             }
             Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
-            //Where I keep all the testing stuff at!
-            TestingClass.PostStartEvent();
 
             new NetworkManager(m_server.NetworkController);
             //Load Permission

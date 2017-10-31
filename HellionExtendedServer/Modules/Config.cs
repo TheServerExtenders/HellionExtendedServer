@@ -5,7 +5,7 @@ namespace HellionExtendedServer.Modules
 {
     public class Config
     {
-        public static string FileName = "Hes/Config.cfg";
+        public static string FileName = "Hes/config/Config.cfg";
         private bool m_debugMode = false;
         public Config.Language CurrentLanguage = Config.Language.English;
 

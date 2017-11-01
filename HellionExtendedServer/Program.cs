@@ -20,8 +20,7 @@ namespace HellionExtendedServer
 {
     public class HES
     {
-        public static string GameVersion = "0.2.5";
-        public static string BuildBranch = "Dev";
+        public static string ForGameVersion = "0.2.5";
 
         #region Fields
 
@@ -35,6 +34,7 @@ namespace HellionExtendedServer
         private static Boolean m_useGui = true;
         private static Thread uiThread;
         private static FolderStructure m_folderStructure;
+        private static Logger mainLogger;
 
         #endregion Fields
 
@@ -42,7 +42,7 @@ namespace HellionExtendedServer
 
         public static Version Version => Assembly.GetEntryAssembly().GetName().Version;
 
-        public static String VersionString => Version.ToString(4) + " Branch: " + BuildBranch;
+        public static String VersionString => Version.ToString(4) + $" Branch: {ThisAssembly.Git.Branch}";
 
         public static HES Instance => m_instance;
 
@@ -54,7 +54,7 @@ namespace HellionExtendedServer
 
         public static HESGui GUI => m_form;
 
-        public static String WindowTitle => String.Format("HELLION EXTENDED SERVER V{0}) - Game Patch Version: {1} ", VersionString, GameVersion);
+        public static String WindowTitle => String.Format("HELLION EXTENDED SERVER V{0}) - Game Version: {1} - This Game Version {2}", VersionString, ForGameVersion, "0.2.5");
 
         #endregion Properties
 
@@ -71,7 +71,7 @@ namespace HellionExtendedServer
                 string dllName = assemblyName + ".dll";
                 string dllFullPath = Path.Combine(Path.GetFullPath("Hes\\bin"), dllName);
 
-                Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding missing assembly.");
+                Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding/Updating missing assembly.");
 
                 using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources." + dllName))
                 {
@@ -110,6 +110,8 @@ namespace HellionExtendedServer
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
 
+
+
             Console.Title = WindowTitle;
                                           
             string configPath = Globals.GetFilePath(HESFileName.NLogConfig);
@@ -118,8 +120,12 @@ namespace HellionExtendedServer
 
             new Log();
 
-            Log.Instance.Info("Hellion Extended Server Initializing....");
+            mainLogger = LogManager.GetCurrentClassLogger();
 
+            mainLogger.Info($"Git Branch: {ThisAssembly.Git.Branch}");
+            mainLogger.Info($"Git Commit: {ThisAssembly.Git.Commit}");
+            mainLogger.Info($"Git SHA: {ThisAssembly.Git.Sha}");
+            mainLogger.Info("Hellion Extended Server Initializing....");
         }
 
         /// <summary>
@@ -136,9 +142,9 @@ namespace HellionExtendedServer
             m_localization.Load(m_config.CurrentLanguage.ToString().Substring(0, 2));
 
             new SteamCMD().GetSteamCMD();
-                
 
-            Log.Instance.Info("Hellion Extended Server v" + Version + " Initialized.");
+
+            mainLogger.Info("Hellion Extended Server v" + Version + " Initialized.");
 
             //updateManager = new UpdateManager();
             //updateManager.GetLatestRelease();
@@ -153,25 +159,25 @@ namespace HellionExtendedServer
                     m_useGui = false;
 
                     if (!m_form.Visible)
-                        Log.Instance.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
+                        mainLogger.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
                 }
 
                 if (arg.Equals("-autostart"))
                 {
                     autoStart = true;
-                    Log.Instance.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
+                    mainLogger.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
                 }
 
                 if (arg.Equals("-updatehes"))
                 {
-                    Log.Instance.Info("HellionExtendedServer: Arg: -updatehes or HESGui's Auto Update Hes Checkbox was Checked)");
+                    mainLogger.Info("HellionExtendedServer: Arg: -updatehes or HESGui's Auto Update Hes Checkbox was Checked)");
                 }
             }
 
             if (m_useGui)
                 SetupGUI();
 
-            Log.Instance.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
+            mainLogger.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
 
             if (autoStart | Properties.Settings.Default.AutoStart)
                 ServerInstance.Instance.Start();
@@ -190,9 +196,13 @@ namespace HellionExtendedServer
 
                 if (cmd.Length > 1)
                 {
-                    if (!cmd.StartsWith("/") && NetworkManager.Instance != null)
+                    if (!cmd.StartsWith("/"))
                     {
-                        NetworkManager.Instance.MessageAllClients(cmd);
+                        if (Server.IsRunning && NetworkManager.Instance != null)
+                            NetworkManager.Instance.MessageAllClients(cmd);
+                        else
+                            Console.WriteLine("The Server must be running to message connected clients!");
+
                         continue;
                     }
 
@@ -239,22 +249,6 @@ namespace HellionExtendedServer
 
                             flag = true;
                         }
-                    }
-
-                    if (stringList[1] == "defaultinitest")
-                    {
-                        var test = Common.GameServerIni.GameServerINI.ParseDefaultSettings();
-
-                        Console.WriteLine($"Found {test.Count} Settings in the GameServer Example INI file.");
-                        flag = true;
-                    }
-
-                    if (stringList[1] == "initest")
-                    {
-                        // var test = Common.GameServerIni.GameServerINI.ParseSettings();
-
-                        //Console.WriteLine($"Found {test.Count} Settings in the GameServer Example INI file.");
-                        flag = true;
                     }
 
                     //Different args for /players command to display the count, the full list of players (disconnected and disconnected) and the list of connected players.
@@ -329,8 +323,7 @@ namespace HellionExtendedServer
                         flag = true;
                         if (stringList[3].Contains("(") && stringList[3].Contains(")"))
                         {
-                            Player player = null;
-                            if (NetworkManager.Instance.ConnectedPlayer(stringList[3], out player))
+                            if (NetworkManager.Instance.ConnectedPlayer(stringList[3], out Player player))
                             {
                                 try
                                 {
@@ -340,7 +333,7 @@ namespace HellionExtendedServer
                                 }
                                 catch (Exception ex)
                                 {
-                                    Log.Instance.Error("Hellion Extended Server [KICK ERROR] : " + ex.ToString());
+                                    Log.Instance.Error(ex, "Hellion Extended Server [KICK ERROR] : " + ex.Message);
                                 }
                             }
                             else
@@ -352,6 +345,8 @@ namespace HellionExtendedServer
                     {
                         if (!Server.IsRunning)
                             ServerInstance.Instance.Start();
+                        else
+                            Console.WriteLine("The server is already running.");                      
                         flag = true;
                     }
 
@@ -359,6 +354,8 @@ namespace HellionExtendedServer
                     {
                         if (Server.IsRunning)
                             ServerInstance.Instance.Stop();
+                        else
+                            Console.WriteLine("The server is not running");
                         flag = true;
                     }
 

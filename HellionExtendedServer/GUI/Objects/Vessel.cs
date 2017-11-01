@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ZeroGravity.Objects;
 using ZeroGravity.ShipComponents;
 
-namespace HellionExtendedServer.GUI.GameObjects
+namespace HellionExtendedServer.GUI.Objects
 {
     class Vessel
     {

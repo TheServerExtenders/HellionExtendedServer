@@ -103,45 +103,32 @@
     <ApplicationIcon>hesicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BulletSharp, Version=2.83.7.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="BulletSharp, Version=2.83.7.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\GameLibraries\BulletSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HELLION_Dedicated, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="HELLION_Dedicated, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
     </Reference>
-    <Reference Include="Mono.Security">
+    <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <HintPath>..\GameLibraries\Mono.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
       <HintPath>..\3rd\NLog.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Npgsql">
+    <Reference Include="Npgsql, Version=2.2.6.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7">
       <HintPath>..\GameLibraries\Npgsql.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net">
+    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67">
       <HintPath>..\GameLibraries\protobuf-net.dll</HintPath>
-    </Reference>
-    <Reference Include="steamcmd">
-      <HintPath>..\GameLibraries\steamcmd.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -149,6 +136,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="YamlDotNet">
+      <HintPath>..\3rd\YamlDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="YamlDotNet, Version=4.1.1.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e">
       <HintPath>..\3rd\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -267,6 +257,10 @@
       <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
       <Name>HellionExtendedServer.Common</Name>
       <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\HellionExtendedServer.Common\HellionExtendedServer.Common.csproj">
+      <Project>{05bb1df9-3f9d-4170-984b-f90dd8ac83ac}</Project>
+      <Name>HellionExtendedServer.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

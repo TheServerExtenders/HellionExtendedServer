@@ -3,28 +3,28 @@ Original JavaScript version (at <a href="http://blogs.stonesteps.ca/showpost.asp
     Copyright (c) 2005-2007, Stone Steps Inc.
     All rights reserved.
 
-    Redistribution and use in source and binary forms, with or without modification,
+    Redistribution and use in source and binary forms, with or without modification, 
     are permitted provided that the following conditions are met:
 
         * Redistributions of source code must retain the above copyright notice,
           this list of conditions and the following disclaimer.
-        * Redistributions in binary form must reproduce the above copyright
-          notice, this list of conditions and the following disclaimer in the
+        * Redistributions in binary form must reproduce the above copyright 
+          notice, this list of conditions and the following disclaimer in the 
           documentation and/or other materials provided with the distribution.
-        * Neither the name of Stone Steps Inc. nor the names of its contributors
-          may be used to endorse or promote products derived from this software
+        * Neither the name of Stone Steps Inc. nor the names of its contributors 
+          may be used to endorse or promote products derived from this software 
           without specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-    IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
-    BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+    IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+    PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS 
+    BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
     THE POSSIBILITY OF SUCH DAMAGE.
 */
 
@@ -35,13 +35,14 @@ C# port
     All redistributions must honour the above BSD license and maintain this notice
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace HellionExtendedServer.GUI.Browser
+namespace HellionExtendedServer.GUI.Forms.Browser
 {
-    internal class taginfo_t
+    class taginfo_t
     {
         public string bbtag { get; set; }
         public string etag { get; set; }
@@ -52,33 +53,32 @@ namespace HellionExtendedServer.GUI.Browser
             this.etag = etag;
         }
     }
-
     public class BBCode
     {
         public string Html { get; set; }
 
-        private Stack<taginfo_t> opentags;
-        private bool crlf2br = true;
-        private bool noparse = false;
-        private int urlstart = -1;
+        Stack<taginfo_t> opentags;
+        bool crlf2br = true;
+        bool noparse = false;
+        int urlstart = -1;
 
         // acceptable BBcode tags, optionally prefixed with a slash
-        private Regex tagname_re = new Regex(@"^/?(?:b|i|u|pre|code|colou?r|noparse|url|s|q|blockquote|small|big|img|center|left|right|hr)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        Regex tagname_re = new Regex(@"^/?(?:b|i|u|pre|code|colou?r|noparse|url|s|q|blockquote|small|big|img|center|left|right|hr)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         // color names or hex color
-        private Regex color_re = new Regex(@"^(:?black|silver|gray|white|maroon|red|purple|fuchsia|green|lime|olive|yellow|navy|blue|teal|aqua|#(?:[0-9a-f]{3})?[0-9a-f]{3})$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        Regex color_re = new Regex(@"^(:?black|silver|gray|white|maroon|red|purple|fuchsia|green|lime|olive|yellow|navy|blue|teal|aqua|#(?:[0-9a-f]{3})?[0-9a-f]{3})$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         // numbers
-        private Regex number_re = new Regex(@"^[\.0-9]{1,8}$", RegexOptions.Compiled);
+        Regex number_re = new Regex(@"^[\.0-9]{1,8}$", RegexOptions.Compiled);
 
         // reserved, unreserved, escaped and alpha-numeric [RFC2396]
-        private Regex uri_re = new Regex(@"^[-;/\?:@&=\+\$,_\.!~\*'\(\)%0-9a-z]{1,512}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        Regex uri_re = new Regex(@"^[-;/\?:@&=\+\$,_\.!~\*'\(\)%0-9a-z]{1,512}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         // main regular expression: CRLF, [tag=option], [tag] or [/tag]
-        private Regex postfmt_re = new Regex(@"/([\r\n])|(?:\[([a-z]{1,16})(?:=([^\x00-\x1F""'\(\)<>\[\]]{1,256}))?\])|(?:\[/([a-z]{1,16})\])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        Regex postfmt_re = new Regex(@"/([\r\n])|(?:\[([a-z]{1,16})(?:=([^\x00-\x1F""'\(\)<>\[\]]{1,256}))?\])|(?:\[/([a-z]{1,16})\])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         // check if it's a valid BBCode tag
-        private bool isValidTag(string str)
+        bool isValidTag(string str)
         {
             if (str == null || str == "")
                 return false;
@@ -100,7 +100,6 @@ namespace HellionExtendedServer.GUI.Browser
                 {
                     case "\r":
                         return "";
-
                     case "\n":
                         return "<br>";
                 }
@@ -157,7 +156,7 @@ namespace HellionExtendedServer.GUI.Browser
                             return "<a href=\"" + m3 + "\">";
                         }
 
-                        // otherwise, remember the URL offset
+                        // otherwise, remember the URL offset 
                         urlstart = mstr.Length + offset;
 
                         // and treat the text following [url] as a URL
@@ -186,6 +185,7 @@ namespace HellionExtendedServer.GUI.Browser
                         // [samp], [b], [i] and [u] don't need special processing
                         opentags.Push(new taginfo_t(m2, "</" + m2 + ">"));
                         return "<" + m2 + ">";
+
                 }
             }
 

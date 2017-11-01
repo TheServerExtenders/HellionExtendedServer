@@ -34,7 +34,6 @@ namespace HellionExtendedServer
         private static EventHandler _handler;
         private static Boolean m_useGui = true;
         private static Thread uiThread;
-        private static FolderStructure m_folderStructure;
 
         #endregion Fields
 
@@ -83,7 +82,7 @@ namespace HellionExtendedServer
                 return Assembly.LoadFrom(dllFullPath);
             };
 
-            new FolderStructure().Build();
+//            new FolderStructure().Build();
 
             var program = new HES(args);
             program.Run(args);

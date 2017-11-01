@@ -113,13 +113,28 @@
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HELLION_Dedicated, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\GameLibraries\Mono.Security.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\GameLibraries\NLog.dll</HintPath>
+      <HintPath>..\3rd\NLog.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\GameLibraries\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\GameLibraries\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="steamcmd">
+      <HintPath>..\GameLibraries\steamcmd.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -133,13 +148,14 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet">
+      <HintPath>..\3rd\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modules\CrashDump.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="GUI\Forms\Updater\UpdateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="GUI\Forms\Updater\UpdateForm.cs" />
     <Compile Include="GUI\Forms\Updater\UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
@@ -159,9 +175,7 @@
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />
     <Compile Include="GUI\Forms\Browser\BBCodeHTML.cs" />
-    <Compile Include="GUI\Forms\Browser\BrowserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="GUI\Forms\Browser\BrowserForm.cs" />
     <Compile Include="GUI\Forms\Browser\BrowserForm.Designer.cs">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </Compile>

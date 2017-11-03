@@ -16,8 +16,8 @@ namespace HellionExtendedServer
         {
             InitializeComponent();
 
-            cpc_chat_list.Enabled = true;
             cpc_chat_list.ReadOnly = true;
+            cpc_chat_list.BackColor = System.Drawing.SystemColors.Window;
 
             cpc_messagebox.Enabled = false;
             cpc_chat_send.Enabled = false;
@@ -36,6 +36,8 @@ namespace HellionExtendedServer
             cpc_chat_list.AppendText("Waiting for server to start..\r\n");
 
             SetSettings(ServerInstance.Instance.GameServerProperties.Load());
+
+
            
         }
 
@@ -67,29 +69,12 @@ namespace HellionExtendedServer
         }
 
         #region Server Control
-
         private void server_config_save_Click(object sender, EventArgs e)
-        {
-          
+        {      
             if (GameServerINI.SaveSettings(GetSettings()))
             {
                 StatusBar.Text = "Config Saved.";
             }
-
-            //else
-            //{
-            //DialogResult result = MessageBox.Show("GameServer.Ini does not exist. Would you like to create one ?",
-            //    "Server Settings Error",
-            //    MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-            //if (result == DialogResult.Yes)
-            //{
-            //      ServerInstance.Instance.GameServerProperties.LoadDefaults();
-            //      ServerInstance.Instance.GameServerProperties.Save();
-            //   serverconfig_properties.Refresh();
-            //    StatusBar.Text = "Config Defaults saved to GameServer.Ini. Change the settings then Save!";
-            //}
-            //}
-
         }
 
         private void SetSettings(List<Setting> settings)

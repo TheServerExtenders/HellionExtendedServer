@@ -28,16 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Online");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Offline");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Players", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Online");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Offline");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Admins", new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode5});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HESGui));
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Server = new System.Windows.Forms.TabPage();
@@ -51,12 +41,9 @@
             this.server_config_autostart = new System.Windows.Forms.CheckBox();
             this.server_config_stopserver = new System.Windows.Forms.Button();
             this.server_config_startserver = new System.Windows.Forms.Button();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.StatusBar = new System.Windows.Forms.ToolStripStatusLabel();
             this.ChatPlayer = new System.Windows.Forms.TabPage();
             this.ChatPlayerContainer = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.cpc_players_treelist = new System.Windows.Forms.TreeView();
             this.cpc_players_demote = new System.Windows.Forms.Button();
             this.cpc_players_promote = new System.Windows.Forms.Button();
             this.cpc_players_ban = new System.Windows.Forms.Button();
@@ -67,13 +54,15 @@
             this.cpc_chat_list = new System.Windows.Forms.TextBox();
             this.cpc_chat_send = new System.Windows.Forms.Button();
             this.cpc_messagebox = new System.Windows.Forms.TextBox();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.StatusBar = new System.Windows.Forms.ToolStripStatusLabel();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.Tabs.SuspendLayout();
             this.Server.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ServerContainer)).BeginInit();
             this.ServerContainer.Panel1.SuspendLayout();
             this.ServerContainer.Panel2.SuspendLayout();
             this.ServerContainer.SuspendLayout();
-            this.statusStrip.SuspendLayout();
             this.ChatPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ChatPlayerContainer)).BeginInit();
             this.ChatPlayerContainer.Panel1.SuspendLayout();
@@ -89,6 +78,7 @@
             this.splitContainer3.SuspendLayout();
             this.cpc_chat_tabs.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // Tabs
@@ -243,21 +233,6 @@
             this.server_config_startserver.UseVisualStyleBackColor = true;
             this.server_config_startserver.Click += new System.EventHandler(this.server_config_startserver_Click);
             // 
-            // statusStrip
-            // 
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.StatusBar});
-            this.statusStrip.Location = new System.Drawing.Point(0, 495);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(812, 22);
-            this.statusStrip.TabIndex = 2;
-            this.statusStrip.Text = "statusStrip";
-            // 
-            // StatusBar
-            // 
-            this.StatusBar.Name = "StatusBar";
-            this.StatusBar.Size = new System.Drawing.Size(0, 17);
-            // 
             // ChatPlayer
             // 
             this.ChatPlayer.Controls.Add(this.ChatPlayerContainer);
@@ -283,7 +258,7 @@
             // 
             this.ChatPlayerContainer.Panel2.Controls.Add(this.splitContainer3);
             this.ChatPlayerContainer.Size = new System.Drawing.Size(798, 463);
-            this.ChatPlayerContainer.SplitterDistance = 229;
+            this.ChatPlayerContainer.SplitterDistance = 356;
             this.ChatPlayerContainer.TabIndex = 0;
             // 
             // splitContainer4
@@ -295,7 +270,7 @@
             // 
             // splitContainer4.Panel1
             // 
-            this.splitContainer4.Panel1.Controls.Add(this.cpc_players_treelist);
+            this.splitContainer4.Panel1.Controls.Add(this.listView1);
             // 
             // splitContainer4.Panel2
             // 
@@ -303,33 +278,9 @@
             this.splitContainer4.Panel2.Controls.Add(this.cpc_players_promote);
             this.splitContainer4.Panel2.Controls.Add(this.cpc_players_ban);
             this.splitContainer4.Panel2.Controls.Add(this.cpc_players_kick);
-            this.splitContainer4.Size = new System.Drawing.Size(229, 463);
+            this.splitContainer4.Size = new System.Drawing.Size(356, 463);
             this.splitContainer4.SplitterDistance = 369;
             this.splitContainer4.TabIndex = 0;
-            // 
-            // cpc_players_treelist
-            // 
-            this.cpc_players_treelist.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cpc_players_treelist.Enabled = false;
-            this.cpc_players_treelist.Location = new System.Drawing.Point(0, 0);
-            this.cpc_players_treelist.Name = "cpc_players_treelist";
-            treeNode1.Name = "Online";
-            treeNode1.Text = "Online";
-            treeNode2.Name = "Offline";
-            treeNode2.Text = "Offline";
-            treeNode3.Name = "Players";
-            treeNode3.Text = "Players";
-            treeNode4.Name = "AOnline";
-            treeNode4.Text = "Online";
-            treeNode5.Name = "AOffline";
-            treeNode5.Text = "Offline";
-            treeNode6.Name = "Admins";
-            treeNode6.Text = "Admins";
-            this.cpc_players_treelist.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode6});
-            this.cpc_players_treelist.Size = new System.Drawing.Size(229, 369);
-            this.cpc_players_treelist.TabIndex = 2;
             // 
             // cpc_players_demote
             // 
@@ -386,7 +337,7 @@
             // 
             this.splitContainer3.Panel2.Controls.Add(this.cpc_chat_send);
             this.splitContainer3.Panel2.Controls.Add(this.cpc_messagebox);
-            this.splitContainer3.Size = new System.Drawing.Size(565, 463);
+            this.splitContainer3.Size = new System.Drawing.Size(438, 463);
             this.splitContainer3.SplitterDistance = 431;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -398,7 +349,7 @@
             this.cpc_chat_tabs.Location = new System.Drawing.Point(0, 0);
             this.cpc_chat_tabs.Name = "cpc_chat_tabs";
             this.cpc_chat_tabs.SelectedIndex = 0;
-            this.cpc_chat_tabs.Size = new System.Drawing.Size(565, 431);
+            this.cpc_chat_tabs.Size = new System.Drawing.Size(438, 431);
             this.cpc_chat_tabs.TabIndex = 0;
             // 
             // tabPage3
@@ -407,7 +358,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(557, 405);
+            this.tabPage3.Size = new System.Drawing.Size(430, 405);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Chat";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -419,7 +370,7 @@
             this.cpc_chat_list.Multiline = true;
             this.cpc_chat_list.Name = "cpc_chat_list";
             this.cpc_chat_list.ReadOnly = true;
-            this.cpc_chat_list.Size = new System.Drawing.Size(551, 399);
+            this.cpc_chat_list.Size = new System.Drawing.Size(424, 399);
             this.cpc_chat_list.TabIndex = 2;
             // 
             // cpc_chat_send
@@ -441,6 +392,30 @@
             this.cpc_messagebox.TabIndex = 0;
             this.cpc_messagebox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cpc_messagebox_KeyDown);
             // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusBar});
+            this.statusStrip.Location = new System.Drawing.Point(0, 495);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(812, 22);
+            this.statusStrip.TabIndex = 2;
+            this.statusStrip.Text = "statusStrip";
+            // 
+            // StatusBar
+            // 
+            this.StatusBar.Name = "StatusBar";
+            this.StatusBar.Size = new System.Drawing.Size(0, 17);
+            // 
+            // listView1
+            // 
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(356, 369);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
             // HESGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -460,8 +435,6 @@
             this.ServerContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ServerContainer)).EndInit();
             this.ServerContainer.ResumeLayout(false);
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
             this.ChatPlayer.ResumeLayout(false);
             this.ChatPlayerContainer.Panel1.ResumeLayout(false);
             this.ChatPlayerContainer.Panel2.ResumeLayout(false);
@@ -479,6 +452,8 @@
             this.cpc_chat_tabs.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -501,7 +476,6 @@
         private System.Windows.Forms.TabPage ChatPlayer;
         private System.Windows.Forms.SplitContainer ChatPlayerContainer;
         private System.Windows.Forms.SplitContainer splitContainer4;
-        private System.Windows.Forms.TreeView cpc_players_treelist;
         private System.Windows.Forms.Button cpc_players_demote;
         private System.Windows.Forms.Button cpc_players_promote;
         private System.Windows.Forms.Button cpc_players_ban;
@@ -514,6 +488,7 @@
         private System.Windows.Forms.TextBox cpc_messagebox;
         public System.Windows.Forms.Button server_config_startserver;
         private System.Windows.Forms.Button server_config_reload;
+        private System.Windows.Forms.ListView listView1;
     }
 }
 

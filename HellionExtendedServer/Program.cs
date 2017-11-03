@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -73,10 +74,12 @@ namespace HellionExtendedServer
 
                 Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding/Updating missing assembly.");
 
+
                 using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources." + dllName))
                 {
                     byte[] data = new byte[s.Length];
                     s.Read(data, 0, data.Length);
+
                     File.WriteAllBytes(dllFullPath, data);
                 }
 
@@ -84,6 +87,8 @@ namespace HellionExtendedServer
             };
 
             new FolderStructure().Build();
+
+            ServicePointManager.DefaultConnectionLimit = 15;
 
             var program = new HES(args);
             program.Run(args);
@@ -198,8 +203,9 @@ namespace HellionExtendedServer
                 {
                     if (!cmd.StartsWith("/"))
                     {
-                        if (Server.IsRunning && NetworkManager.Instance != null)
-                            NetworkManager.Instance.MessageAllClients(cmd);
+                        if (Server.IsRunning )
+                            if(NetworkManager.Instance != null)
+                                NetworkManager.Instance.MessageAllClients(cmd);
                         else
                             Console.WriteLine("The Server must be running to message connected clients!");
 

@@ -47,7 +47,7 @@ namespace HellionExtendedServer.Modules
                 }
             }
 
-            string script = @" +login anonymous +force_install_dir ../../ +app_update 598850 validate +quit";
+            string script = @" +login anonymous +force_install_dir ../../ +app_update 598850 +quit";
 
             try
             {

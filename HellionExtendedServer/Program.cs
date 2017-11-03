@@ -454,13 +454,13 @@ namespace HellionExtendedServer
             CTRL_C_EVENT = 0,
             CTRL_BREAK_EVENT = 1,
             CTRL_CLOSE_EVENT = 2,
-            CTRL_LOGOF_EVENT = 5,
+            CTRL_LOGOFF_EVENT = 5,
             CTRL_SHUTDOWN_EVENT = 6,
         }
 
         private static bool Handler(CtrlType sig)
         {
-            if (sig == CtrlType.CTRL_C_EVENT || sig == CtrlType.CTRL_BREAK_EVENT || (sig == CtrlType.CTRL_LOGOF_EVENT || sig == CtrlType.CTRL_SHUTDOWN_EVENT) || sig == CtrlType.CTRL_CLOSE_EVENT)
+            if (sig == CtrlType.CTRL_C_EVENT || sig == CtrlType.CTRL_BREAK_EVENT || (sig == CtrlType.CTRL_LOGOFF_EVENT || sig == CtrlType.CTRL_SHUTDOWN_EVENT) || sig == CtrlType.CTRL_CLOSE_EVENT)
             {
                 if (Server.IsRunning)
                 {

@@ -88,8 +88,6 @@ namespace HellionExtendedServer
 
             new FolderStructure().Build();
 
-            ServicePointManager.DefaultConnectionLimit = 15;
-
             var program = new HES(args);
             program.Run(args);
         }
@@ -365,6 +363,34 @@ namespace HellionExtendedServer
                         flag = true;
                     }
 
+                    if (stringList[1] == "takehp")
+                    {
+                        if (NetworkManager.Instance.ConnectedPlayer(stringList[3], out Player player))
+                        {
+                            try
+                            {
+                                player.DiconnectFromNetworkContoller();
+                                Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayerKicked"],
+                                    (object)player.Name));
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Instance.Error(ex, "Hellion Extended Server [KICK ERROR] : " + ex.Message);
+                            }
+                        }
+                        else
+                            Console.WriteLine(HES.m_localization.Sentences["PlayerNotConnected"]);
+
+
+                        flag = true;
+                    }
+
+                    if (stringList[1] == "givehp")
+                    {
+                        SetupGUI();
+                        flag = true;
+                    }
+
                     if (stringList[1] == "opengui")
                     {
                         SetupGUI();
@@ -428,13 +454,13 @@ namespace HellionExtendedServer
             CTRL_C_EVENT = 0,
             CTRL_BREAK_EVENT = 1,
             CTRL_CLOSE_EVENT = 2,
-            CTRL_LOGOFF_EVENT = 5,
+            CTRL_LOGOF_EVENT = 5,
             CTRL_SHUTDOWN_EVENT = 6,
         }
 
         private static bool Handler(CtrlType sig)
         {
-            if (sig == CtrlType.CTRL_C_EVENT || sig == CtrlType.CTRL_BREAK_EVENT || (sig == CtrlType.CTRL_LOGOFF_EVENT || sig == CtrlType.CTRL_SHUTDOWN_EVENT) || sig == CtrlType.CTRL_CLOSE_EVENT)
+            if (sig == CtrlType.CTRL_C_EVENT || sig == CtrlType.CTRL_BREAK_EVENT || (sig == CtrlType.CTRL_LOGOF_EVENT || sig == CtrlType.CTRL_SHUTDOWN_EVENT) || sig == CtrlType.CTRL_CLOSE_EVENT)
             {
                 if (Server.IsRunning)
                 {

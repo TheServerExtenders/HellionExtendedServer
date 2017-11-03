@@ -16,6 +16,7 @@ using HellionExtendedServer.Managers.Plugins;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
+using HellionExtendedServer.GUI;
 using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
 
 namespace HellionExtendedServer.Managers
@@ -30,7 +31,8 @@ namespace HellionExtendedServer.Managers
         private DateTime m_launchedTime;
         private Server m_server;
         private ServerWrapper m_serverWrapper;
-        private GameServerProperties m_gameServerProperties;
+        //private GameServerProperties m_gameServerProperties;
+        private GameServerIni m_gameServerIni;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
         private PermissionManager m_permissionmanager;
@@ -48,7 +50,8 @@ namespace HellionExtendedServer.Managers
         public TimeSpan Uptime { get { return DateTime.Now - m_launchedTime; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
-        public GameServerProperties GameServerProperties { get { return m_gameServerProperties; } }
+        //public GameServerProperties GameServerProperties { get { return m_gameServerProperties; } }
+        public GameServerIni GameServerConfig => m_gameServerIni;
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
         public EventHelper EventHelper { get { return m_eventhelper; } }
@@ -109,9 +112,13 @@ namespace HellionExtendedServer.Managers
             }
             else
                 Console.WriteLine($"HELLION_Dedicated.exe not detected at {gameExePath}.\r\n Press any key to close.");
-            
-            m_gameServerProperties = new GameServerProperties();
-            m_gameServerProperties.Load();
+
+            //m_gameServerProperties = new GameServerProperties();
+            //m_gameServerProperties.Load();
+
+            m_gameServerIni = new GameServerIni();
+            m_gameServerIni.Load();
+
         }
 
         #region Methods
@@ -164,7 +171,9 @@ namespace HellionExtendedServer.Managers
         public void Test()
         {
 
-           foreach( SpaceObjectVessel vessel in m_server.AllVessels)
+
+
+            foreach ( SpaceObjectVessel vessel in m_server.AllVessels)
             {
                 Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ",vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(),vessel.Velocity, vessel.AngularVelocity));
                 
@@ -254,6 +263,27 @@ namespace HellionExtendedServer.Managers
             {
                 Player player1 = Server.GetPlayer(textChatMessage.Sender);
                 textChatMessage.Name = player1.Name;
+
+                if (Msg.StartsWith("/takehp"))
+                {
+
+
+                    NetworkManager.Instance.MessageAllClients($"hp: {(player1.Health -= 10)}");
+                    //return;
+                }
+
+                if (Msg.StartsWith("/givehp"))
+                {
+                    NetworkManager.Instance.MessageAllClients($"hp: {(player1.Health += 10)}");
+                    //return;
+                }
+
+                if (Msg.StartsWith("/gethp"))
+                {
+                    
+                    NetworkManager.Instance.MessageAllClients($"hp: {player1.Health.ToString()}");
+                    //return;
+                }
 
                 string[] chatCommandArray = Msg.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
                 string command = chatCommandArray.First();

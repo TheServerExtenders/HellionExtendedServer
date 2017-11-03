@@ -161,7 +161,7 @@ namespace HellionExtendedServer.Common.GameServerIni
             if (!File.Exists(m_exampleFileName))
                 return settings;
 
-            string category = "2. Server Settings";
+            string category = "2. 2. Server Settings";
 
             try
             {
@@ -170,7 +170,7 @@ namespace HellionExtendedServer.Common.GameServerIni
                     //#save_interval (Default: 900) (-1 = Disabled)	Automatic server save, value in seconds
 
                     if (line.Contains("#Server Options"))
-                        category = "2. Server Settings";
+                        category = "2. 2. Server Settings";
 
                     if (line.Contains("#Game Optipons") || line.Contains("#Game Options"))
                         category = "3. Game Options";
@@ -238,19 +238,19 @@ namespace HellionExtendedServer.Common.GameServerIni
                         {
                             setting.DefaultValue = "Hellion Game Server";
                             setting.Type = typeof(string);
-                            setting.Category = "1. Required Settings";
+                            setting.Category = "1. 1. Required Settings";
                         }
                         else if (name == "game_client_port")
                         {
                             setting.DefaultValue = 5969;
                             setting.Type = typeof(int);
-                            setting.Category = "1. Required Settings";
+                            setting.Category = "1. 1. Required Settings";
                         }
                         else if (name == "status_port")
                         {
                             setting.DefaultValue = 5970;
                             setting.Type = typeof(int);
-                            setting.Category = "1. Required Settings";
+                            setting.Category = "1. 1. Required Settings";
                         }
 
                         setting.Line = line;

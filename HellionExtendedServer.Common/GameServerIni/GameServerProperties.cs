@@ -138,7 +138,7 @@ namespace HellionExtendedServer.Common.GameServerIni
                         newSetting.Value = setting.Value;
                         // pull if the line was orginally disabled ( starts with a '#' )
                         newSetting.Enabled = setting.Enabled;
-                        newSetting.Valid = setting.Valid;
+                        //newSetting.Valid = setting.Valid;
 
                         // add the new setting to the temp list that goes to the property panel
                         tmp.Add(newSetting);

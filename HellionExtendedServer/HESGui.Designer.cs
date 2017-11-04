@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Players");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HESGui));
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Server = new System.Windows.Forms.TabPage();
@@ -44,6 +45,7 @@
             this.ChatPlayer = new System.Windows.Forms.TabPage();
             this.ChatPlayerContainer = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.cpc_players_demote = new System.Windows.Forms.Button();
             this.cpc_players_promote = new System.Windows.Forms.Button();
             this.cpc_players_ban = new System.Windows.Forms.Button();
@@ -56,7 +58,10 @@
             this.cpc_messagebox = new System.Windows.Forms.TextBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.StatusBar = new System.Windows.Forms.ToolStripStatusLabel();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.objectManipulation_treeview = new System.Windows.Forms.TreeView();
+            this.objectManipulation_grid = new System.Windows.Forms.PropertyGrid();
             this.Tabs.SuspendLayout();
             this.Server.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ServerContainer)).BeginInit();
@@ -79,12 +84,18 @@
             this.cpc_chat_tabs.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.statusStrip.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Tabs
             // 
             this.Tabs.Controls.Add(this.Server);
             this.Tabs.Controls.Add(this.ChatPlayer);
+            this.Tabs.Controls.Add(this.tabPage1);
             this.Tabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Tabs.Location = new System.Drawing.Point(0, 0);
             this.Tabs.Name = "Tabs";
@@ -282,6 +293,15 @@
             this.splitContainer4.SplitterDistance = 369;
             this.splitContainer4.TabIndex = 0;
             // 
+            // listView1
+            // 
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(356, 369);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
             // cpc_players_demote
             // 
             this.cpc_players_demote.Enabled = false;
@@ -407,14 +427,56 @@
             this.StatusBar.Name = "StatusBar";
             this.StatusBar.Size = new System.Drawing.Size(0, 17);
             // 
-            // listView1
+            // tabPage1
             // 
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(356, 369);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.tabPage1.Controls.Add(this.splitContainer1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(804, 469);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Object Manipulation";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.objectManipulation_treeview);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.objectManipulation_grid);
+            this.splitContainer1.Size = new System.Drawing.Size(798, 463);
+            this.splitContainer1.SplitterDistance = 273;
+            this.splitContainer1.TabIndex = 0;
+            // 
+            // objectManipulation_treeview
+            // 
+            this.objectManipulation_treeview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectManipulation_treeview.Location = new System.Drawing.Point(0, 0);
+            this.objectManipulation_treeview.Name = "objectManipulation_treeview";
+            treeNode1.Name = "PlayersNode";
+            treeNode1.Text = "Players";
+            this.objectManipulation_treeview.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.objectManipulation_treeview.Size = new System.Drawing.Size(273, 463);
+            this.objectManipulation_treeview.TabIndex = 0;
+            this.objectManipulation_treeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.objectManipulation_treeview_AfterSelect);
+            this.objectManipulation_treeview.Click += new System.EventHandler(this.objectManipulation_treeview_Click);
+            // 
+            // objectManipulation_grid
+            // 
+            this.objectManipulation_grid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectManipulation_grid.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.objectManipulation_grid.Location = new System.Drawing.Point(0, 0);
+            this.objectManipulation_grid.Name = "objectManipulation_grid";
+            this.objectManipulation_grid.Size = new System.Drawing.Size(521, 463);
+            this.objectManipulation_grid.TabIndex = 0;
             // 
             // HESGui
             // 
@@ -454,6 +516,11 @@
             this.tabPage3.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -489,6 +556,10 @@
         public System.Windows.Forms.Button server_config_startserver;
         private System.Windows.Forms.Button server_config_reload;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.TreeView objectManipulation_treeview;
+        private System.Windows.Forms.PropertyGrid objectManipulation_grid;
     }
 }
 

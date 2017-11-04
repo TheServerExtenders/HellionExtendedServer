@@ -1,21 +1,34 @@
-﻿using HellionExtendedServer.Common.GameServerIni;
-using HellionExtendedServer.GUI;
+﻿using HellionExtendedServer.GUI.Objects;
 using HellionExtendedServer.Managers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
+using ZeroGravity.Objects;
 
 namespace HellionExtendedServer
 {
     public partial class HESGui : Form
     {
-        //public GameServerSettings Settings = new GameServerSettings();
+        private Timer ObjectManipulationRefreshTimer = new Timer();
 
         public HESGui()
         {
             InitializeComponent();
 
+            SetGUIDefaults();
+
+            ServerInstance.Instance.OnServerRunning += Instance_OnServerRunning;
+            ServerInstance.Instance.OnServerStopped += Instance_OnServerStopped;
+
+            ServerInstance.Instance.GameServerConfig.Load();
+            serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
+
+            serverconfig_properties.Refresh();
+        }
+
+        private void SetGUIDefaults()
+        {
             cpc_chat_list.ReadOnly = true;
             cpc_chat_list.BackColor = System.Drawing.SystemColors.Window;
 
@@ -27,21 +40,16 @@ namespace HellionExtendedServer
             server_config_stopserver.Enabled = false;
             server_config_startserver.Enabled = true;
 
+            objectManipulation_grid.Enabled = false;
+            objectManipulation_treeview.Enabled = false;
+
             server_config_autostart.Checked = Properties.Settings.Default.AutoStart;
             server_config_debugmode.Checked = Properties.Settings.Default.DebugMode;
 
-            ServerInstance.Instance.OnServerRunning += Instance_OnServerRunning;
-            ServerInstance.Instance.OnServerStopped += Instance_OnServerStopped;
-
             cpc_chat_list.AppendText("Waiting for server to start..\r\n");
-
-            //SetSettings(ServerInstance.Instance.GameServerProperties.Load());
-            ServerInstance.Instance.GameServerConfig.Load();
-            serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
-
-            serverconfig_properties.Refresh();
         }
 
+        #region Events
         private void Instance_OnServerStopped(ZeroGravity.Server server)
         {
             this.Invoke(new MethodInvoker(delegate
@@ -52,63 +60,155 @@ namespace HellionExtendedServer
                 server_config_stopserver.Enabled = false;
                 server_config_startserver.Enabled = true;
 
+                objectManipulation_grid.Enabled = false;
+                objectManipulation_treeview.Enabled = false;
+
+                ObjectManipulationRefreshTimer.Stop();
+                ObjectManipulationRefreshTimer.Enabled = false;
+
                 this.Refresh();
             }));
         }
 
         private void Instance_OnServerRunning(ZeroGravity.Server server)
         {
-            this.Invoke(new MethodInvoker(delegate
+            Invoke(new MethodInvoker(delegate
             {
                 cpc_messagebox.Enabled = true;
                 cpc_chat_send.Enabled = true;
                 server_config_stopserver.Enabled = true;
                 server_config_startserver.Enabled = false;
 
+                objectManipulation_grid.Enabled = true;
+                objectManipulation_treeview.Enabled = true;
+
+               
+
                 this.Refresh();
             }));
+
+            ObjectManipulationRefreshTimer.Interval = (1000); // 1 secs
+            ObjectManipulationRefreshTimer.Tick += delegate (object sender, EventArgs e)
+            {
+                UpdatePlayersTree();
+            };
+            ObjectManipulationRefreshTimer.Enabled = true;
+            ObjectManipulationRefreshTimer.Start();
+
+            UpdatePlayersTree();
         }
+        #endregion Events
+
+        #region Object Manipulation
+
+        public List<MyPlayer> MyPlayers = new List<MyPlayer>();
+
+        public void UpdatePlayersTree()
+        {
+            if (ServerInstance.Instance.Server == null)
+                return;
+
+            if (!ZeroGravity.Server.IsRunning)
+                return;
+
+            var treeNodeList = objectManipulation_treeview.Nodes[0].Nodes;
+
+            // Convert the Games Players into something the GUI can use
+            foreach (var player in ServerInstance.Instance.Server.AllPlayers)
+            {
+                if (!MyPlayers.Exists(x => x.GUID == player.GUID))
+                    MyPlayers.Add(new MyPlayer(player));
+            }
+
+            // Remove the player
+            foreach (var _player in MyPlayers)
+            {
+                Player player = _player.CurrentPlayer;
+
+                if (player == null)
+                {
+                    if (MyPlayers.Exists(x => x.GUID == _player.GUID))
+                        MyPlayers.Remove(_player);
+
+                    if (treeNodeList.ContainsKey(_player.GUID.ToString()))
+                        treeNodeList.RemoveByKey(_player.GUID.ToString());
+
+                    objectManipulation_treeview.Refresh();
+                    objectManipulation_grid.Refresh();
+
+                    continue;
+                }
+
+                TreeNode node = new TreeNode
+                {
+                    Name = player.GUID.ToString(),
+                    Text = player.Name + $" ({player.SteamId})",
+
+                    Tag = _player
+                };
+
+                if (!treeNodeList.ContainsKey(node.Name))
+                    treeNodeList.Add(node);
+            }
+
+            foreach (TreeNode node in treeNodeList)
+            {
+                MyPlayer tag = node.Tag as MyPlayer;
+
+                if (tag == null)
+                    continue;
+
+                var player = GetPlayerFromGuid(tag.GUID);
+
+                if (player == null)
+                {
+                    treeNodeList.Remove(node);
+                }
+            }
+
+            objectManipulation_treeview.Refresh();
+            objectManipulation_grid.Refresh();
+        }
+
+        private void objectManipulation_treeview_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            var node = e.Node;
+
+            if (node == null)
+                return;
+
+            if (node.Tag == null)
+                return;
+
+            objectManipulation_grid.SelectedObject = node.Tag as MyPlayer;
+            objectManipulation_grid.Refresh();
+        }
+
+        private void objectManipulation_treeview_Click(object sender, EventArgs e)
+        {
+            UpdatePlayersTree();
+        }
+
+        public ZeroGravity.Objects.Player GetPlayerFromGuid(long guid)
+        {
+            foreach (var player in ServerInstance.Instance.Server.AllPlayers)
+            {
+                if (player.GUID == guid) return player;
+            }
+            return null;
+        }
+
+        #endregion Object Manipulation
 
         #region Server Control
 
         private void server_config_save_Click(object sender, EventArgs e)
         {
-            //if (GameServerINI.SaveSettings(GetSettings()))
             if (ServerInstance.Instance.GameServerConfig.Save())
             {
                 StatusBar.Text = "Config Saved.";
             }
         }
-
-        private void SetSettings()
-        {
-            try
-            {
-                //Settings.Clear();
-
-                //foreach (var setting in settings)
-                //Settings.Add(new GameServerProperty().SetFromSetting(setting));
-
-
-            }
-            catch (Exception)
-            {
-
-            }
-            
-        }
-
-        //private List<Setting> GetSettings()
-        //{
-            //List<Setting> outSettings = new List<Setting>();
-
-            //foreach (GameServerProperty property in Settings)
-            //{
-            //    outSettings.Add(property.GetAsSetting());
-            //}
-
-            //return outSettings;
-        //}
 
         private void server_config_cancel_Click(object sender, EventArgs e)
         {
@@ -116,7 +216,6 @@ namespace HellionExtendedServer
             serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
 
             serverconfig_properties.Refresh();
-            //SetSettings(ServerInstance.Instance.GameServerProperties.Load());
             StatusBar.Text = "Reloaded the config from the GameServer.ini.";
         }
 
@@ -129,10 +228,7 @@ namespace HellionExtendedServer
             {
                 ServerInstance.Instance.GameServerConfig.LoadDefaults();
                 serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
-
                 serverconfig_properties.Refresh();
-
-                //SetSettings(ServerInstance.Instance.GameServerProperties.LoadDefaults());
                 StatusBar.Text = "Config defaults loaded.";
             }
         }
@@ -146,10 +242,7 @@ namespace HellionExtendedServer
             {
                 ServerInstance.Instance.GameServerConfig.Load();
                 serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
-
                 serverconfig_properties.Refresh();
-
-                //SetSettings(ServerInstance.Instance.GameServerProperties.Load());
                 StatusBar.Text = "Config reloaded from GameServer.ini";
             }
         }

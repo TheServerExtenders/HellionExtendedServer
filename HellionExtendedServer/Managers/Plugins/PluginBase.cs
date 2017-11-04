@@ -22,6 +22,7 @@ namespace HellionExtendedServer.Common.Plugins
         protected String m_author;
         protected String m_name;
         protected String m_api;
+        protected String[] m_aillias;
         protected Guid m_id;
         protected PluginHelper m_plugin_helper;
         protected Boolean isenabled = false;
@@ -39,6 +40,7 @@ namespace HellionExtendedServer.Common.Plugins
         public virtual String Author { get { return m_author; } internal set { m_author = value; } }
         public virtual String Directory { get { return m_directory; } internal set { m_directory = value; } }
         public virtual String API { get { return m_api; } internal set { m_api = value; } }
+        public virtual String[] Aillias { get { return m_aillias; } internal set { m_aillias = value; } }
         public virtual Server GetServer { get { return m_server; } }
         public virtual PluginHelper GetPluginHelper { get { return m_plugin_helper; } }
 
@@ -64,11 +66,9 @@ namespace HellionExtendedServer.Common.Plugins
 
             m_plugin_helper = new PluginHelper(m_server);
         }
-        public virtual void Init(String modDirectory)
+        public virtual void Init()
         {
             Enabled = true;
-            m_directory = modDirectory;
-            m_server = ServerInstance.Instance.Server;
             if (m_server == null)
             {
                 //ERROR! No Server Running!
@@ -84,12 +84,14 @@ namespace HellionExtendedServer.Common.Plugins
                 Description = pluginAttribute.Description;
                 Author = pluginAttribute.Author;
                 API = pluginAttribute.API;
+                Aillias = pluginAttribute.Alliais;
+
             }
             else
             {
                 Enabled = false;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error! No Plugin Attribute Found!");
+                Console.WriteLine("Plugin Invalid! No Plugin Attribute Found!");
                 Console.ResetColor();
                 return;
             }
@@ -122,6 +124,10 @@ namespace HellionExtendedServer.Common.Plugins
 
         }
         public virtual void OnCommand(Player p, String command, String[] args)
+        {
+
+        }
+        public virtual void OnConsoleCommand(String command, String[] args)
         {
 
         }

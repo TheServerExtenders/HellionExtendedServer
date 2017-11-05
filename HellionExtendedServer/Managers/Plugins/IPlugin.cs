@@ -26,7 +26,7 @@ namespace HellionExtendedServer.Common.Plugins
         #endregion
 
         #region Methods
-        void Init(String ModDirectory);
+        void Init();
         void Shutdown();
         #endregion
     }

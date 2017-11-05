@@ -122,6 +122,9 @@
       <HintPath>..\GameLibraries\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Octokit, Version=0.27.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.27.0\lib\net45\Octokit.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -137,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\GameServerIni.cs" />
+    <Compile Include="GUI\MarkdownSharp.cs" />
     <Compile Include="GUI\Objects\Player.cs" />
     <Compile Include="GUI\Objects\BaseObject.cs" />
     <Compile Include="Modules\CrashDump.cs" />

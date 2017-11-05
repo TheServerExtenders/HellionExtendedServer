@@ -1,20 +1,16 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using HellionExtendedServer.Common;
-using HellionExtendedServer.Managers;
-using HellionExtendedServer.Managers.Commands;
+﻿using HellionExtendedServer.Managers;
 using HellionExtendedServer.Managers.Plugins;
 using NLog;
+using System;
 using ZeroGravity;
 using ZeroGravity.Objects;
-
 
 namespace HellionExtendedServer.Common.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
         #region Fields
+
         protected String m_directory;
         protected Server m_server;
         protected String m_version;
@@ -29,9 +25,11 @@ namespace HellionExtendedServer.Common.Plugins
 
         //protected LogInstance m_log;
         protected PluginBaseConfig m_config;
-        #endregion
+
+        #endregion Fields
 
         #region Properties
+
         public virtual Boolean Enabled { get { return isenabled; } internal set { isenabled = value; } }
         public virtual Guid Id { get { return m_id; } internal set { m_id = value; } }
         public virtual String GetName { get { return m_name; } internal set { m_name = value; } }
@@ -46,10 +44,13 @@ namespace HellionExtendedServer.Common.Plugins
 
         //public virtual LogInstance PluginLog { get { return m_log; } }
         public virtual PluginBaseConfig Config { get { return m_config; } }
+
         public Logger GetLogger { get { return Log.Instance; } }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         public PluginBase()
         {
             m_server = ServerInstance.Instance.Server;
@@ -66,6 +67,10 @@ namespace HellionExtendedServer.Common.Plugins
 
             m_plugin_helper = new PluginHelper(m_server);
         }
+
+        public virtual void Init(String modDirectory)
+            => Init();
+
         public virtual void Init()
         {
             Enabled = true;
@@ -85,7 +90,6 @@ namespace HellionExtendedServer.Common.Plugins
                 Author = pluginAttribute.Author;
                 API = pluginAttribute.API;
                 Aillias = pluginAttribute.Alliais;
-
             }
             else
             {
@@ -104,34 +108,34 @@ namespace HellionExtendedServer.Common.Plugins
         {
             DisablePlugin();
         }
+
         public void OnLoad()
         {
-
         }
 
         public void DisablePlugin(bool remove = true)
         {
             Enabled = true;
             OnDisable();
-            if(remove)ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
+            if (remove) ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
         }
+
         public virtual void OnEnable()
         {
-
         }
+
         public virtual void OnDisable()
         {
-
         }
+
         public virtual void OnCommand(Player p, String command, String[] args)
         {
-
         }
+
         public virtual void OnConsoleCommand(String command, String[] args)
         {
-
         }
 
-        #endregion
+        #endregion Methods
     }
 }

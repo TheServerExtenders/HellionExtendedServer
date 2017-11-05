@@ -264,27 +264,6 @@ namespace HellionExtendedServer.Managers
                 Player player1 = Server.GetPlayer(textChatMessage.Sender);
                 textChatMessage.Name = player1.Name;
 
-                if (Msg.StartsWith("/takehp"))
-                {
-
-
-                    NetworkManager.Instance.MessageAllClients($"hp: {(player1.Health -= 10)}");
-                    //return;
-                }
-
-                if (Msg.StartsWith("/givehp"))
-                {
-                    NetworkManager.Instance.MessageAllClients($"hp: {(player1.Health += 10)}");
-                    //return;
-                }
-
-                if (Msg.StartsWith("/gethp"))
-                {
-                    
-                    NetworkManager.Instance.MessageAllClients($"hp: {player1.Health.ToString()}");
-                    //return;
-                }
-
                 string[] chatCommandArray = Msg.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
                 string command = chatCommandArray.First();
                 //Send to COmmand Manager

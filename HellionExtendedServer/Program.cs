@@ -34,7 +34,6 @@ namespace HellionExtendedServer
         private static EventHandler _handler;
         private static Boolean m_useGui = true;
         private static Thread uiThread;
-        private static FolderStructure m_folderStructure;
         private static Logger mainLogger;
 
         #endregion Fields
@@ -364,36 +363,17 @@ namespace HellionExtendedServer
                     }
 
                     if (stringList[1] == "takehp")
-                    {
-                        if (NetworkManager.Instance.ConnectedPlayer(stringList[3], out Player player))
-                        {
-                            try
-                            {
-                                player.DiconnectFromNetworkContoller();
-                                Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayerKicked"],
-                                    (object)player.Name));
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Instance.Error(ex, "Hellion Extended Server [KICK ERROR] : " + ex.Message);
-                            }
-                        }
-                        else
-                            Console.WriteLine(HES.m_localization.Sentences["PlayerNotConnected"]);
-
-
+                    {                     
                         flag = true;
                     }
 
                     if (stringList[1] == "givehp")
                     {
-                        SetupGUI();
                         flag = true;
                     }
 
                     if (stringList[1] == "opengui")
                     {
-                        SetupGUI();
                         flag = true;
                     }
 

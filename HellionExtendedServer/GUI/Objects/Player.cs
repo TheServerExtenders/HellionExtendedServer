@@ -3,6 +3,7 @@ using ZeroGravity;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
+using HellionExtendedServer;
 
 namespace HellionExtendedServer.GUI.Objects
 {
@@ -88,7 +89,7 @@ namespace HellionExtendedServer.GUI.Objects
 
         public QuaternionD StringToQuat(string _value)
         {
-            var args = _value.Split(' ');
+            var args = _value.Split(',');
 
             if (args.Length < 0)
                 return CurrentPlayer.LocalRotation;

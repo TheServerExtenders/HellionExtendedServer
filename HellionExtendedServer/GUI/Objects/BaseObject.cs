@@ -51,7 +51,7 @@ namespace HellionExtendedServer.GUI.Objects
 
         public Vector3D StringToVector(string _value)
         {
-            var args = _value.Split(' ');
+            var args = _value.Split(',');
 
             if (args.Length < 0)
                 return SpaceObject.Position;

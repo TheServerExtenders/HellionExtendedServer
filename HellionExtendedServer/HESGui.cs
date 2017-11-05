@@ -335,5 +335,10 @@ namespace HellionExtendedServer
         {
             StatusBar.Text = "GUI Settings Changed";
         }
+
+        private void objectManipulation_grid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+        
+        }
     }
 }

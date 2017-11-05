@@ -66,7 +66,17 @@ namespace HellionExtendedServer.ServerWrappers
             catch (ArgumentException ex)
             {
                 Log.Instance.Fatal(ex, "Hellion Extended Server [REFLECTION ERROR] : " + ex.Message);
-            }           
+            }
+
+            try
+            {
+               // m_closeSocketListeners = Assembly.GetType("ZeroGravity.Server.NetworkController").GetMethod("OnApplicationQuit",
+                    //BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Instance.Error(ex, "Hellion Extended Server [REFLECTION ERROR] : " + ex.Message);
+            }
         }
 
         public void StopServer()

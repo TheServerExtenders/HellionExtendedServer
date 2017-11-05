@@ -5,6 +5,7 @@ using NLog;
 using NLog.Config;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,7 +35,6 @@ namespace HellionExtendedServer
         private static EventHandler _handler;
         private static Boolean m_useGui = true;
         private static Thread uiThread;
-        private static FolderStructure m_folderStructure;
         private static Logger mainLogger;
 
         #endregion Fields
@@ -62,7 +62,7 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {          
-
+             
             AppDomain.CurrentDomain.AssemblyResolve += (sender, rArgs) =>
             {
                 string assemblyName = new AssemblyName(rArgs.Name).Name;
@@ -86,7 +86,27 @@ namespace HellionExtendedServer
                 return Assembly.LoadFrom(dllFullPath);
             };
 
+            // This is for args that should be used before HES loads
+            Console.ForegroundColor = ConsoleColor.Green;
+            foreach (string arg in args)
+            {
+                if (arg.Equals("-noupdatehes"))
+                {
+                    UpdateManager.EnableAutoUpdates = false;
+                    Console.WriteLine("HellionExtendedServer: (Arg: -noupdatehes is set) Hellion Dedicated will not be auto-updated.");
+                }
+
+                if (arg.Equals("-noupdatehellion"))
+                {
+                    SteamCMD.AutoUpdateHellion = false;
+                    Console.WriteLine("HellionExtendedServer: (Arg: -noupdatehellion is set) Hellion Dedicated will not be auto-updated.");
+                }                              
+            }
+            Console.ResetColor();
+
             new FolderStructure().Build();
+                               
+            updateManager = new UpdateManager(args);
 
             var program = new HES(args);
             program.Run(args);
@@ -149,8 +169,6 @@ namespace HellionExtendedServer
 
             mainLogger.Info("Hellion Extended Server v" + Version + " Initialized.");
 
-            //updateManager = new UpdateManager();
-            //updateManager.GetLatestRelease();
 
             m_serverInstance = new ServerInstance();
 
@@ -170,11 +188,6 @@ namespace HellionExtendedServer
                     autoStart = true;
                     mainLogger.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
                 }
-
-                if (arg.Equals("-updatehes"))
-                {
-                    mainLogger.Info("HellionExtendedServer: Arg: -updatehes or HESGui's Auto Update Hes Checkbox was Checked)");
-                }
             }
 
             if (m_useGui)
@@ -185,13 +198,13 @@ namespace HellionExtendedServer
             if (autoStart | Properties.Settings.Default.AutoStart)
                 ServerInstance.Instance.Start();
 
-            ReadConsoleCommands();
+            ReadConsoleCommands(args);
         }
 
         /// <summary>
         /// This contains the console commands
         /// </summary>
-        public void ReadConsoleCommands()
+        public void ReadConsoleCommands(string[] commandLineArgs)
         {
             while (true)
             {
@@ -233,26 +246,30 @@ namespace HellionExtendedServer
                         flag = true;
                     }
 
-                    if (stringList[1] == "update")
+                    if (stringList[1] == "checkupdate")
                     {
-                        if (stringList[2] == "get")
-                        {
-                            updateManager.DownloadLatestRelease();
-                            flag = true;
-                        }
+                        updateManager.CheckForUpdates().GetAwaiter().GetResult();
+                        flag = true;
+                    }
 
-                        if (stringList[2] == "info")
-                        {
-                            Console.WriteLine("-Current Release-");
+                    if (stringList[1] == "restart")
+                    {
+                        var thisProcess = Process.GetCurrentProcess();
+                        var startInfo = new ProcessStartInfo();
+                        startInfo.FileName = thisProcess.ProcessName;
+                        startInfo.Arguments = string.Join(" ", commandLineArgs);
+                        startInfo.WindowStyle = thisProcess.StartInfo.WindowStyle;
+                        
+                        var proc = Process.Start(startInfo);
 
-                            Console.WriteLine($"Name: {updateManager.CurrentRelease.Name}");
-                            Console.WriteLine($"Version: {updateManager.CurrentRelease.Version}");
-                            Console.WriteLine($"Download Count: {updateManager.CurrentRelease.DLCount}");
-                            Console.WriteLine($"URL: {updateManager.CurrentRelease.URL}");
-                            Console.WriteLine($"Description: {updateManager.CurrentRelease.Description}");
+                        thisProcess.Kill();
+                        flag = true;
+                    }
 
-                            flag = true;
-                        }
+                    if (stringList[1] == "forceupdate")
+                    {
+                        updateManager.CheckForUpdates(true).GetAwaiter().GetResult();
+                        flag = true;
                     }
 
                     //Different args for /players command to display the count, the full list of players (disconnected and disconnected) and the list of connected players.
@@ -363,34 +380,6 @@ namespace HellionExtendedServer
                         flag = true;
                     }
 
-                    if (stringList[1] == "takehp")
-                    {
-                        if (NetworkManager.Instance.ConnectedPlayer(stringList[3], out Player player))
-                        {
-                            try
-                            {
-                                player.DiconnectFromNetworkContoller();
-                                Console.WriteLine(string.Format(HES.m_localization.Sentences["PlayerKicked"],
-                                    (object)player.Name));
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Instance.Error(ex, "Hellion Extended Server [KICK ERROR] : " + ex.Message);
-                            }
-                        }
-                        else
-                            Console.WriteLine(HES.m_localization.Sentences["PlayerNotConnected"]);
-
-
-                        flag = true;
-                    }
-
-                    if (stringList[1] == "givehp")
-                    {
-                        SetupGUI();
-                        flag = true;
-                    }
-
                     if (stringList[1] == "opengui")
                     {
                         SetupGUI();
@@ -443,6 +432,9 @@ namespace HellionExtendedServer
         #endregion Methods
 
         #region ConsoleHandler
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);

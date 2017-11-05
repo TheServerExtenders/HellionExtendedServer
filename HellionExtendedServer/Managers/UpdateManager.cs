@@ -4,104 +4,165 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using Octokit;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace HellionExtendedServer.Managers
 {
     public class UpdateManager
     {
+        private GitHubClient _git = new GitHubClient(new ProductHeaderValue("HellionExtendedServer"));
         private const string UpdateFileName = "update.zip";
-        private const string LatestReleaseURL = @"https://api.github.com/repos/HellionCommunity/HellionExtendedServer/releases/latest";
 
         private Release m_currentRelease;
+        public Release CurrentRelease => m_currentRelease;
 
-        public Release CurrentRelease { get => m_currentRelease; set => m_currentRelease = value; }
+        public static bool EnableAutoUpdates = true;
 
-        public UpdateManager()
+        public UpdateManager(string[] args)
         {
-            ServicePointManager.DefaultConnectionLimit = 4;
+            ServicePointManager.DefaultConnectionLimit = 10;
+
+            CheckForUpdates().GetAwaiter().GetResult();
+        }
+
+        public async Task CheckForUpdates(bool forceUpdate = false)
+        {
+            await GetLatestReleaseInfo();
+            CheckVersion(forceUpdate);
         }
 
         public void DownloadLatestRelease()
         {
-            Console.WriteLine("Checking for updates...");
-
-            if (!m_currentRelease.IsUpdate)
+            try
             {
-                Console.WriteLine("HES is up to date!");
-                return;
+                Console.WriteLine("HellionExtendedServer:  Downloading latest release...");
+
+                WebClient client = new WebClient();
+                client.DownloadDataCompleted += new DownloadDataCompletedEventHandler(ReleaseDownloaded);
+                client.DownloadDataAsync(new Uri(m_currentRelease.Assets.First().BrowserDownloadUrl));
             }
-
-            Console.WriteLine("There's an update!");
-
-            WebClient client = new WebClient();
-            client.DownloadDataCompleted += new DownloadDataCompletedEventHandler(ReleaseDownloaded);
-            client.DownloadDataAsync(new Uri(m_currentRelease.URL));
-        }
-
-        public void UnpackRelease()
-        {
-            ZipFile.ExtractToDirectory(UpdateFileName, Globals.GetFolderPath(HESFolderName.Updates));
+            catch (Exception ex)
+            {
+                Console.WriteLine("HellionExtendedServer:  Update Failed (DownloadLatestRelease)" + ex.ToString());
+            }
+                      
         }
 
         private void ReleaseDownloaded(object sender, DownloadDataCompletedEventArgs e)
         {
-            File.WriteAllBytes(Path.Combine(Globals.GetFolderPath(HESFolderName.Updates), UpdateFileName), e.Result);
-            Console.WriteLine("Update Downloaded!");
-        }
-
-        public void GetLatestRelease()
-        {
-            string json;
-
             try
             {
-                HttpWebRequest request = WebRequest.Create(LatestReleaseURL) as HttpWebRequest;
-                request.Method = "GET";
-                request.Proxy = null;
-                request.UserAgent = "HellionExtendedServer";
-
-                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-                {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        json = reader.ReadToEnd();
-                    }
-                }
-
-                dynamic task = JObject.Parse(json);
-
-                m_currentRelease = new Release(
-                    (string)task["name"],
-                    (string)task["assets"][0]["browser_download_url"],
-                    (string)task["tag_name"],
-                    (int)task["assets"][0]["download_count"],
-                    (string)task["body"]
-                );
+                File.WriteAllBytes(Path.Combine(Globals.GetFolderPath(HESFolderName.Updates), UpdateFileName), e.Result);
+                ZipFile.ExtractToDirectory(Path.Combine(Globals.GetFolderPath(HESFolderName.Updates), UpdateFileName), Globals.GetFolderPath(HESFolderName.Updates));
+                File.Delete(Path.Combine(Globals.GetFolderPath(HESFolderName.Updates), UpdateFileName));
+                Console.WriteLine("HellionExtendedServer:  Update has been downloaded!");
+              
+                //ApplyUpdate(EnableAutoUpdates); 
+                
+                Console.WriteLine("HellionExtendedServer:  Update has been applied. Please restart HellionExtendedServer.exe to finish the update!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("HellionExtendedServer:  Update Failed (ReleaseDownloadedEvent)" + ex.ToString());
             }
         }
-    }
 
-    public class Release
-    {
-        public string Name;
-        public string URL;
-        public string Version { get; private set; }
-        public int DLCount;
-        public string Description;
-        public bool IsUpdate;
-
-        public Release(string name, string url, string version, int dlCount, string description)
+        public void ApplyUpdate(bool restart = false)
         {
-            Name = name;
-            URL = url;
-            Version = version;
-            DLCount = dlCount;
-            IsUpdate = new Version(version) > HES.Version;
-            Description = description;
+            try
+            {
+                Console.WriteLine("HellionExtendedServer:  Applying Update...");
+
+                string updatePath = Globals.GetFolderPath(HESFolderName.Updates);
+                string hesPath = Globals.GetFolderPath(HESFolderName.Hes);
+
+                foreach (string dirPath in Directory.GetDirectories(updatePath, "*",
+                    SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(updatePath, hesPath));
+
+                foreach (string newPath in Directory.GetFiles(updatePath, "*.*",
+                    SearchOption.AllDirectories))
+                    File.Copy(newPath, newPath.Replace(updatePath, hesPath), true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("HellionExtendedServer:  Update Failed (ApplyUpdate)" + ex.ToString());
+            }
+
         }
-    }
+
+        public bool CheckVersion(bool forceUpdate = false)
+        {
+            try
+            {
+                var checkedVersion = new Version(m_currentRelease.TagName);
+
+                if (checkedVersion > HES.Version || forceUpdate)
+                {
+                    Console.WriteLine("HellionExtendedServer:  A new version of Hellion Extended Server has been detected.\r\n");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"Name: { m_currentRelease.Assets.First().Name }");
+                    Console.WriteLine($"Version: { m_currentRelease.TagName }");
+                    Console.WriteLine($"Total Downloads: { m_currentRelease.Assets.First().DownloadCount }");
+                    Console.WriteLine($"Published Date: { m_currentRelease.Assets.First().CreatedAt }\r\n");
+                    Console.ResetColor();
+
+                    if (!EnableAutoUpdates)
+                    {
+                        Console.WriteLine("Would you like to see the changes? (y/n)");
+
+                        if (Console.ReadKey().Key == ConsoleKey.Y)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("\r\nChanges:\r\n" + m_currentRelease.Body);
+                            Console.ResetColor();
+                        }
+                           
+
+                        Console.WriteLine("Would you like to update now? (y/n)");
+
+                        if (Console.ReadKey().Key == ConsoleKey.Y)
+                        {
+                            Console.WriteLine("\r\n");
+                            DownloadLatestRelease();
+                            return true;
+                        }
+
+                        Console.WriteLine("HellionExtendedServer:  Skipping update.. We'll ask next time you restart HES!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("HellionExtendedServer:  Auto updating");
+                        DownloadLatestRelease();
+                    }
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("HellionExtendedServer:  HES is running the latest version!");
+                }
+                              
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("HellionExtendedServer:  Update Failed (CheckVersion)" + ex.ToString());
+            }
+            return false;
+        }
+
+        public async Task GetLatestReleaseInfo()
+        {
+            try
+            {
+                m_currentRelease = await _git.Repository.Release.GetLatest("HellionCommunity", "HellionExtendedServer").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Update Failed (GetLatestReleaseInfo)" + ex.ToString());
+            }
+        }
+    }   
 }

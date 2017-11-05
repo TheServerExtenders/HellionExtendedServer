@@ -15,6 +15,8 @@ namespace HellionExtendedServer.Modules
         private static string SteamCMDExe = $"{SteamCMDDir}\\steamcmd.exe";
         private static string SteamCMDZip = $"{SteamCMDDir}\\steamcmd.zip";
 
+        public static bool AutoUpdateHellion = true;
+
         public SteamCMD()
         {
             Log.Instance.Info("Running SteamCMD Checks..");
@@ -22,6 +24,20 @@ namespace HellionExtendedServer.Modules
 
         public bool GetSteamCMD()
         {
+            if (!AutoUpdateHellion)
+            {              
+                if (!File.Exists("HELLION_Dedicated.exe"))
+                {
+                    Log.Instance.Warn("Hellion Dedicated wasn't found.");
+                    Log.Instance.Info("Make sure HellionExtendedServer.exe is in the same folder as Hellion_dedicated.exe.");
+                    Log.Instance.Info("Press enter to close.");
+                    Console.ReadLine();
+                    Environment.Exit(0);
+
+                }
+
+                return false;
+            }
 
             if (!Directory.Exists(SteamCMDDir))
                 Directory.CreateDirectory(SteamCMDDir);

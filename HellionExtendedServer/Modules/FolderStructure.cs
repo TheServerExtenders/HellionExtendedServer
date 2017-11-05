@@ -21,6 +21,7 @@ namespace HellionExtendedServer
             directories.Add("localization");
             directories.Add("plugins");
             directories.Add("logs");
+            directories.Add("updates");
 
             if (!Directory.Exists(RootFolderName))
                 Directory.CreateDirectory(RootFolderName);
@@ -48,6 +49,7 @@ namespace HellionExtendedServer
                         {
                             case ".ini":
                             case ".config":
+                            case ".json":
                                 path = Globals.GetFolderPath(HESFolderName.Config, false);
                                 break;
 
@@ -61,6 +63,8 @@ namespace HellionExtendedServer
                         if (!Directory.Exists(path))
                             Directory.CreateDirectory(path);
 
+
+                        //TODO if a config file already exists
                         if (!File.Exists(Path.Combine(path, fileName)))
                         {
                             byte[] data = new byte[stream.Length];

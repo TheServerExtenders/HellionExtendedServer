@@ -22,10 +22,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
         #region Properties
 
-        public List<PluginInfo> LoadedPlugins
-        {
-            get { return m_loadedPlugins; }
-        }
+        public List<PluginInfo> LoadedPlugins { get { return m_loadedPlugins; } }
 
         #endregion Properties
 
@@ -40,7 +37,7 @@ namespace HellionExtendedServer.Managers.Plugins
         public void InitializeAllPlugins()
         {
             m_discoveredPlugins = FindAllPlugins();
-            Console.WriteLine("Found {0} Plugins!", m_discoveredPlugins.Count);
+            Console.WriteLine(String.Format("Found {0} Plugins!", m_discoveredPlugins.Count));
             foreach (PluginInfo Plugin in m_discoveredPlugins)
             {
                 InitializePlugin(Plugin);
@@ -49,8 +46,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
         public void InitializePlugin(PluginInfo Plugin)
         {
-            Console.WriteLine(HES.Localization.Sentences["InitializingPlugin"],
-                Plugin.Assembly.GetName().Name);
+            Console.WriteLine(string.Format(HES.Localization.Sentences["InitializingPlugin"], Plugin.Assembly.GetName().Name));
             bool PluginInitialized = false;
 
             if (Plugin.Directory == null)
@@ -58,31 +54,28 @@ namespace HellionExtendedServer.Managers.Plugins
 
             try
             {
-                Plugin.MainClass = (PluginBase) Activator.CreateInstance(Plugin.MainClassType);
+                Plugin.MainClass = (PluginBase)Activator.CreateInstance(Plugin.MainClassType);
 
                 if (Plugin.MainClass != null)
                 {
                     try
                     {
-                        Plugin.MainClass.Init();
+                        Plugin.MainClass.Init(Plugin.Directory);
                         PluginInitialized = true;
                     }
                     catch (MissingMethodException)
                     {
-                        Console.WriteLine(string.Format(HES.Localization.Sentences["InitializationPlugin"],
-                            Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["InitializationPlugin"], Plugin.Assembly.GetName().Name, Plugin.MainClassType.ToString()));
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"],
-                            Plugin.Assembly.GetName().Name, ex.ToString()));
+                        Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"],
-                    Plugin.Assembly.GetName().Name, ex.ToString()));
+                Console.WriteLine(string.Format(HES.Localization.Sentences["FailedInitPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
             }
 
             if (PluginInitialized && Plugin.MainClass.Enabled)
@@ -92,8 +85,7 @@ namespace HellionExtendedServer.Managers.Plugins
                     //Commands
                     foreach (Type CommandType in Plugin.FoundCommands)
                     {
-                        Command c = (Command) Activator.CreateInstance(CommandType,
-                            new object[] {ServerInstance.Instance.Server});
+                        Command c = (Command)Activator.CreateInstance(CommandType, new object[] { ServerInstance.Instance.Server });
                         ServerInstance.Instance.CommandManager.AddCommand(c);
                     }
                     //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
@@ -128,8 +120,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
         public void ShutdownPlugin(PluginInfo Plugin)
         {
-            Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"],
-                Plugin.Assembly.GetName().Name));
+            Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"], Plugin.Assembly.GetName().Name));
             lock (_lockObj)
             {
                 try
@@ -144,8 +135,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 catch (Exception ex)
                 {
                     Log.Instance.Error("ERror!!!" + ex);
-                    Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"],
-                        Plugin.Assembly.GetName().Name, ex.ToString()));
+                    Console.WriteLine(string.Format(HES.Localization.Sentences["ShutdownPlugin"], Plugin.Assembly.GetName().Name, ex.ToString()));
                 }
                 m_loadedPlugins.Remove(Plugin);
                 m_discoveredPlugins.Remove(Plugin);
@@ -166,14 +156,15 @@ namespace HellionExtendedServer.Managers.Plugins
                     }
                     if (pb.GetName.ToLower() == Plugin)
                     {
-                        Console.WriteLine(String.Format("Shutting down Plugin {0}",
-                            Plugininfo.Assembly.GetName().Name));
+                        Console.WriteLine(String.Format("Shutting down Plugin {0}", Plugininfo.Assembly.GetName().Name));
                         pb.DisablePlugin(false);
                         m_loadedPlugins.Remove(Plugininfo);
                         m_discoveredPlugins.Remove(Plugininfo);
                         return;
                     }
+
                 }
+
             }
         }
 
@@ -194,6 +185,8 @@ namespace HellionExtendedServer.Managers.Plugins
                     foundPlugins.Add(Plugin);
                 }
             }
+
+            m_discoveredPlugins = foundPlugins;
 
             return foundPlugins;
         }
@@ -220,8 +213,7 @@ namespace HellionExtendedServer.Managers.Plugins
             Assembly libraryAssembly;
             try
             {
-                Console.WriteLine("Found Plugin Located at s" + library);
-                Console.Write("Validating!");
+                Console.WriteLine("Loading Plugin Located at " + library);
                 bytes = File.ReadAllBytes(library);
                 libraryAssembly = Assembly.Load(bytes);
                 //Bug Guid is Glitched Right Now
@@ -236,16 +228,14 @@ namespace HellionExtendedServer.Managers.Plugins
 
                 Type[] PluginTypes = libraryAssembly.GetExportedTypes();
 
-                Console.Write(".......");
-                foreach (Type _PluginType in PluginTypes)
+                foreach (Type PluginType in PluginTypes)
                 {
-                    plugin.FoundTypes[plugin.FoundTypes.Length] = _PluginType;
-                    if (_PluginType.BaseType == typeof(Command))
+                    if (PluginType.BaseType == typeof(Command))
                     {
-                        plugin.FoundCommands.Add(_PluginType);
+                        plugin.FoundCommands.Add(PluginType);
                         //Permissions In Command
                         //Load Permissions
-                        foreach (Attribute attribute in _PluginType.GetCustomAttributes(true))
+                        foreach (Attribute attribute in PluginType.GetCustomAttributes(true))
                         {
                             if (attribute is PermissionAttribute)
                             {
@@ -255,11 +245,13 @@ namespace HellionExtendedServer.Managers.Plugins
                                 ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
                             }
                         }
+                        continue;
                     }
-                    else if (_PluginType.GetInterface(typeof(IPlugin).FullName) != null && plug)
+                    if (PluginType.GetInterface(typeof(IPlugin).FullName) != null && plug)
                     {
-                        plugin.MainClassType = _PluginType;
+                        plugin.MainClassType = PluginType;
                         plug = false;
+                        continue;
                     }
                 }
                 //B4 resturn Check for Events here
@@ -268,31 +260,28 @@ namespace HellionExtendedServer.Managers.Plugins
                 if (!plug)
                 {
                     //Loads Events
-                    foreach (Type ClassType in plugin.FoundTypes)
+                    foreach (MethodInfo method in plugin.MainClassType.GetMethods())
                     {
-                        foreach (MethodInfo method in ClassType.GetMethods())
+                        Boolean isevent = false;
+                        foreach (Attribute attribute in method.GetCustomAttributes(true))
                         {
-                            Boolean isevent = false;
-                            foreach (Attribute attribute in method.GetCustomAttributes(true))
+                            if (attribute is HESEventAttribute)
                             {
-                                if (attribute is HESEventAttribute)
-                                {
-                                    HESEventAttribute hea = attribute as HESEventAttribute;
+                                HESEventAttribute hea = attribute as HESEventAttribute;
 
-                                    HandelEvent(method, plugin, hea.EventType);
-                                }
+                                plugin = HandelEvent(method, plugin, hea.EventType);
                             }
                         }
-                        //Load Permissions
-                        foreach (Attribute attribute in ClassType.GetCustomAttributes(true))
+                    }
+                    //Load Permissions
+                    foreach (Attribute attribute in plugin.GetType().GetCustomAttributes(true))
+                    {
+                        if (attribute is PermissionAttribute)
                         {
-                            if (attribute is PermissionAttribute)
-                            {
-                                PermissionAttribute pa = attribute as PermissionAttribute;
-                                //Add To plugin
-                                //Onplayer Join Event Add Default Perms to player
-                                ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
-                            }
+                            PermissionAttribute pa = attribute as PermissionAttribute;
+                            //Add To plugin
+                            //Onplayer Join Event Add Default Perms to player
+                            ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
                         }
                     }
                 }
@@ -305,23 +294,25 @@ namespace HellionExtendedServer.Managers.Plugins
             return null;
         }
 
-        public void HandelEvent(MethodInfo method, PluginInfo plugin, EventID eid)
+        public PluginInfo HandelEvent(MethodInfo method, PluginInfo plugin, EventID eid)
         {
             ParameterInfo[] parameters = method.GetParameters();
             if (parameters.Length <= 0)
             {
                 Log.Instance.Error("Paramater had no lenght! Method Name: " + method.Name);
-                return;
+                return plugin;
+
             }
             if (parameters[0].ParameterType.BaseType != typeof(Event.Event))
             {
                 Log.Instance.Error("INVLAID Function Format! Event Expect but got " + parameters[0].Name);
-                return;
+                return plugin;
             }
 
             EventListener el = new EventListener(method, plugin.MainClassType, eid);
             plugin.FoundEvents.Add(el);
             Log.Instance.Info("Found Event Functon : " + parameters[0].ParameterType.Name + " For EventType : " + eid);
+            return plugin;
         }
 
         #endregion Methods

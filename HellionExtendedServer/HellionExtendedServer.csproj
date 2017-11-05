@@ -113,7 +113,6 @@
     <Reference Include="HELLION_Dedicated, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -122,6 +121,9 @@
     <Reference Include="NLog">
       <HintPath>..\GameLibraries\NLog.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Octokit, Version=0.27.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.27.0\lib\net45\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -138,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\GameServerIni.cs" />
+    <Compile Include="GUI\MarkdownSharp.cs" />
+    <Compile Include="GUI\Objects\Player.cs" />
+    <Compile Include="GUI\Objects\BaseObject.cs" />
     <Compile Include="Modules\CrashDump.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GUI\Forms\Updater\UpdateForm.cs">
@@ -182,7 +187,6 @@
     <Compile Include="Managers\Plugins\PluginHelper.cs" />
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
-    <Compile Include="GUI\Objects\Vessel.cs" />
     <Compile Include="GUI\Forms\Browser\Resources.cs" />
     <Compile Include="Modules\SteamCMD.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />

@@ -89,6 +89,7 @@ namespace HellionExtendedServer.Managers.Commands
         public void HandlePlayerCommand(string cmd, string[] args, Player sender)
         {
             Console.WriteLine(String.Format("Handling String /{0} with arge: {1}", cmd, String.Join(" ",args)));
+            foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins)pi.MainClass.OnCommand(sender,cmd,args);    
             //TODO check Permissions
             if (!commandDictionary.ContainsKey(cmd)) return;
             Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server});

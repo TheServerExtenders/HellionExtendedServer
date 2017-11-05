@@ -21,6 +21,7 @@ namespace HellionExtendedServer
             directories.Add("localization");
             directories.Add("plugins");
             directories.Add("logs");
+            directories.Add("updates");
 
             if (!Directory.Exists(RootFolderName))
                 Directory.CreateDirectory(RootFolderName);

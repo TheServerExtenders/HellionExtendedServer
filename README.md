@@ -3,51 +3,44 @@ An Extended Dedicated Server for Hellion http://www.playhellion.com
 
 **Discord Group** - https://discord.gg/Sr48Vbe
 
-### Websites
-~~**Jenkins** - jenkins.hellionextendedserver.com:8080~~
-
-~~**Forums and Plugins** - https://hellionextendedserver.com~~
-
 [![Build status](https://ci.appveyor.com/api/projects/status/phdspum8g0d3ics9/branch/master?svg=true)](https://ci.appveyor.com/project/yungtechboy1/hellionextendedserver/branch/master)
 
 ### Websites
 ~~**Jenkins** - jenkins.hellionextendedserver.com:8080~~
 
-~~**Forums and Plugins** - https://hellionextendedserver.com~~
+**Forums and Plugins** - https://hellionextendedserver.com
 
 **Steam Discussion**  - http://steamcommunity.com/app/588210/discussions/0/133258593382366911/
 
 **Hellion Forum Topic** - https://www.playhellion.com/forum/discussion/132/program-hellion-extended-server-hes-a-dedicated-server-extender
 
 # FEATURES
-     (WIP) You can edit the GameServerIni in the GUI
+     You can edit the GameServerIni in the GUI
      Console commands to use (See the Console Command section below)
      you can chat with people on the server by just typing into the command prompt or on the Chat tab of the GUI.
      You can read the chat from all players that talk on the console, or on the Chat tab of the GUI.
      (WIP)You can build and use plugins.
-     (WIP)Ingame chat commands.
+     I-ngame chat commands.
      (WIP) Permission System
 
 # INSTALLING
 
-Just drop the 2 files and the folder "Hes" from the zip archive into your Hellion Dedicated Server directory
+Just drop the 2 files from the zip archive into your Hellion Dedicated Server directory or drop it into an empty folder and HES will automaticly install Hellion Dedicated and create all the required files.
 
      HellionExtendedServer.exe
      HellionExtendedServer.exe.config  
-     Hes/
-          NLog.config
-          localization/
-          logs/
-          plugins/
-          bin/
-               NLog.dll
-               HellionExtendedServer.Common.dll
-               
-          
-          
-     
+                          
+To start the server, just run HellionServerExtender.exe ( make sure the files above exist with HellionExtendedServer.exe)
 
-To start the server, just run HellionServerExtender.exe ( make sure the files and folder above exist with HellionExtendedServer.exe)
+
+# Command Line Arguments
+     
+     -nogui - Disables the GUI
+     -autostart - The server automaticly starts when HES is ran
+     -noupdatehellion - HES will not automaticly update Hellion Dedicated
+     -noupdatehes - HES will not update itself
+
+
 
 # Console Commands
 commands start with /

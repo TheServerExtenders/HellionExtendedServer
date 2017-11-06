@@ -272,7 +272,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>@echo off
+    <PostBuildEvent>;;@echo off
 
 echo Running build event for $(ProjectName)..
 

@@ -33,7 +33,9 @@
             this.Tabs = new System.Windows.Forms.TabControl();
             this.ServerTab = new System.Windows.Forms.TabPage();
             this.ServerContainer = new System.Windows.Forms.SplitContainer();
-            this.serverconfig_properties = new System.Windows.Forms.PropertyGrid();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.server_config_reload = new System.Windows.Forms.Button();
             this.server_config_debugmode = new System.Windows.Forms.CheckBox();
             this.server_config_setdefaults = new System.Windows.Forms.Button();
@@ -44,18 +46,18 @@
             this.server_config_startserver = new System.Windows.Forms.Button();
             this.ChatTab = new System.Windows.Forms.TabPage();
             this.ChatPlayerContainer = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.sc_onlineplayers_label = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.sc_playerslist_listview = new System.Windows.Forms.ListView();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.cpc_chat_tabs = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.cpc_chat_list = new System.Windows.Forms.TextBox();
             this.cpc_chat_send = new System.Windows.Forms.Button();
             this.cpc_messagebox = new System.Windows.Forms.TextBox();
-            this.ObjectManipulationTab = new System.Windows.Forms.TabPage();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.objectManipulation_treeview = new System.Windows.Forms.TreeView();
-            this.objectManipulation_grid = new System.Windows.Forms.PropertyGrid();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.StatusBar = new System.Windows.Forms.ToolStripStatusLabel();
             this.PlayersTab = new System.Windows.Forms.TabPage();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
             this.splitContainer6 = new System.Windows.Forms.SplitContainer();
@@ -68,17 +70,22 @@
             this.pc_banplayer = new System.Windows.Forms.Button();
             this.pc_kickplayer = new System.Windows.Forms.Button();
             this.splitContainer8 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.sc_playerslist_listview = new System.Windows.Forms.ListView();
-            this.label1 = new System.Windows.Forms.Label();
-            this.sc_onlineplayers_label = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.ObjectManipulationTab = new System.Windows.Forms.TabPage();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.objectManipulation_treeview = new System.Windows.Forms.TreeView();
+            this.objectManipulation_grid = new System.Windows.Forms.PropertyGrid();
             this.HESWIKI = new System.Windows.Forms.TabPage();
             this.hesw_Website = new System.Windows.Forms.WebBrowser();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.StatusBar = new System.Windows.Forms.ToolStripStatusLabel();
+            this.PluginsTab = new System.Windows.Forms.TabPage();
+            this.plugins_tabControl = new System.Windows.Forms.TabControl();
+            this.plugins_pluginManager_tab = new System.Windows.Forms.TabPage();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.serverconfig_properties = new System.Windows.Forms.PropertyGrid();
+            this.hesconfig_properties = new System.Windows.Forms.PropertyGrid();
             this.Tabs.SuspendLayout();
             this.ServerTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ServerContainer)).BeginInit();
@@ -90,18 +97,19 @@
             this.ChatPlayerContainer.Panel1.SuspendLayout();
             this.ChatPlayerContainer.Panel2.SuspendLayout();
             this.ChatPlayerContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+            this.splitContainer4.Panel1.SuspendLayout();
+            this.splitContainer4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
             this.cpc_chat_tabs.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.ObjectManipulationTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            this.statusStrip.SuspendLayout();
             this.PlayersTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).BeginInit();
             this.splitContainer5.Panel1.SuspendLayout();
@@ -118,14 +126,18 @@
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer8)).BeginInit();
             this.splitContainer8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
-            this.splitContainer4.Panel1.SuspendLayout();
-            this.splitContainer4.SuspendLayout();
+            this.ObjectManipulationTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.HESWIKI.SuspendLayout();
+            this.statusStrip.SuspendLayout();
+            this.PluginsTab.SuspendLayout();
+            this.plugins_tabControl.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // Tabs
@@ -135,6 +147,7 @@
             this.Tabs.Controls.Add(this.PlayersTab);
             this.Tabs.Controls.Add(this.ObjectManipulationTab);
             this.Tabs.Controls.Add(this.HESWIKI);
+            this.Tabs.Controls.Add(this.PluginsTab);
             this.Tabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Tabs.Location = new System.Drawing.Point(0, 0);
             this.Tabs.Name = "Tabs";
@@ -163,15 +176,15 @@
             // 
             // ServerContainer.Panel1
             // 
-            this.ServerContainer.Panel1.Controls.Add(this.serverconfig_properties);
+            this.ServerContainer.Panel1.Controls.Add(this.tabControl1);
             // 
             // ServerContainer.Panel2
             // 
             this.ServerContainer.Panel2.Controls.Add(this.checkBox4);
+            this.ServerContainer.Panel2.Controls.Add(this.server_config_debugmode);
             this.ServerContainer.Panel2.Controls.Add(this.checkBox3);
             this.ServerContainer.Panel2.Controls.Add(this.checkBox1);
             this.ServerContainer.Panel2.Controls.Add(this.server_config_reload);
-            this.ServerContainer.Panel2.Controls.Add(this.server_config_debugmode);
             this.ServerContainer.Panel2.Controls.Add(this.server_config_setdefaults);
             this.ServerContainer.Panel2.Controls.Add(this.server_config_cancel);
             this.ServerContainer.Panel2.Controls.Add(this.server_config_save);
@@ -182,18 +195,35 @@
             this.ServerContainer.SplitterDistance = 385;
             this.ServerContainer.TabIndex = 3;
             // 
-            // serverconfig_properties
+            // checkBox4
             // 
-            this.serverconfig_properties.CommandsBorderColor = System.Drawing.SystemColors.ControlLight;
-            this.serverconfig_properties.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.serverconfig_properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.serverconfig_properties.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.serverconfig_properties.Location = new System.Drawing.Point(0, 0);
-            this.serverconfig_properties.Name = "serverconfig_properties";
-            this.serverconfig_properties.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.serverconfig_properties.Size = new System.Drawing.Size(766, 385);
-            this.serverconfig_properties.TabIndex = 0;
-            this.serverconfig_properties.ViewBorderColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Location = new System.Drawing.Point(398, 6);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(142, 17);
+            this.checkBox4.TabIndex = 9;
+            this.checkBox4.Text = "Disable UI on Next Load";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(370, 26);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(173, 17);
+            this.checkBox3.TabIndex = 8;
+            this.checkBox3.Text = "Auto-Update Hellion Dedicated";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(370, 46);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(111, 17);
+            this.checkBox1.TabIndex = 7;
+            this.checkBox1.Text = "Auto-Update HES";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // server_config_reload
             // 
@@ -211,7 +241,7 @@
             this.server_config_debugmode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.server_config_debugmode.AutoSize = true;
-            this.server_config_debugmode.Location = new System.Drawing.Point(267, 6);
+            this.server_config_debugmode.Location = new System.Drawing.Point(304, 6);
             this.server_config_debugmode.Name = "server_config_debugmode";
             this.server_config_debugmode.Size = new System.Drawing.Size(88, 17);
             this.server_config_debugmode.TabIndex = 5;
@@ -257,7 +287,7 @@
             this.server_config_autostart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.server_config_autostart.AutoSize = true;
-            this.server_config_autostart.Location = new System.Drawing.Point(370, 7);
+            this.server_config_autostart.Location = new System.Drawing.Point(253, 26);
             this.server_config_autostart.Name = "server_config_autostart";
             this.server_config_autostart.Size = new System.Drawing.Size(111, 17);
             this.server_config_autostart.TabIndex = 2;
@@ -268,7 +298,7 @@
             // server_config_stopserver
             // 
             this.server_config_stopserver.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.server_config_stopserver.Location = new System.Drawing.Point(3, 45);
+            this.server_config_stopserver.Location = new System.Drawing.Point(14, 35);
             this.server_config_stopserver.Name = "server_config_stopserver";
             this.server_config_stopserver.Size = new System.Drawing.Size(75, 23);
             this.server_config_stopserver.TabIndex = 1;
@@ -279,7 +309,7 @@
             // server_config_startserver
             // 
             this.server_config_startserver.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.server_config_startserver.Location = new System.Drawing.Point(4, 6);
+            this.server_config_startserver.Location = new System.Drawing.Point(14, 6);
             this.server_config_startserver.Name = "server_config_startserver";
             this.server_config_startserver.Size = new System.Drawing.Size(75, 23);
             this.server_config_startserver.TabIndex = 0;
@@ -314,6 +344,78 @@
             this.ChatPlayerContainer.Size = new System.Drawing.Size(766, 463);
             this.ChatPlayerContainer.SplitterDistance = 204;
             this.ChatPlayerContainer.TabIndex = 0;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.sc_onlineplayers_label);
+            this.splitContainer2.Panel1.Controls.Add(this.label1);
+            this.splitContainer2.Panel1.Controls.Add(this.listView1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.splitContainer4);
+            this.splitContainer2.Size = new System.Drawing.Size(204, 463);
+            this.splitContainer2.SplitterDistance = 30;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // sc_onlineplayers_label
+            // 
+            this.sc_onlineplayers_label.AutoSize = true;
+            this.sc_onlineplayers_label.Location = new System.Drawing.Point(119, 9);
+            this.sc_onlineplayers_label.Name = "sc_onlineplayers_label";
+            this.sc_onlineplayers_label.Size = new System.Drawing.Size(13, 13);
+            this.sc_onlineplayers_label.TabIndex = 2;
+            this.sc_onlineplayers_label.Text = "0";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(5, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(117, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Current Online Players: ";
+            // 
+            // listView1
+            // 
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(204, 30);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.List;
+            // 
+            // splitContainer4
+            // 
+            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer4.Name = "splitContainer4";
+            this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer4.Panel1
+            // 
+            this.splitContainer4.Panel1.Controls.Add(this.sc_playerslist_listview);
+            this.splitContainer4.Size = new System.Drawing.Size(204, 429);
+            this.splitContainer4.SplitterDistance = 393;
+            this.splitContainer4.TabIndex = 0;
+            // 
+            // sc_playerslist_listview
+            // 
+            this.sc_playerslist_listview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sc_playerslist_listview.Location = new System.Drawing.Point(0, 0);
+            this.sc_playerslist_listview.Name = "sc_playerslist_listview";
+            this.sc_playerslist_listview.Size = new System.Drawing.Size(204, 393);
+            this.sc_playerslist_listview.TabIndex = 0;
+            this.sc_playerslist_listview.UseCompatibleStateImageBehavior = false;
+            this.sc_playerslist_listview.View = System.Windows.Forms.View.List;
             // 
             // splitContainer3
             // 
@@ -387,73 +489,6 @@
             this.cpc_messagebox.Size = new System.Drawing.Size(498, 20);
             this.cpc_messagebox.TabIndex = 0;
             this.cpc_messagebox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cpc_messagebox_KeyDown);
-            // 
-            // ObjectManipulationTab
-            // 
-            this.ObjectManipulationTab.Controls.Add(this.splitContainer1);
-            this.ObjectManipulationTab.Location = new System.Drawing.Point(4, 22);
-            this.ObjectManipulationTab.Name = "ObjectManipulationTab";
-            this.ObjectManipulationTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ObjectManipulationTab.Size = new System.Drawing.Size(772, 469);
-            this.ObjectManipulationTab.TabIndex = 2;
-            this.ObjectManipulationTab.Text = "Object Manipulation";
-            this.ObjectManipulationTab.UseVisualStyleBackColor = true;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.objectManipulation_treeview);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.objectManipulation_grid);
-            this.splitContainer1.Size = new System.Drawing.Size(766, 463);
-            this.splitContainer1.SplitterDistance = 262;
-            this.splitContainer1.TabIndex = 0;
-            // 
-            // objectManipulation_treeview
-            // 
-            this.objectManipulation_treeview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.objectManipulation_treeview.Location = new System.Drawing.Point(0, 0);
-            this.objectManipulation_treeview.Name = "objectManipulation_treeview";
-            treeNode1.Name = "PlayersNode";
-            treeNode1.Text = "Players";
-            this.objectManipulation_treeview.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
-            this.objectManipulation_treeview.Size = new System.Drawing.Size(262, 463);
-            this.objectManipulation_treeview.TabIndex = 0;
-            this.objectManipulation_treeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.objectManipulation_treeview_AfterSelect);
-            this.objectManipulation_treeview.Click += new System.EventHandler(this.objectManipulation_treeview_Click);
-            // 
-            // objectManipulation_grid
-            // 
-            this.objectManipulation_grid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.objectManipulation_grid.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.objectManipulation_grid.Location = new System.Drawing.Point(0, 0);
-            this.objectManipulation_grid.Name = "objectManipulation_grid";
-            this.objectManipulation_grid.Size = new System.Drawing.Size(500, 463);
-            this.objectManipulation_grid.TabIndex = 0;
-            this.objectManipulation_grid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.objectManipulation_grid_PropertyValueChanged);
-            // 
-            // statusStrip
-            // 
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.StatusBar});
-            this.statusStrip.Location = new System.Drawing.Point(0, 495);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(780, 22);
-            this.statusStrip.TabIndex = 2;
-            this.statusStrip.Text = "statusStrip";
-            // 
-            // StatusBar
-            // 
-            this.StatusBar.Name = "StatusBar";
-            this.StatusBar.Size = new System.Drawing.Size(0, 17);
             // 
             // PlayersTab
             // 
@@ -601,107 +636,57 @@
             this.splitContainer8.SplitterDistance = 212;
             this.splitContainer8.TabIndex = 0;
             // 
-            // splitContainer2
+            // ObjectManipulationTab
             // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.ObjectManipulationTab.Controls.Add(this.splitContainer1);
+            this.ObjectManipulationTab.Location = new System.Drawing.Point(4, 22);
+            this.ObjectManipulationTab.Name = "ObjectManipulationTab";
+            this.ObjectManipulationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.ObjectManipulationTab.Size = new System.Drawing.Size(772, 469);
+            this.ObjectManipulationTab.TabIndex = 2;
+            this.ObjectManipulationTab.Text = "Object Manipulation";
+            this.ObjectManipulationTab.UseVisualStyleBackColor = true;
             // 
-            // splitContainer2.Panel1
+            // splitContainer1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.sc_onlineplayers_label);
-            this.splitContainer2.Panel1.Controls.Add(this.label1);
-            this.splitContainer2.Panel1.Controls.Add(this.listView1);
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
             // 
-            // splitContainer2.Panel2
+            // splitContainer1.Panel1
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.splitContainer4);
-            this.splitContainer2.Size = new System.Drawing.Size(204, 463);
-            this.splitContainer2.SplitterDistance = 30;
-            this.splitContainer2.TabIndex = 0;
+            this.splitContainer1.Panel1.Controls.Add(this.objectManipulation_treeview);
             // 
-            // listView1
+            // splitContainer1.Panel2
             // 
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(204, 30);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.List;
+            this.splitContainer1.Panel2.Controls.Add(this.objectManipulation_grid);
+            this.splitContainer1.Size = new System.Drawing.Size(766, 463);
+            this.splitContainer1.SplitterDistance = 262;
+            this.splitContainer1.TabIndex = 0;
             // 
-            // splitContainer4
+            // objectManipulation_treeview
             // 
-            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer4.Name = "splitContainer4";
-            this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.objectManipulation_treeview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectManipulation_treeview.Location = new System.Drawing.Point(0, 0);
+            this.objectManipulation_treeview.Name = "objectManipulation_treeview";
+            treeNode1.Name = "PlayersNode";
+            treeNode1.Text = "Players";
+            this.objectManipulation_treeview.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.objectManipulation_treeview.Size = new System.Drawing.Size(262, 463);
+            this.objectManipulation_treeview.TabIndex = 0;
+            this.objectManipulation_treeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.objectManipulation_treeview_AfterSelect);
+            this.objectManipulation_treeview.Click += new System.EventHandler(this.objectManipulation_treeview_Click);
             // 
-            // splitContainer4.Panel1
+            // objectManipulation_grid
             // 
-            this.splitContainer4.Panel1.Controls.Add(this.sc_playerslist_listview);
-            this.splitContainer4.Size = new System.Drawing.Size(204, 429);
-            this.splitContainer4.SplitterDistance = 393;
-            this.splitContainer4.TabIndex = 0;
-            // 
-            // sc_playerslist_listview
-            // 
-            this.sc_playerslist_listview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sc_playerslist_listview.Location = new System.Drawing.Point(0, 0);
-            this.sc_playerslist_listview.Name = "sc_playerslist_listview";
-            this.sc_playerslist_listview.Size = new System.Drawing.Size(204, 393);
-            this.sc_playerslist_listview.TabIndex = 0;
-            this.sc_playerslist_listview.UseCompatibleStateImageBehavior = false;
-            this.sc_playerslist_listview.View = System.Windows.Forms.View.List;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Current Online Players: ";
-            // 
-            // sc_onlineplayers_label
-            // 
-            this.sc_onlineplayers_label.AutoSize = true;
-            this.sc_onlineplayers_label.Location = new System.Drawing.Point(119, 9);
-            this.sc_onlineplayers_label.Name = "sc_onlineplayers_label";
-            this.sc_onlineplayers_label.Size = new System.Drawing.Size(13, 13);
-            this.sc_onlineplayers_label.TabIndex = 2;
-            this.sc_onlineplayers_label.Text = "0";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(370, 46);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(111, 17);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.Text = "Auto-Update HES";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(370, 26);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(173, 17);
-            this.checkBox3.TabIndex = 8;
-            this.checkBox3.Text = "Auto-Update Hellion Dedicated";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // checkBox4
-            // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(94, 6);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(142, 17);
-            this.checkBox4.TabIndex = 9;
-            this.checkBox4.Text = "Disable UI on Next Load";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.objectManipulation_grid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectManipulation_grid.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.objectManipulation_grid.Location = new System.Drawing.Point(0, 0);
+            this.objectManipulation_grid.Name = "objectManipulation_grid";
+            this.objectManipulation_grid.Size = new System.Drawing.Size(500, 463);
+            this.objectManipulation_grid.TabIndex = 0;
+            this.objectManipulation_grid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.objectManipulation_grid_PropertyValueChanged);
             // 
             // HESWIKI
             // 
@@ -725,6 +710,110 @@
             this.hesw_Website.Size = new System.Drawing.Size(766, 463);
             this.hesw_Website.TabIndex = 0;
             this.hesw_Website.Url = new System.Uri("https://hellionextendedserver.com/", System.UriKind.Absolute);
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusBar});
+            this.statusStrip.Location = new System.Drawing.Point(0, 495);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(780, 22);
+            this.statusStrip.TabIndex = 2;
+            this.statusStrip.Text = "statusStrip";
+            // 
+            // StatusBar
+            // 
+            this.StatusBar.Name = "StatusBar";
+            this.StatusBar.Size = new System.Drawing.Size(0, 17);
+            // 
+            // PluginsTab
+            // 
+            this.PluginsTab.Controls.Add(this.plugins_tabControl);
+            this.PluginsTab.Location = new System.Drawing.Point(4, 22);
+            this.PluginsTab.Name = "PluginsTab";
+            this.PluginsTab.Size = new System.Drawing.Size(772, 469);
+            this.PluginsTab.TabIndex = 5;
+            this.PluginsTab.Text = "Plugins";
+            this.PluginsTab.UseVisualStyleBackColor = true;
+            // 
+            // plugins_tabControl
+            // 
+            this.plugins_tabControl.Controls.Add(this.plugins_pluginManager_tab);
+            this.plugins_tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plugins_tabControl.Location = new System.Drawing.Point(0, 0);
+            this.plugins_tabControl.Name = "plugins_tabControl";
+            this.plugins_tabControl.SelectedIndex = 0;
+            this.plugins_tabControl.Size = new System.Drawing.Size(772, 469);
+            this.plugins_tabControl.TabIndex = 1;
+            // 
+            // plugins_pluginManager_tab
+            // 
+            this.plugins_pluginManager_tab.Location = new System.Drawing.Point(4, 22);
+            this.plugins_pluginManager_tab.Name = "plugins_pluginManager_tab";
+            this.plugins_pluginManager_tab.Padding = new System.Windows.Forms.Padding(3);
+            this.plugins_pluginManager_tab.Size = new System.Drawing.Size(764, 443);
+            this.plugins_pluginManager_tab.TabIndex = 0;
+            this.plugins_pluginManager_tab.Text = "Plugin Manager";
+            this.plugins_pluginManager_tab.UseVisualStyleBackColor = true;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(766, 385);
+            this.tabControl1.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.serverconfig_properties);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(758, 359);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Server Config";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.hesconfig_properties);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(758, 359);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "HES Config";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // serverconfig_properties
+            // 
+            this.serverconfig_properties.CommandsBorderColor = System.Drawing.SystemColors.ControlLight;
+            this.serverconfig_properties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serverconfig_properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.serverconfig_properties.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.serverconfig_properties.Location = new System.Drawing.Point(3, 3);
+            this.serverconfig_properties.Name = "serverconfig_properties";
+            this.serverconfig_properties.PropertySort = System.Windows.Forms.PropertySort.Categorized;
+            this.serverconfig_properties.Size = new System.Drawing.Size(752, 353);
+            this.serverconfig_properties.TabIndex = 1;
+            this.serverconfig_properties.ViewBorderColor = System.Drawing.SystemColors.ControlLight;
+            // 
+            // hesconfig_properties
+            // 
+            this.hesconfig_properties.CommandsBorderColor = System.Drawing.SystemColors.ControlLight;
+            this.hesconfig_properties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hesconfig_properties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hesconfig_properties.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.hesconfig_properties.Location = new System.Drawing.Point(3, 3);
+            this.hesconfig_properties.Name = "hesconfig_properties";
+            this.hesconfig_properties.PropertySort = System.Windows.Forms.PropertySort.Categorized;
+            this.hesconfig_properties.Size = new System.Drawing.Size(752, 353);
+            this.hesconfig_properties.TabIndex = 2;
+            this.hesconfig_properties.ViewBorderColor = System.Drawing.SystemColors.ControlLight;
             // 
             // HESGui
             // 
@@ -750,6 +839,14 @@
             this.ChatPlayerContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ChatPlayerContainer)).EndInit();
             this.ChatPlayerContainer.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            this.splitContainer4.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+            this.splitContainer4.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             this.splitContainer3.Panel2.PerformLayout();
@@ -758,13 +855,6 @@
             this.cpc_chat_tabs.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            this.ObjectManipulationTab.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
             this.PlayersTab.ResumeLayout(false);
             this.splitContainer5.Panel1.ResumeLayout(false);
             this.splitContainer5.Panel2.ResumeLayout(false);
@@ -782,15 +872,19 @@
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer8)).EndInit();
             this.splitContainer8.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel1.PerformLayout();
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
-            this.splitContainer4.Panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
-            this.splitContainer4.ResumeLayout(false);
+            this.ObjectManipulationTab.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.HESWIKI.ResumeLayout(false);
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
+            this.PluginsTab.ResumeLayout(false);
+            this.plugins_tabControl.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -801,7 +895,6 @@
         private System.Windows.Forms.TabControl Tabs;
         private System.Windows.Forms.TabPage ServerTab;
         private System.Windows.Forms.SplitContainer ServerContainer;
-        private System.Windows.Forms.PropertyGrid serverconfig_properties;
         private System.Windows.Forms.CheckBox server_config_autostart;
         private System.Windows.Forms.Button server_config_stopserver;
         private System.Windows.Forms.StatusStrip statusStrip;
@@ -847,6 +940,14 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TabPage HESWIKI;
         private System.Windows.Forms.WebBrowser hesw_Website;
+        private System.Windows.Forms.TabPage PluginsTab;
+        private System.Windows.Forms.TabControl plugins_tabControl;
+        private System.Windows.Forms.TabPage plugins_pluginManager_tab;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.PropertyGrid serverconfig_properties;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.PropertyGrid hesconfig_properties;
     }
 }
 

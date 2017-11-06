@@ -1,4 +1,5 @@
-﻿using HellionExtendedServer.GUI.Objects;
+﻿using HellionExtendedServer.Common;
+using HellionExtendedServer.GUI.Objects;
 using HellionExtendedServer.Managers;
 using System;
 using System.Collections.Generic;
@@ -74,67 +75,75 @@ namespace HellionExtendedServer
 
         public void UpdateChatPlayers()
         {
-            if (ServerInstance.Instance.Server == null)
-                return;
-
-            if (NetworkManager.Instance == null)
-                return;
-
-            if (!ZeroGravity.Server.IsRunning)
-                return;
-
-            sc_onlineplayers_label.Text = NetworkManager.Instance.ClientList.Count.ToString();
-
-
-            foreach (var client in NetworkManager.Instance.ClientList)
+            try
             {
-                if (client.Value == null)
-                    continue;
+                if (ServerInstance.Instance.Server == null)
+                    return;
 
-                if (client.Value.Player == null)
-                    continue;
+                if (NetworkManager.Instance == null)
+                    return;
 
-                var player = client.Value.Player;
+                if (!ZeroGravity.Server.IsRunning)
+                    return;
 
-                var item = new ListViewItem();
-                item.Name = player.GUID.ToString();
-                item.Tag = client;
-                item.Text = $"{player.Name} ({player.SteamId})";
+                sc_onlineplayers_label.Text = NetworkManager.Instance.ClientList.Count.ToString();
 
-                if(!sc_playerslist_listview.Items.Contains(item))
-                    sc_playerslist_listview.Items.Add(item);
 
-                if (!pc_players_listview.Items.Contains(item))
-                    pc_players_listview.Items.Add(item);
-            }
-
-            // chat players
-            foreach (ListViewItem item in sc_playerslist_listview.Items)
-            {
-                var _client = (NetworkController.Client)item.Tag;
-                var _player = _client.Player;
-
-                if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
+                foreach (KeyValuePair<long, NetworkController.Client> client in NetworkManager.Instance.ClientList)
                 {
-                    if (sc_playerslist_listview.Items.ContainsKey(_player.GUID.ToString()))
-                        sc_playerslist_listview.Items.RemoveByKey(_player.GUID.ToString());
-                }
-           
-            }
+                    if (client.Value == null)
+                        continue;
 
-            // player control players
-            foreach (ListViewItem item in pc_players_listview.Items)
-            {
-                var _client = (NetworkController.Client)item.Tag;
-                var _player = _client.Player;
+                    if (client.Value.Player == null)
+                        continue;
 
-                if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
-                {
-                    if (pc_players_listview.Items.ContainsKey(_player.GUID.ToString()))
-                        pc_players_listview.Items.RemoveByKey(_player.GUID.ToString());
+                    var player = client.Value.Player;
+
+                    var item = new ListViewItem();
+                    item.Name = player.GUID.ToString();
+                    item.Tag = client.Value;
+                    item.Text = $"{player.Name} ({player.SteamId})";
+
+                    if (!sc_playerslist_listview.Items.ContainsKey(item.Name))
+                        sc_playerslist_listview.Items.Add(item);
+
+                    if (!pc_players_listview.Items.ContainsKey(item.Name))
+                        pc_players_listview.Items.Add(item);
                 }
 
+                // chat players
+                foreach (ListViewItem item in sc_playerslist_listview.Items)
+                {
+                    var _client = item.Tag as NetworkController.Client;
+                    var _player = _client.Player;
+
+                    if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
+                    {
+                        if (sc_playerslist_listview.Items.ContainsKey(item.Name))
+                            sc_playerslist_listview.Items.RemoveByKey(item.Name);
+                    }
+
+                }
+
+                // player control players
+                foreach (ListViewItem item in pc_players_listview.Items)
+                {
+                    var _client = item.Tag as NetworkController.Client;
+                    var _player = _client.Player;
+
+                    if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
+                    {
+                        if (pc_players_listview.Items.ContainsKey(_player.GUID.ToString()))
+                            pc_players_listview.Items.RemoveByKey(_player.GUID.ToString());
+                    }
+
+                }
             }
+            catch (Exception ex)
+            {
+               Log.Instance.Error(ex, "Ignore this for now, dont report it!");
+            }
+
 
         }
 
@@ -150,7 +159,7 @@ namespace HellionExtendedServer
                 this.Refresh();
             }));
 
-            ObjectManipulationRefreshTimer.Interval = (1000); // 1 secs
+            ObjectManipulationRefreshTimer.Interval = (10000); // 10 secs
             ObjectManipulationRefreshTimer.Tick += delegate (object sender, EventArgs e)
             {
                 UpdatePlayersTree();

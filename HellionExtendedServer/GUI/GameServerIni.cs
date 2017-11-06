@@ -383,6 +383,25 @@ namespace HellionExtendedServer.GUI
         #endregion
 
         #region Methods
+
+        private void SetSettings()
+        {
+            try
+            {
+                object obj = m_instance;
+
+                foreach (PropertyInfo prop in obj.GetType().GetProperties())
+                {
+                    Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: [SetSettings]" + ex.StackTrace);
+            }
+
+        }
+
         public void LoadDefaults()
         {
             try
@@ -419,25 +438,6 @@ namespace HellionExtendedServer.GUI
             catch (Exception ex)
             {
                 Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: [LoadDefaults]" + ex.StackTrace);
-            }
-
-        }
-
-
-        private void SetSettings()
-        {
-            try
-            {
-                object obj = m_instance;
-
-                foreach (PropertyInfo prop in obj.GetType().GetProperties())
-                {
-                    Settings[prop.Name.ToLower()] = prop.GetValue(obj, null).ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Instance.Error("[ERROR] Hellion Extended Server[GameServerIni]: [SetSettings]" + ex.StackTrace);
             }
 
         }

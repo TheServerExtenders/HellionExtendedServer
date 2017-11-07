@@ -2,7 +2,10 @@
 using HellionExtendedServer.Managers.Plugins;
 using NLog;
 using System;
+using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
+using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Common.Plugins
@@ -134,6 +137,23 @@ namespace HellionExtendedServer.Common.Plugins
 
         public virtual void OnConsoleCommand(String command, String[] args)
         {
+        }
+
+        public Type AA = typeof(PlayerSpawnRequest);
+        
+        [HESEvent(EventType = EventID.PlayerSpawnRequest)]
+        public void PlayerJoinEvent(GenericEvent evnt)
+        {
+            dynamic e = Convert.ChangeType(evnt.Data,AA);
+            if (e == null)
+            {
+                Console.WriteLine("ERROR! #4543 PLZ TELL YUNG TO FIX ME!!!!!");
+                return;
+            }
+            PlayerSpawnRequest ev = e.Method();
+            Player p = GetPluginHelper.getPlayerFromGuid(ev.Sender);
+            String name = p == null ? "M/A" : p.Name;
+            Console.WriteLine("Player Spawn Info: GUID {0} Name {1} Type of Spawn {2} " ,ev.Sender, name,ev.SpawnType);
         }
 
         #endregion Methods

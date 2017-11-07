@@ -144,6 +144,7 @@
     <Compile Include="GUI\Objects\Player.cs" />
     <Compile Include="GUI\Objects\BaseObject.cs" />
     <Compile Include="HESStaticUtils.cs" />
+    <Compile Include="Managers\Event\Events\JoinEvent.cs" />
     <Compile Include="Modules\CrashDump.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GUI\Forms\Updater\UpdateForm.cs">
@@ -163,7 +164,6 @@
     <Compile Include="Managers\Event\EventListener.cs" />
     <Compile Include="Managers\Event\EventSystem2.cs" />
     <Compile Include="Managers\Event\GenericEvent.cs" />
-    <Compile Include="Managers\JoinEvent.cs" />
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />

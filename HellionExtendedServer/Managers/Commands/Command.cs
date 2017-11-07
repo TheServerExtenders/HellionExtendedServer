@@ -79,6 +79,9 @@ namespace HellionExtendedServer.Managers.Commands
 
         }
 
+        /**
+         * Gets Main calss associated with Command
+         */
         public void ReloadPlugin()
         {
             //Console Commands skip this part becuase Plugins Are not loaded yet

@@ -25,6 +25,10 @@ namespace HellionExtendedServer.Managers
         {
             PermsDictionary[value.PermissionName.ToLower()] = value;
         }
+        public void DelPermissionAttribute(PermissionAttribute value)
+        {
+            PermsDictionary[value.PermissionName.ToLower()] = value;
+        }
 
         public bool PlayerHasPerm(Player p, string perm)
         {

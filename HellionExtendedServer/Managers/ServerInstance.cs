@@ -249,6 +249,7 @@ namespace HellionExtendedServer.Managers
         public void Stop()
         {
             PluginManager.ShutdownAllPlugins();
+            PermissionManager.Save();
             ServerWrapper.HellionDedi.StopServer();
             m_serverThread.Join(60000);
             m_serverThread.Abort();

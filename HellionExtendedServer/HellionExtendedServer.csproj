@@ -143,6 +143,7 @@
     <Compile Include="GUI\MarkdownSharp.cs" />
     <Compile Include="GUI\Objects\Player.cs" />
     <Compile Include="GUI\Objects\BaseObject.cs" />
+    <Compile Include="HESStaticUtils.cs" />
     <Compile Include="Modules\CrashDump.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GUI\Forms\Updater\UpdateForm.cs">

@@ -1,7 +1,9 @@
 ﻿using HellionExtendedServer.Common.Plugins;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using HellionExtendedServer.Common;
@@ -46,6 +48,7 @@ namespace HellionExtendedServer.Managers.Plugins
 
         public void InitializePlugin(PluginInfo Plugin)
         {
+            if (Plugin == null) return;
             Console.WriteLine(string.Format(HES.Localization.Sentences["InitializingPlugin"], Plugin.Assembly.GetName().Name));
             bool PluginInitialized = false;
 
@@ -171,19 +174,20 @@ namespace HellionExtendedServer.Managers.Plugins
         public List<PluginInfo> FindAllPlugins()
         {
             List<PluginInfo> foundPlugins = new List<PluginInfo>();
-
             //TODO create Plugin Folder if it does not exist
             String modPath = Path.Combine(Environment.CurrentDirectory, "hes/plugins");
             String[] subDirectories = Directory.GetDirectories(modPath);
 
             foreach (String subDirectory in subDirectories)
             {
-                PluginInfo Plugin = FindPlugin(subDirectory);
+                PluginInfo[] Plugins = FindPlugin(subDirectory);
 
-                if (Plugin != null)
-                {
-                    foundPlugins.Add(Plugin);
-                }
+                if (Plugins.Length > 0)foundPlugins.AddRange(Plugins);
+            }
+            if (HES.Dev)
+            { 
+                PluginInfo[] Plugins = FindPlugin(Environment.CurrentDirectory);
+                if (Plugins.Length > 0)foundPlugins.AddRange(Plugins);
             }
 
             m_discoveredPlugins = foundPlugins;
@@ -191,8 +195,9 @@ namespace HellionExtendedServer.Managers.Plugins
             return foundPlugins;
         }
 
-        public PluginInfo FindPlugin(String directory)
+        public PluginInfo[] FindPlugin(String directory)
         {
+            List<PluginInfo> found = new List<PluginInfo>();
             String[] libraries = Directory.GetFiles(directory, "*.dll");
 
             foreach (String library in libraries)
@@ -201,10 +206,10 @@ namespace HellionExtendedServer.Managers.Plugins
                 if (Plugin != null)
                 {
                     Plugin.Directory = directory;
-                    return Plugin;
+                    found.Add(Plugin);
                 }
             }
-            return null;
+            return found.ToArray();
         }
 
         private PluginInfo ValidatePlugin(String library)

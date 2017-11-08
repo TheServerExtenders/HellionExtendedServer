@@ -17,11 +17,12 @@ namespace HellionExtendedServer.Timming
         public PluginBase Plugin;
         public TimerType Ttype;
         private long LastRun = 0;
+        protected bool skipfirst = false;
 
 
-        public ExecutableEvent(Maintimer m)
+        public ExecutableEvent()
         {
-            Main = m;
+            LastRun = Maintimer.CurrentTick;
         }
 
         public void pre_run()
@@ -42,7 +43,17 @@ namespace HellionExtendedServer.Timming
             }
             else if (Ttype == TimerType.Delayed_Repeating_Task)
             {
-                run();
+                if (skipfirst)
+                {
+                    skipfirst = false;
+                    return;
+                }
+                Delayed_task task = (Delayed_task) this;
+                if (LastRun < Maintimer.CurrentTick + task.Delay)
+                {
+                    LastRun = Maintimer.CurrentTick;
+                    run();
+                }
             }
         }
 

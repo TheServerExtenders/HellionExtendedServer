@@ -207,6 +207,8 @@
     <Compile Include="Timming\Delayed_task.cs" />
     <Compile Include="Timming\ExecutableEvent.cs" />
     <Compile Include="Timming\MainTimer.cs" />
+    <Compile Include="Timming\Repeating_Task.cs" />
+    <Compile Include="Timming\Repeating_Delayed_Task.cs" />
     <EmbeddedResource Include="Resources\Octokit.dll" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="GUI\Forms\Updater\UpdateForm.resx">

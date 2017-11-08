@@ -6,9 +6,8 @@ namespace HellionExtendedServer.Timming
     {
         public int Delay;//20 Ticks a second
 
-        public Delayed_task(Maintimer main, int delay) :base(main)
+        public Delayed_task(Maintimer main, int delay)
         {
-
             Ttype = TimerType.Delayed;
             Delay = delay;
         }

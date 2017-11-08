@@ -207,8 +207,6 @@ namespace HellionExtendedServer
 
             if (m_useGui)
                 SetupGUI();
-
-            Setuptimer();
             
             mainLogger.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
 

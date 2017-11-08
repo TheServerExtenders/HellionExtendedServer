@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
+using ZeroGravity;
 using ZeroGravity.Helpers;
 
 namespace HellionExtendedServer.Timming
@@ -31,6 +32,7 @@ namespace HellionExtendedServer.Timming
         [STAThread]
         public static void run()
         {
+            Thread.Sleep(2000);
             while (Enabled)
             {
                 Thread.Sleep(50);

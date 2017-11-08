@@ -268,7 +268,7 @@
     <Folder Include="API\Chat\" />
     <Folder Include="API\Players\" />
     <Folder Include="API\Vessels\" />
-    <Folder Include="Controllers\" />
+    <Folder Include="GUI\Tabs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

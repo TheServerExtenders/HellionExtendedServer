@@ -1,11 +1,13 @@
 ﻿using HellionExtendedServer.Common;
 using HellionExtendedServer.GUI.Objects;
 using HellionExtendedServer.Managers;
+using HellionExtendedServer.Modules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using ZeroGravity;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
@@ -25,10 +27,36 @@ namespace HellionExtendedServer
             ServerInstance.Instance.OnServerRunning += Instance_OnServerRunning;
             ServerInstance.Instance.OnServerStopped += Instance_OnServerStopped;
 
+           
+
             ServerInstance.Instance.GameServerConfig.Load();
             serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
+            hesconfig_properties.SelectedObject = Config.Instance.Settings;
 
             serverconfig_properties.Refresh();
+
+            if (Config.Instance.Settings.EnableDevelopmentVersion)
+            {
+                var result = MessageBox.Show(
+                    "Development Versions have been enabled.\r\n\r\n" +
+                    "You have selected to use HES's Development Versions",
+                    "Development Versions Enabled",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    
+                }
+            }
+
+            UpdateManager.Instance.OnUpdateChecked += new UpdateManager.UpdateEventHandler(Instance_OnUpdateChecked);
+            UpdateManager.Instance.OnUpdateDownloaded += new UpdateManager.UpdateEventHandler(Instance_OnUpdateDownloaded);
+            UpdateManager.Instance.OnUpdateApplied += new UpdateManager.UpdateEventHandler(Instance_OnUpdateApplied);
+
+            server_hesNewsLabel.Text = 
+                @"Welcome to HES! Auto updates have now been implemented!\r\n" +
+                "Check out the enabled Options under HES Config!";
+
         }
 
         private void DisableControls(bool disable = true)
@@ -50,13 +78,11 @@ namespace HellionExtendedServer
             objectManipulation_grid.Enabled = !disable;
             objectManipulation_treeview.Enabled = !disable;
 
-            server_config_autostart.Checked = Properties.Settings.Default.AutoStart;
-            server_config_debugmode.Checked = Properties.Settings.Default.DebugMode;
-
             cpc_chat_list.AppendText("Waiting for server to start..\r\n");
         }
 
         #region Events
+
         private void Instance_OnServerStopped(ZeroGravity.Server server)
         {
             this.Invoke(new MethodInvoker(delegate
@@ -87,7 +113,6 @@ namespace HellionExtendedServer
                     return;
 
                 sc_onlineplayers_label.Text = NetworkManager.Instance.ClientList.Count.ToString();
-
 
                 foreach (KeyValuePair<long, NetworkController.Client> client in NetworkManager.Instance.ClientList)
                 {
@@ -122,7 +147,6 @@ namespace HellionExtendedServer
                         if (sc_playerslist_listview.Items.ContainsKey(item.Name))
                             sc_playerslist_listview.Items.RemoveByKey(item.Name);
                     }
-
                 }
 
                 // player control players
@@ -136,15 +160,12 @@ namespace HellionExtendedServer
                         if (pc_players_listview.Items.ContainsKey(_player.GUID.ToString()))
                             pc_players_listview.Items.RemoveByKey(_player.GUID.ToString());
                     }
-
                 }
             }
             catch (Exception ex)
             {
-               Log.Instance.Error(ex, "Ignore this for now, dont report it!");
+                Log.Instance.Error(ex, "Ignore this for now, dont report it!");
             }
-
-
         }
 
         private void Instance_OnServerRunning(ZeroGravity.Server server)
@@ -159,24 +180,19 @@ namespace HellionExtendedServer
                 this.Refresh();
             }));
 
-            ObjectManipulationRefreshTimer.Interval = (10000); // 10 secs
+            ObjectManipulationRefreshTimer.Interval = (1000); // 1 secs
             ObjectManipulationRefreshTimer.Tick += delegate (object sender, EventArgs e)
             {
                 UpdatePlayersTree();
             };
-            ObjectManipulationRefreshTimer.Enabled = true;
-            ObjectManipulationRefreshTimer.Start();
 
-            PlayersRefreshTimer.Interval = (1000); // 1 secs
+            PlayersRefreshTimer.Interval = (10000); // 1 secs
             PlayersRefreshTimer.Tick += delegate (object sender, EventArgs e)
             {
                 UpdateChatPlayers();
             };
-            PlayersRefreshTimer.Enabled = true;
-            PlayersRefreshTimer.Start();
-
-            
         }
+
         #endregion Events
 
         #region Object Manipulation
@@ -292,46 +308,92 @@ namespace HellionExtendedServer
 
         private void server_config_save_Click(object sender, EventArgs e)
         {
-            if (ServerInstance.Instance.GameServerConfig.Save())
+            if (server_server_Tabs.SelectedTab.Name == "ServerConfig")
             {
-                StatusBar.Text = "Config Saved.";
+                if (ServerInstance.Instance.GameServerConfig.Save())
+                {
+                    StatusBar.Text = "Config Saved.";
+                }
+            }
+            else if (server_server_Tabs.SelectedTab.Name == "HESConfig")
+            {
+                if (Config.Instance.SaveConfiguration())
+                {
+                    StatusBar.Text = "HES Config Saved.";
+                }
             }
         }
 
         private void server_config_cancel_Click(object sender, EventArgs e)
         {
-            ServerInstance.Instance.GameServerConfig.Load();
-            serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
+            if (server_server_Tabs.SelectedTab.Name == "ServerConfig")
+            {
+                ServerInstance.Instance.GameServerConfig.Load();
+                serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
 
-            serverconfig_properties.Refresh();
-            StatusBar.Text = "Reloaded the config from the GameServer.ini.";
+                serverconfig_properties.Refresh();
+                StatusBar.Text = "Reloaded the config from the GameServer.ini.";
+            }
+            else if (server_server_Tabs.SelectedTab.Name == "HESConfig")
+            {
+                if (Config.Instance.LoadConfiguration())
+                {
+                    hesconfig_properties.SelectedObject = Config.Instance.Settings;
+                    hesconfig_properties.Refresh();
+
+                    StatusBar.Text = "Reloaded the config from the GameServer.ini.";
+                }
+            }
         }
 
         private void server_config_setdefaults_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to load the default settings?",
-                   "Server Config Settings",
-                   MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-            if (result == DialogResult.Yes)
+            if (server_server_Tabs.SelectedTab.Name == "ServerConfig")
             {
-                ServerInstance.Instance.GameServerConfig.LoadDefaults();
-                serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
-                serverconfig_properties.Refresh();
-                StatusBar.Text = "Config defaults loaded.";
+                DialogResult result = MessageBox.Show("Are you sure you want to load the default settings?",
+                        "Server Config Settings",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                if (result == DialogResult.Yes)
+                {
+                    ServerInstance.Instance.GameServerConfig.LoadDefaults();
+                    serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
+                    serverconfig_properties.Refresh();
+                    StatusBar.Text = "Config defaults loaded. Don't forget to save!";
+                }
+            }
+            else if (server_server_Tabs.SelectedTab.Name == "HESConfig")
+            {
+                Config.Instance.Settings = new Settings();
+                hesconfig_properties.SelectedObject = Config.Instance.Settings;
+                hesconfig_properties.Refresh();
+                StatusBar.Text = "HES Config Defaults loaded. Don't forget to save!";              
             }
         }
 
         private void server_config_reload_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to reload the settings from the GameServer.Ini?",
-                   "2. Server Settings Error",
-                   MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-            if (result == DialogResult.Yes)
+            if (server_server_Tabs.SelectedTab.Name == "ServerConfig")
             {
-                ServerInstance.Instance.GameServerConfig.Load();
-                serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
-                serverconfig_properties.Refresh();
-                StatusBar.Text = "Config reloaded from GameServer.ini";
+                DialogResult result = MessageBox.Show("Are you sure you want to reload the settings from the GameServer.Ini?",
+                 "2. Server Settings Error",
+                 MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                if (result == DialogResult.Yes)
+                {
+                    ServerInstance.Instance.GameServerConfig.Load();
+                    serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
+                    serverconfig_properties.Refresh();
+                    StatusBar.Text = "Config reloaded from GameServer.ini";
+                }
+            }
+            else if (server_server_Tabs.SelectedTab.Name == "HESConfig")
+            {
+                if (Config.Instance.LoadConfiguration())
+                {
+                    hesconfig_properties.SelectedObject = Config.Instance.Settings;
+                    hesconfig_properties.Refresh();
+
+                    StatusBar.Text = "Reloaded HES Config from Config.xml.";
+                }
             }
         }
 
@@ -339,8 +401,8 @@ namespace HellionExtendedServer
         {
             if (!ZeroGravity.Server.IsRunning)
             {
-                ServerInstance.Instance.Start();
-                StatusBar.Text = "Server Started";
+                Task.Run(() => ServerInstance.Instance.Start());
+                StatusBar.Text = "Server Starting";
             }
             else
                 StatusBar.Text = "The server is already running!";
@@ -350,24 +412,11 @@ namespace HellionExtendedServer
         {
             if (ZeroGravity.Server.IsRunning)
             {
-                ServerInstance.Instance.Stop();
-                StatusBar.Text = "Server Stopped";
+                Task.Run(() => ServerInstance.Instance.Stop());
+                StatusBar.Text = "Server Stopping";
             }
             else
                 StatusBar.Text = "The server is already stopped!";
-        }
-
-        private void server_config_autostart_CheckedChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.AutoStart = server_config_autostart.Checked;
-            Properties.Settings.Default.Save();
-            Properties.Settings.Default.SettingsSaving += Default_SettingsSaving;
-        }
-
-        private void server_config_debugmode_CheckedChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.DebugMode = server_config_debugmode.Checked;
-            Properties.Settings.Default.Save();
         }
 
         #endregion Server Control
@@ -426,7 +475,6 @@ namespace HellionExtendedServer
 
         private void objectManipulation_grid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-        
         }
 
         private void Tabs_Selected(object sender, TabControlEventArgs e)
@@ -438,23 +486,96 @@ namespace HellionExtendedServer
             {
                 case 0:
                     break;
+
                 case 1:
                     PlayersRefreshTimer.Enabled = true;
 
                     break;
+
                 case 2:
                     PlayersRefreshTimer.Enabled = true;
                     break;
-                case 3:                    
-                        ObjectManipulationRefreshTimer.Enabled = true;                 
+
+                case 3:
+                    ObjectManipulationRefreshTimer.Enabled = true;
                     break;
 
                 default:
                     break;
-
-                    
             }
-            
         }
+
+        private async void serverconfig_checkForUpdates_Click(object sender, EventArgs e)
+        {
+            StatusBar.Text = "Checking for updates...";
+
+            UpdateManager.GUIMode = true;
+
+            await UpdateManager.Instance.GetLatestReleaseInfo();
+
+            UpdateManager.Instance.CheckVersion(false);
+        }
+
+        private void Instance_OnUpdateChecked(Octokit.Release release)
+        {
+            if (!UpdateManager.HasUpdate)
+            {
+                StatusBar.Text = $"You are running the latest version!";
+                return;
+            }
+
+            ServerInstance.Instance.Save(true);
+
+            var result = MessageBox.Show(
+                $"A new version has been detected: { UpdateManager.NewVersionNumber }\r\n" +
+                $"\r\n Release Information:\r\n" +
+                $"Release Name: {release.Name}\r\n" +
+                $"Download Count: {release.Assets.FirstOrDefault().DownloadCount}\r\n" +
+                $"Release Published {release.Assets.First().CreatedAt.ToLocalTime()}\r\n" +
+                $"Release Description:\r\n\r\n" +
+                $"{release.Body}\r\n\r\n" +
+                $"Would you like to update now?", 
+                "HES Updater", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if(result == DialogResult.Yes)
+            {
+                UpdateManager.Instance.DownloadLatestRelease(Config.Instance.Settings.EnableDevelopmentVersion);
+            }
+            else
+            {
+                StatusBar.Text = "The Update has been canceled.";
+            }
+        }
+
+        private void Instance_OnUpdateDownloaded(Octokit.Release release)
+        {
+            if (UpdateManager.GUIMode)
+            {
+                StatusBar.Text = "The Update is being applied..";
+                UpdateManager.Instance.ApplyUpdate();
+            }
+        }
+
+        private void Instance_OnUpdateApplied(Octokit.Release release)
+        {
+            var result = MessageBox.Show(
+                $"You must restart before the update can be completed!\r\n\r\n" +
+                $"Would you like to restart now?\r\n" +
+                $"Note: The server was saved after downloading this release.",
+                "HES Updater",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (result == DialogResult.Yes)
+            {
+                HES.Restart();
+            }
+            else
+            {
+                StatusBar.Text = "HES needs to be restarted before you can use the new features!";
+            }
+        }
+
+
+
+
     }
 }

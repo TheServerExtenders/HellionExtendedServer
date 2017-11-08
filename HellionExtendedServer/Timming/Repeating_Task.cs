@@ -6,7 +6,7 @@
         public Repeating_Task(int delay)
         {
             skipfirst = true;
-            Ttype = TimerType.Delayed;
+            Ttype = TimerType.Repeating_Task;
         }
 
         public new void run(int tick)

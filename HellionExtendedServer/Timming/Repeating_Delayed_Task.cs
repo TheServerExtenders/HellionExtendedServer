@@ -2,12 +2,11 @@
 {
     public class Repeating_Delayed_Task : ExecutableEvent
     {
-        public int Delay;//20 Ticks a second
 
         public Repeating_Delayed_Task(int delay)
         {
             skipfirst = true;
-            Ttype = TimerType.Delayed;
+            Ttype = TimerType.Delayed_Repeating_Task;
             Delay = delay;
         }
 

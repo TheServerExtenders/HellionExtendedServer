@@ -30,7 +30,6 @@ namespace HellionExtendedServer.Timming
         {
             while (Enabled)
             {
-                Console.WriteLine("Timmer Running!");
                 Thread.Sleep(50);//Pause for 1/20th of a second
                 m_tick++;
                 foreach (ExecutableEvent e in EList)

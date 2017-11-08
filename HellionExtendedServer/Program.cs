@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using HellionExtendedServer.Timming;
 using ZeroGravity;
 using ZeroGravity.Objects;
 using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
@@ -27,6 +28,7 @@ namespace HellionExtendedServer
         #region Fields
 
         private static HES m_instance;
+        private static MainTimmer m_timmer;
         private static Config m_config;
         private static UpdateManager updateManager;
         private static Localization m_localization;
@@ -53,6 +55,8 @@ namespace HellionExtendedServer
                 return false;
             }
         }
+
+        public static MainTimmer Timmer = m_timmer; 
 
         public static HES Instance => m_instance;
 
@@ -124,6 +128,11 @@ namespace HellionExtendedServer
 
         #region Methods
 
+        private static void SetupTimmer()
+        {
+            Thread t = new Thread(new MainTimmer().Start);
+            t.Start();
+        } 
         private static void SetupGUI()
         {
             if (uiThread != null)
@@ -202,6 +211,8 @@ namespace HellionExtendedServer
             if (m_useGui)
                 SetupGUI();
 
+            SetupTimmer();
+            
             mainLogger.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
 
             if (autoStart | Properties.Settings.Default.AutoStart)

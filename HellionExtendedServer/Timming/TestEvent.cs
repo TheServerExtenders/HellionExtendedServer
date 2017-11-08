@@ -12,7 +12,7 @@ namespace HellionExtendedServer.Timming
             skipfirst = false;
         }
 
-        public new void run(int tick)
+        public override void run(int tick)
         {
             Log.Instance.Info("Running!!!! Current Tick: "+tick);
         }

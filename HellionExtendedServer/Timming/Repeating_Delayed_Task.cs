@@ -9,12 +9,5 @@
             Ttype = TimerType.Delayed_Repeating_Task;
             Delay = delay;
         }
-
-        public new void run(int tick)
-        {
-            base.run(tick);
-        }
-        
-        
     }
 }

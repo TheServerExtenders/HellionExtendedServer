@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using HellionExtendedServer.Timming;
 using ZeroGravity;
 using ZeroGravity.Objects;
@@ -29,6 +30,7 @@ namespace HellionExtendedServer
 
         private static HES m_instance;
         private static Maintimer m_timer;
+        private static Thread m_timmerthread;
         private static Config m_config;
         private static UpdateManager updateManager;
         private static Localization m_localization;
@@ -56,7 +58,7 @@ namespace HellionExtendedServer
             }
         }
 
-        public static Maintimer timer = m_timer; 
+        public static Maintimer Timer = m_timer; 
 
         public static HES Instance => m_instance;
 
@@ -126,13 +128,8 @@ namespace HellionExtendedServer
             program.Run(args);
         }
 
-        #region Methods
-
-        private static void Setuptimer()
-        {
-            Thread t = new Thread(new Maintimer().Start);
-            t.Start();
-        } 
+        #region Methods 
+        
         private static void SetupGUI()
         {
             if (uiThread != null)

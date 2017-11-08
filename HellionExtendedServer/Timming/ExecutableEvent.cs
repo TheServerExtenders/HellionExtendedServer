@@ -28,7 +28,6 @@ namespace HellionExtendedServer.Timming
 
         public void pre_run()
         {
-            Console.WriteLine("{0} >= {1} + {2}({3})",Maintimer.CurrentTick, LastRun , Delay,LastRun + Delay);
             if ( Maintimer.CurrentTick >= LastRun + Delay)
             {
                 LastRun = Maintimer.CurrentTick;

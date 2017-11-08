@@ -28,7 +28,7 @@ namespace HellionExtendedServer
         #region Fields
 
         private static HES m_instance;
-        private static MainTimmer m_timmer;
+        private static Maintimer m_timer;
         private static Config m_config;
         private static UpdateManager updateManager;
         private static Localization m_localization;
@@ -56,7 +56,7 @@ namespace HellionExtendedServer
             }
         }
 
-        public static MainTimmer Timmer = m_timmer; 
+        public static Maintimer timer = m_timer; 
 
         public static HES Instance => m_instance;
 
@@ -128,9 +128,9 @@ namespace HellionExtendedServer
 
         #region Methods
 
-        private static void SetupTimmer()
+        private static void Setuptimer()
         {
-            Thread t = new Thread(new MainTimmer().Start);
+            Thread t = new Thread(new Maintimer().Start);
             t.Start();
         } 
         private static void SetupGUI()
@@ -211,7 +211,7 @@ namespace HellionExtendedServer
             if (m_useGui)
                 SetupGUI();
 
-            SetupTimmer();
+            Setuptimer();
             
             mainLogger.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
 

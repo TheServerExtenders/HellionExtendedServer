@@ -11,9 +11,9 @@
             Delay = delay;
         }
 
-        public new void run()
+        public new void run(int tick)
         {
-            base.run();
+            base.run(tick);
         }
         
         

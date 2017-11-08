@@ -18,6 +18,7 @@ namespace HellionExtendedServer.Timming
         public TimerType Ttype;
         private long LastRun = 0;
         protected bool skipfirst = false;
+        public int Delay; //20 Ticks a second
 
 
         public ExecutableEvent()
@@ -27,44 +28,36 @@ namespace HellionExtendedServer.Timming
 
         public void pre_run()
         {
-            if (Ttype == TimerType.Delayed)
+            if (LastRun < Maintimer.CurrentTick + Delay)
             {
-                run();
-                RemovetimerEvent();
-            }
-            else if (Ttype == TimerType.Repeating_Task)
-            {
-                Delayed_task task = (Delayed_task) this;
-                if (LastRun < Maintimer.CurrentTick + task.Delay)
+                LastRun = Maintimer.CurrentTick;
+                if (Ttype == TimerType.Delayed)
                 {
-                    LastRun = Maintimer.CurrentTick;
-                    run();
+                    run(Maintimer.CurrentTick);
+                    RemovetimerEvent();
                 }
-            }
-            else if (Ttype == TimerType.Delayed_Repeating_Task)
-            {
-                if (skipfirst)
+                else if (Ttype == TimerType.Repeating_Task)run(Maintimer.CurrentTick);
+                else if (Ttype == TimerType.Delayed_Repeating_Task)
                 {
-                    skipfirst = false;
-                    return;
-                }
-                Delayed_task task = (Delayed_task) this;
-                if (LastRun < Maintimer.CurrentTick + task.Delay)
-                {
-                    LastRun = Maintimer.CurrentTick;
-                    run();
+                    if (skipfirst)
+                    {
+                        skipfirst = false;
+                        return;
+                    }
+                    run(Maintimer.CurrentTick);
                 }
             }
         }
 
         public void RemovetimerEvent()
         {
-            if(Maintimer.EList.Contains(this))Console.WriteLine("CONNNTTTAAAIIINNNNSSS!!!!!!!!!");
+            if (Maintimer.EList.Contains(this)) Console.WriteLine("CONNNTTTAAAIIINNNNSSS!!!!!!!!!");
             Maintimer.EList.Remove(this);
         }
-        
-        public virtual void run()
+
+        public virtual void run(int tick)
         {
+            
         }
     }
 }

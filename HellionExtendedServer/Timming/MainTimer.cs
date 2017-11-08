@@ -18,13 +18,20 @@ namespace HellionExtendedServer.Timming
         public Maintimer()
         {
             run();
+            RegisterEvent(new TestEvent());
         }
 
+        public void RegisterEvent(ExecutableEvent ev)
+        {
+            EList.Add(ev);
+        }
+        
         public void run()
         {
             while (Enabled)
             {
-                Thread.Sleep(100);//Pause for 1/10th of a second
+                Console.WriteLine("Timmer Running!");
+                Thread.Sleep(50);//Pause for 1/20th of a second
                 m_tick++;
                 foreach (ExecutableEvent e in EList)
                 {
@@ -37,6 +44,7 @@ namespace HellionExtendedServer.Timming
         public void Start()
         {
             Console.WriteLine("Starting timer Thread");
+            
         }
     }
 }

@@ -69,8 +69,7 @@ namespace HellionExtendedServer
                         MiniDumpWriteDump(process.Handle,
                             process.Id,
                             fs.SafeFileHandle.DangerousGetHandle(),
-                            MINIDUMP_TYPE.MiniDumpWithFullMemory + MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo + MINIDUMP_TYPE.MiniDumpWithThreadInfo,// + MINIDUMP_TYPE.MiniDumpWithCodeSegs,
-                                                                                                                                                   //MINIDUMP_TYPE.MiniDumpWithFullMemory,
+                            MINIDUMP_TYPE.MiniDumpWithFullMemory + MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo + MINIDUMP_TYPE.MiniDumpWithThreadInfo + MINIDUMP_TYPE.MiniDumpWithCodeSegs + MINIDUMP_TYPE.MiniDumpWithFullMemory,
                             IntPtr.Zero,
                             IntPtr.Zero,
                             IntPtr.Zero);

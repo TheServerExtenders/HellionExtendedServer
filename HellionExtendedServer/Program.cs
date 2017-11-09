@@ -47,6 +47,15 @@ namespace HellionExtendedServer
 
         public static String VersionString => Version.ToString(4) + $" Branch: {ThisAssembly.Git.Branch}";
 
+        public static bool Dev
+        {
+            get
+            {
+                if (ThisAssembly.Git.Branch.ToLower() == "development") return true;
+                return false;
+            }
+        }
+
         public static HES Instance => m_instance;
 
         public static Config Config => m_config;
@@ -269,7 +278,13 @@ namespace HellionExtendedServer
                             stringList.Add(str2);
                         ++num;
                     }
-                    var flag = false;
+                    bool flag = false;
+
+                    if (Server.IsRunning && ServerInstance.Instance.CommandManager != null)
+                    {
+                        ServerInstance.Instance.CommandManager.HandleConsoleCommand(cmmd, args);
+                        flag = true;
+                    }
 
                     if (stringList[1] == "help")
                     {

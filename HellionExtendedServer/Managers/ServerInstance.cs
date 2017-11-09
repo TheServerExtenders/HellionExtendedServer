@@ -232,6 +232,8 @@ namespace HellionExtendedServer.Managers
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 
             HES.PrintHelp();
+
+            HES.KeyPressSimulator();
         }
 
         public void Stop()

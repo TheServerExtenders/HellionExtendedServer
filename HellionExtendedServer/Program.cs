@@ -23,7 +23,7 @@ namespace HellionExtendedServer
     public class HES
     {
         public static string ForGameVersion = "0.2.5";
-
+        public static string CurrentGameVersion = ForGameVersion;
         #region Fields
 
         private static HES m_instance;
@@ -51,7 +51,7 @@ namespace HellionExtendedServer
         {
             get
             {
-                if (ThisAssembly.Git.Branch.ToLower() == "development") return true;
+                //if (ThisAssembly.Git.Branch.ToLower() == "development") return true;
                 return false;
             }
         }
@@ -66,7 +66,7 @@ namespace HellionExtendedServer
 
         public static HESGui GUI => m_form;
 
-        public static String WindowTitle => String.Format("HELLION EXTENDED SERVER V{0}) - Game Version: {1} - This Game Version {2}", VersionString, ForGameVersion, "0.2.5");
+        public static String WindowTitle => String.Format("HELLION EXTENDED SERVER V{0}) - Game Version: {1} - This Game Version {2}", VersionString, ForGameVersion, CurrentGameVersion);
 
         #endregion Properties
 
@@ -81,20 +81,78 @@ namespace HellionExtendedServer
             m_config = new Config();
             debugMode = m_config.Settings.DebugMode;
 
+            var path = Path.Combine(Environment.CurrentDirectory, "Newtonsoft.Json.dll");
+
+            if (File.Exists(path))
+            {
+                try
+                {
+                    var name = AssemblyName.GetAssemblyName(path);
+
+                    if(name.Version < new Version("10.0.0.0"))
+                    {
+                        using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources.Newtonsoft.Json.dll"))
+                        {
+                            byte[] data = new byte[s.Length];
+                            s.Read(data, 0, data.Length);
+
+                            File.WriteAllBytes(path, data);
+                        }
+                    }
+                }
+                catch (Exception){}
+            }
+            else
+            {
+                try
+                {
+                    using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources.Newtonsoft.Json.dll"))
+                    {
+                        byte[] data = new byte[s.Length];
+                        s.Read(data, 0, data.Length);
+
+                        File.WriteAllBytes(path, data);
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+
             AppDomain.CurrentDomain.AssemblyResolve += (sender, rArgs) =>
             {
                 string assemblyName = new AssemblyName(rArgs.Name).Name;
                 if (assemblyName.EndsWith(".resources"))
                     return null;
 
+
                 string dllName = assemblyName + ".dll";
                 string dllFullPath = Path.Combine(Path.GetFullPath("Hes\\bin"), dllName);
 
-                if(debugMode)
+                if(dllName == "Newtonsoft.Json.dll")
+                {
+                    try
+                    {
+                        if (new AssemblyName(rArgs.Name).Version < new Version("10.0.0.0"))
+                        {
+                            using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources.Newtonsoft.Json.dll"))
+                            {
+                                byte[] data = new byte[s.Length];
+                                s.Read(data, 0, data.Length);
+
+                                File.WriteAllBytes(path, data);
+                            }
+                            return Assembly.LoadFrom(path);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+                   
+                }             
+
+                if (debugMode)
                     Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding/Updating missing assembly.");
-
-                // get binaries in plugin
-
 
                 using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources." + dllName))
                 {
@@ -207,6 +265,15 @@ namespace HellionExtendedServer
 
             mainLogger.Info("Hellion Extended Server v" + Version + " Initialized.");
 
+            try
+            {
+                CurrentGameVersion = File.ReadAllText("Version.txt");
+                Console.Title = WindowTitle;
+            }
+            catch (Exception)
+            {
+            }
+
 
             m_serverInstance = new ServerInstance();
 
@@ -256,7 +323,7 @@ namespace HellionExtendedServer
                 {
                     if (!cmd.StartsWith("/"))
                     {
-                        if (Server.IsRunning )
+                        if (Server.Instance != null && Server.IsRunning)
                             if(NetworkManager.Instance != null)
                                 NetworkManager.Instance.MessageAllClients(cmd);
                         else
@@ -435,17 +502,14 @@ namespace HellionExtendedServer
         internal static void Restart(bool stopServer = true)
         {
 
-            if (Server.Instance != null)
-               
+            if (stopServer == true)             
             {
-                if (Server.IsRunning && stopServer == true)
+                if (Server.IsRunning)
                 {
                     if (ServerInstance.Instance != null)
                     {
                         ServerInstance.Instance.Stop();
-                        SpinWait.SpinUntil(() => !ServerInstance.Instance.IsRunning, 2000);
-                    }
-                     
+                    }                    
                 }                  
             }
 
@@ -501,6 +565,25 @@ namespace HellionExtendedServer
 
         #region ConsoleHandler
 
+        public static void KeyPressSimulator(string text = "~")
+        {
+            try
+            {
+                Process proc = Process.GetCurrentProcess();
+
+                SetForegroundWindow(proc.MainWindowHandle);
+                SendKeys.SendWait(text);
+                SendKeys.SendWait("{Enter}");
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
@@ -522,11 +605,16 @@ namespace HellionExtendedServer
         {
             if (sig == CtrlType.CTRL_C_EVENT || sig == CtrlType.CTRL_BREAK_EVENT || (sig == CtrlType.CTRL_LOGOFF_EVENT || sig == CtrlType.CTRL_SHUTDOWN_EVENT) || sig == CtrlType.CTRL_CLOSE_EVENT)
             {
-                if (Server.IsRunning)
+                try
                 {
-                    ServerInstance.Instance.Stop();
-                    Console.WriteLine("CLOSING HELLION EXTENDED SERVER");
+                    if (Server.IsRunning)
+                        ServerInstance.Instance.Stop();
+                    Console.WriteLine("STOPPING HELLION DEDICATED");
                 }
+                catch (Exception)
+                {
+                }
+
             }
             return false;
         }

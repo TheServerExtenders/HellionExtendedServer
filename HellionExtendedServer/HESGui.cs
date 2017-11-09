@@ -18,6 +18,8 @@ namespace HellionExtendedServer
         private Timer ObjectManipulationRefreshTimer = new Timer();
         private Timer PlayersRefreshTimer = new Timer();
 
+        private bool isRunning;
+
         public HESGui()
         {
             InitializeComponent();
@@ -57,6 +59,7 @@ namespace HellionExtendedServer
                 @"Welcome to HES! Auto updates have now been implemented!\r\n" +
                 "Check out the enabled Options under HES Config!";
 
+            isRunning = ServerInstance.Instance.IsRunning;
         }
 
         private void DisableControls(bool disable = true)
@@ -85,6 +88,8 @@ namespace HellionExtendedServer
 
         private void Instance_OnServerStopped(ZeroGravity.Server server)
         {
+            isRunning = false;
+
             this.Invoke(new MethodInvoker(delegate
             {
                 DisableControls();
@@ -170,6 +175,7 @@ namespace HellionExtendedServer
 
         private void Instance_OnServerRunning(ZeroGravity.Server server)
         {
+            isRunning = true;
             Invoke(new MethodInvoker(delegate
             {
                 DisableControls(false);
@@ -399,13 +405,27 @@ namespace HellionExtendedServer
 
         private void server_config_startserver_Click(object sender, EventArgs e)
         {
-            if (!ZeroGravity.Server.IsRunning)
+            try
             {
-                Task.Run(() => ServerInstance.Instance.Start());
-                StatusBar.Text = "Server Starting";
+                if (!ZeroGravity.Server.IsRunning)
+                {
+                    ServerInstance.Instance.Start();
+                    StatusBar.Text = "Server Starting";
+                }
+                else
+                    StatusBar.Text = "The server is already running!";
+            }           
+            catch (System.Reflection.ReflectionTypeLoadException ex)
+            {
+                foreach (Exception exception in ex.LoaderExceptions)
+                    Console.WriteLine(exception.ToString());
+                
             }
-            else
-                StatusBar.Text = "The server is already running!";
+            catch(Exception exception)
+            {
+                Console.WriteLine(exception.ToString());
+            }
+           
         }
 
         private void server_config_stopserver_Click(object sender, EventArgs e)

@@ -251,4 +251,5 @@ paket-files/
 .idea/
 *.sln.iml
 
-GameLibraries/
+#
+#GameLibraries/

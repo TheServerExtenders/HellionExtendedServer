@@ -3,7 +3,6 @@ An Extended Dedicated Server for Hellion http://www.playhellion.com
 
 [![Discord](https://discordapp.com/api/guilds/372869125925634049/widget.png?style=banner3)](https://discord.gg/Sr48Vbe)
 
-
 [![Build status](https://ci.appveyor.com/api/projects/status/phdspum8g0d3ics9/branch/master?svg=true)](https://ci.appveyor.com/project/yungtechboy1/hellionextendedserver/branch/master)
 
 ### Websites
@@ -43,12 +42,16 @@ and it will install the server for you and all of the required files.
 
 	 HellionExtendedServer.exe
 	 HellionExtendedServer.exe.config  
-               
-          
-          
-     
+                                                
+To start the server, just run HellionServerExtender.exe ( make sure the files above exist with HellionExtendedServer.exe)
 
-To start the server, just run HellionServerExtender.exe ( make sure the files and folder above exist with HellionExtendedServer.exe)
+# Command Line Arguments
+
+     
+     -nogui - Disables the GUI
+     -autostart - The server automaticly starts when HES is ran
+     -noupdatehellion - HES will not automaticly update Hellion Dedicated
+     -noupdatehes - HES will not update itself
 
 # Console Commands
 commands start with /

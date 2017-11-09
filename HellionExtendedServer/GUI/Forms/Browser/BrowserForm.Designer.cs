@@ -1,4 +1,4 @@
-﻿namespace HellionExtendedServer.Managers.Plugins.Browser
+﻿namespace HellionExtendedServer.GUI.Forms.Browser
 {
     partial class BrowserForm
     {

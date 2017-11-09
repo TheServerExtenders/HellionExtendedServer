@@ -21,6 +21,21 @@ namespace HellionExtendedServer.Managers.Event
             Type = type;
         }
 
+        public virtual void PreRun()
+        {
+            
+        }
+        
+        public virtual void Run()
+        {
+            
+        }
+        
+        public virtual void PostRun()
+        {
+            
+        }
+
 
     }
 }

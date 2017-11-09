@@ -28,6 +28,16 @@
     <ApplicationVersion>0.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ShouldCreateLogs>True</ShouldCreateLogs>
+    <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>False</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>
+    </AssemblyVersionSettings>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -98,21 +108,26 @@
     <Reference Include="BulletSharp, Version=2.83.7.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\BulletSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HELLION_Dedicated, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GameLibraries\HELLION_Dedicated.exe</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\GameLibraries\Newtonsoft.Json.dll</HintPath>
+      <HintPath>Resources\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\GameLibraries\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Octokit, Version=0.27.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.27.0\lib\net45\Octokit.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -124,7 +139,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CrashDump.cs" />
+    <Compile Include="GUI\GameServerIni.cs" />
+    <Compile Include="GUI\MarkdownSharp.cs" />
+    <Compile Include="GUI\Objects\Player.cs" />
+    <Compile Include="GUI\Objects\BaseObject.cs" />
+    <Compile Include="Managers\Event\Events\JoinEvent.cs" />
+    <Compile Include="Managers\Event\ServerEvents\JoinEvent.cs" />
+    <Compile Include="Modules\CrashDump.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="GUI\Forms\Updater\UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Updater\UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\FolderStructure.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\AddPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\DelPerms.cs" />
     <Compile Include="Managers\Commands\Vanilla Commands\Help.cs" />
@@ -135,20 +164,18 @@
     <Compile Include="Managers\Event\EventListener.cs" />
     <Compile Include="Managers\Event\EventSystem2.cs" />
     <Compile Include="Managers\Event\GenericEvent.cs" />
-    <Compile Include="Managers\JoinEvent.cs" />
     <Compile Include="Managers\Permission.cs" />
     <Compile Include="Managers\PermissionManager.cs" />
     <Compile Include="Managers\PemissionAttribute.cs" />
-    <Compile Include="Managers\Plugins\Browser\BBCodeHTML.cs" />
-    <Compile Include="Managers\Plugins\Browser\BrowserForm.cs">
+    <Compile Include="GUI\Forms\Browser\BBCodeHTML.cs" />
+    <Compile Include="GUI\Forms\Browser\BrowserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Managers\Plugins\Browser\BrowserForm.Designer.cs">
+    <Compile Include="GUI\Forms\Browser\BrowserForm.Designer.cs">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\Plugins\Browser\PluginBrowser.cs" />
+    <Compile Include="GUI\Forms\Browser\PluginBrowser.cs" />
     <Compile Include="Modules\Config.cs" />
-    <Compile Include="Modules\Folders.cs" />
     <Compile Include="Modules\Localization.cs" />
     <Compile Include="Managers\Commands\Command.cs" />
     <Compile Include="Managers\Commands\CommandAttribute.cs" />
@@ -161,8 +188,8 @@
     <Compile Include="Managers\Plugins\PluginHelper.cs" />
     <Compile Include="Managers\Plugins\PluginInfo.cs" />
     <Compile Include="Managers\ServerInstance.cs" />
-    <Compile Include="GUI\Objects\Vessel.cs" />
-    <Compile Include="Managers\Plugins\Browser\Resources.cs" />
+    <Compile Include="GUI\Forms\Browser\Resources.cs" />
+    <Compile Include="Modules\SteamCMD.cs" />
     <Compile Include="ServerWrappers\ReflectionAssemblyWrapper.cs" />
     <Compile Include="ServerWrappers\Hellion.cs" />
     <Compile Include="ServerWrappers\ServerWrapper.cs" />
@@ -177,10 +204,17 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
+    <EmbeddedResource Include="Resources\Octokit.dll" />
+    <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
+    <EmbeddedResource Include="GUI\Forms\Updater\UpdateForm.resx">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\HellionExtendedServer.Common.dll" />
+    <EmbeddedResource Include="Resources\NLog.dll" />
     <EmbeddedResource Include="HESGui.resx">
       <DependentUpon>HESGui.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Managers\Plugins\Browser\BrowserForm.resx">
+    <EmbeddedResource Include="GUI\Forms\Browser\BrowserForm.resx">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -194,6 +228,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="hesicon.ico" />
+    <None Include="Changes.md" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -204,6 +239,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Resources\GameServer_example.ini" />
+    <EmbeddedResource Include="Resources\NLog.config" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -232,27 +269,21 @@
     <Folder Include="API\Chat\" />
     <Folder Include="API\Players\" />
     <Folder Include="API\Vessels\" />
-    <Folder Include="Controllers\" />
+    <Folder Include="GUI\Tabs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>@echo off
+    <PostBuildEvent>;;@echo off
 
 echo Running build event for $(ProjectName)..
 
-if not exist "$(ProjectDir)bin\HESRelease"                              md "$(ProjectDir)bin\HESRelease"
-if not exist "$(ProjectDir)bin\HESRelease\Hes"                      md "$(ProjectDir)bin\HESRelease\Hes"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\bin "              md "$(ProjectDir)bin\HESRelease\Hes\bin"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\localization" md "$(ProjectDir)bin\HESRelease\Hes\localization"
-if not exist "$(ProjectDir)bin\HESRelease\Hes\updates"       md "$(ProjectDir)bin\HESRelease\Hes\updates"
-if not exist  "$(ProjectDir)bin\HESRelease\Hes\plugins"       md  "$(ProjectDir)bin\HESRelease\Hes\plugins"
 
 xcopy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)bin\HESRelease\"  /y
 xcopy "$(TargetDir)$(TargetFileName).config" "$(ProjectDir)bin\HESRelease\" /y
 
-xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
-xcopy "$(TargetDir)NLog.config" "$(ProjectDir)bin\HESRelease\Hes\bin" /y
+xcopy "$(TargetDir)$(TargetName).Common.dll" "$(ProjectDir)Resources" /y
+xcopy "$(TargetDir)NLog.dll" "$(ProjectDir)Resources" /y
+xcopy "$(TargetDir)NLog.config" "$(ProjectDir)Resources" /y
 
 echo $(ProjectName) files have been copied to "$(ProjectDir)bin\HESRelease\".
 
@@ -261,6 +292,13 @@ echo This is used to build the proper folder/file structure for releases to be z
 REM Dont remove this line below! VS hates when you dont exit 0!
 EXIT 0</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\GitInfo.2.0.6\build\GitInfo.targets" Condition="Exists('..\packages\GitInfo.2.0.6\build\GitInfo.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\GitInfo.2.0.6\build\GitInfo.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitInfo.2.0.6\build\GitInfo.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

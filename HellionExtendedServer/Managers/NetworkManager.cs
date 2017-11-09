@@ -15,11 +15,9 @@ namespace HellionExtendedServer.Managers
     public class NetworkManager
     {
         #region Fields
-
         private static NetworkManager m_networkManager;
         internal NetworkController m_network;
         private static readonly Logger chatlogger = LogManager.GetCurrentClassLogger();
-
         #endregion Fields
 
         #region Properties
@@ -41,12 +39,35 @@ namespace HellionExtendedServer.Managers
             networkController.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(PlayerSpawnRequestListener));
             Log.Instance.Info("Player Spawns Listener Added.");
 
-            // [IN TEST] Could be used to detect when the player is physicly in the server
+            // [IN TEST] Could be used to detect when the player is physically in the server
             networkController.EventSystem.AddListener(typeof(PlayersOnServerRequest), new EventSystem.NetworkDataDelegate(PlayerOnServerListener));
             Log.Instance.Info("Player On Server Listener Added.");
 
+            // Getting when a player disconnects from the server
+            networkController.EventSystem.AddListener(typeof(LogOutRequest), new EventSystem.NetworkDataDelegate(LogOutRequestListener));
+            Log.Instance.Info("Log Out Request Listener Added.");
+
             m_network = networkController;
             Log.Instance.Info("Network Controller Loaded!");
+        }
+
+        private void LogOutRequestListener(NetworkData data)
+        {
+            try
+            {
+                LogOutRequest playersLoggedOut = data as LogOutRequest;
+                if (playersLoggedOut == null)
+                    return;
+
+                Log.Instance.Warn(ClientList[playersLoggedOut.Sender].Player.Name + " has disconnected from the server.");
+                MessageAllClients(ClientList[playersLoggedOut.Sender].Player.Name + " Has disconnected from the server");
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Error(ex, "Hellion Extended Server [LOGOUT ERROR] : " + ex.InnerException.ToString());
+                throw;
+            }
+           
         }
 
         private void PlayerOnServerListener(NetworkData data)
@@ -57,7 +78,7 @@ namespace HellionExtendedServer.Managers
                 Player player;
                 if (playersOnServerRequest == null || ConnectedPlayer(playersOnServerRequest.Sender, out player))
                     return;
-                Console.WriteLine(string.Format(HES.Localization.Sentences["NewPlayer"], ClientList[playersOnServerRequest.Sender].Player.Name));
+                Log.Instance.Warn(string.Format(HES.Localization.Sentences["NewPlayer"], ClientList[playersOnServerRequest.Sender].Player.Name));
                 MessageAllClients(string.Format(HES.Localization.Sentences["Welcome"], ClientList[playersOnServerRequest.Sender].Player.Name, Server.Instance.ServerName), true, true);
             }
             catch (Exception ex)
@@ -106,7 +127,7 @@ namespace HellionExtendedServer.Managers
             TextChatMessage textChatMessage = new TextChatMessage();
 
             textChatMessage.GUID = BitConverter.ToInt64(guid, 0);
-            textChatMessage.Name = (sendAsServer ? "Server: " : "");
+            textChatMessage.Name = (sendAsServer ? "Server" : "");
             textChatMessage.MessageText = msg;
             try
             {
@@ -123,7 +144,7 @@ namespace HellionExtendedServer.Managers
 
             if (!printToConsole)
                 return;
-            chatlogger.Info((string)textChatMessage.Name + " : " + msg);
+            chatlogger.Info((string)textChatMessage.Name + ": " + msg);
 
             
         }
@@ -140,8 +161,7 @@ namespace HellionExtendedServer.Managers
             textChatMessage.Name = (SenderName);
             textChatMessage.MessageText = msg;
 
-            Player player = (Player)null;
-            if (ConnectedPlayer(ReceiverName, out player))
+            if (ConnectedPlayer(ReceiverName, out Player player))
             {
                 m_network.SendToGameClient(GetClient(player).ClientGUID, textChatMessage);
                 chatlogger.Info((string)textChatMessage.Name + "->" + ReceiverName + ": " + msg);
@@ -188,8 +208,7 @@ namespace HellionExtendedServer.Managers
 
         public bool ConnectedPlayer(string name)
         {
-            Player player = (Player)null;
-            return ConnectedPlayer(name, out player);
+            return ConnectedPlayer(name, out Player player);
         }
     }
 }

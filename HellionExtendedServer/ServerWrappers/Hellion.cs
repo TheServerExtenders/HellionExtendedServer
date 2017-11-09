@@ -67,16 +67,6 @@ namespace HellionExtendedServer.ServerWrappers
             {
                 Log.Instance.Fatal(ex, "Hellion Extended Server [REFLECTION ERROR] : " + ex.Message);
             }
-
-            try
-            {
-               // m_closeSocketListeners = Assembly.GetType("ZeroGravity.Server.NetworkController").GetMethod("OnApplicationQuit",
-                    //BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
-            }
-            catch (ArgumentException ex)
-            {
-                Log.Instance.Error(ex, "Hellion Extended Server [REFLECTION ERROR] : " + ex.Message);
-            }
         }
 
         public void StopServer()
@@ -118,7 +108,7 @@ namespace HellionExtendedServer.ServerWrappers
                 }
                 Server.Instance.NetworkController.clientList.Clear();
 
-                Server.IsRunning = false;
+                
 
                 Dbg.Destroy();
 
@@ -134,6 +124,7 @@ namespace HellionExtendedServer.ServerWrappers
                 GC.WaitForPendingFinalizers();
 
                 Log.Instance.Info(HES.Localization.Sentences["SuccessShutdown"]);
+                Server.IsRunning = false;
             }
             catch (Exception ex)
             {
@@ -211,8 +202,9 @@ namespace HellionExtendedServer.ServerWrappers
             catch (Exception ex)
             {
                 Log.Instance.Fatal("Hellion Extended Server [UNHANDLED EXCEPTION] : " + ex.ToString());
+                m_isRunning = false;
             }
-            m_isRunning = false;
+            
         }
 
         /// <summary>

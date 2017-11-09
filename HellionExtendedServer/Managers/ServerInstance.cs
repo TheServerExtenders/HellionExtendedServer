@@ -31,7 +31,6 @@ namespace HellionExtendedServer.Managers
         private DateTime m_launchedTime;
         private Server m_server;
         private ServerWrapper m_serverWrapper;
-        //private GameServerProperties m_gameServerProperties;
         private GameServerIni m_gameServerIni;
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
@@ -50,14 +49,12 @@ namespace HellionExtendedServer.Managers
         public TimeSpan Uptime { get { return DateTime.Now - m_launchedTime; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
-        //public GameServerProperties GameServerProperties { get { return m_gameServerProperties; } }
         public GameServerIni GameServerConfig => m_gameServerIni;
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
         public EventHelper EventHelper { get { return m_eventhelper; } }
         public PermissionManager PermissionManager { get { return m_permissionmanager; } }
         
-
         public static ServerInstance Instance { get { return m_serverInstance; } }
 
         public Boolean IsRunning
@@ -72,17 +69,11 @@ namespace HellionExtendedServer.Managers
                 m_isRunning = value;
                 if (m_isRunning)
                 {
-                    if (OnServerRunning != null)
-                    {
-                        OnServerRunning(m_server);
-                    }
+                    OnServerRunning?.Invoke(m_server);
                 }
                 else
                 {
-                    if (OnServerStopped != null)
-                    {
-                        OnServerStopped(m_server);
-                    }
+                    OnServerStopped?.Invoke(m_server);
                 }
             }
         }
@@ -170,15 +161,11 @@ namespace HellionExtendedServer.Managers
         // Test method, please don't change ;)
         public void Test()
         {
-
-
-
             foreach ( SpaceObjectVessel vessel in m_server.AllVessels)
             {
                 Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ",vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(),vessel.Velocity, vessel.AngularVelocity));
                 
             }
-
         }
 
         /// <summary>
@@ -204,12 +191,11 @@ namespace HellionExtendedServer.Managers
                 };
 
             m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
-
             m_serverWrapper.Init();
-
+         
             Thread.Sleep(5000);
-
             m_server = ServerWrapper.HellionDedi.Server;
+            OnServerRunning?.Invoke(m_server);
 
             if (IsRunning)
             {
@@ -223,6 +209,8 @@ namespace HellionExtendedServer.Managers
 
                 Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
+
+
             Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
@@ -248,7 +236,10 @@ namespace HellionExtendedServer.Managers
 
         public void Stop()
         {
-            PluginManager.ShutdownAllPlugins();
+            if(PluginManager.LoadedPlugins != null)
+                foreach (var plugin in PluginManager.LoadedPlugins)
+                    PluginManager.ShutdownPlugin(plugin);
+            
             PermissionManager.Save();
             ServerWrapper.HellionDedi.StopServer();
             m_serverThread.Join(60000);

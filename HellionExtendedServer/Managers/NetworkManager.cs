@@ -15,11 +15,9 @@ namespace HellionExtendedServer.Managers
     public class NetworkManager
     {
         #region Fields
-
         private static NetworkManager m_networkManager;
         internal NetworkController m_network;
         private static readonly Logger chatlogger = LogManager.GetCurrentClassLogger();
-
         #endregion Fields
 
         #region Properties
@@ -41,10 +39,11 @@ namespace HellionExtendedServer.Managers
             networkController.EventSystem.AddListener(typeof(PlayerSpawnRequest), new EventSystem.NetworkDataDelegate(PlayerSpawnRequestListener));
             Log.Instance.Info("Player Spawns Listener Added.");
 
-            // [IN TEST] Could be used to detect when the player is physicly in the server
+            // [IN TEST] Could be used to detect when the player is physically in the server
             networkController.EventSystem.AddListener(typeof(PlayersOnServerRequest), new EventSystem.NetworkDataDelegate(PlayerOnServerListener));
             Log.Instance.Info("Player On Server Listener Added.");
 
+            // Getting when a player disconnects from the server
             networkController.EventSystem.AddListener(typeof(LogOutRequest), new EventSystem.NetworkDataDelegate(LogOutRequestListener));
             Log.Instance.Info("Log Out Request Listener Added.");
 
@@ -128,7 +127,7 @@ namespace HellionExtendedServer.Managers
             TextChatMessage textChatMessage = new TextChatMessage();
 
             textChatMessage.GUID = BitConverter.ToInt64(guid, 0);
-            textChatMessage.Name = (sendAsServer ? "Server: " : "");
+            textChatMessage.Name = (sendAsServer ? "Server" : "");
             textChatMessage.MessageText = msg;
             try
             {
@@ -145,7 +144,7 @@ namespace HellionExtendedServer.Managers
 
             if (!printToConsole)
                 return;
-            chatlogger.Info((string)textChatMessage.Name + " : " + msg);
+            chatlogger.Info((string)textChatMessage.Name + ": " + msg);
 
             
         }

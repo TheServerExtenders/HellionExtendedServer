@@ -36,6 +36,8 @@ namespace HellionExtendedServer
         private static Boolean m_useGui = true;
         private static Thread uiThread;
         private static Logger mainLogger;
+        private static string[] CommandLineArgs;
+        private static bool debugMode;
 
         #endregion Fields
 
@@ -71,7 +73,11 @@ namespace HellionExtendedServer
         [STAThread]
         private static void Main(string[] args)
         {
+            CommandLineArgs = args;
+            Console.Title = WindowTitle;
+
             m_config = new Config();
+            debugMode = m_config.Settings.DebugMode;
 
             AppDomain.CurrentDomain.AssemblyResolve += (sender, rArgs) =>
             {
@@ -82,7 +88,10 @@ namespace HellionExtendedServer
                 string dllName = assemblyName + ".dll";
                 string dllFullPath = Path.Combine(Path.GetFullPath("Hes\\bin"), dllName);
 
-                Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding/Updating missing assembly.");
+                if(debugMode)
+                    Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding/Updating missing assembly.");
+
+                // get binaries in plugin
 
 
                 using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources." + dllName))
@@ -97,26 +106,44 @@ namespace HellionExtendedServer
             };
 
             // This is for args that should be used before HES loads
+            bool noUpdateHes = false;
+            bool noUpdateHellion = false;
+            bool usePrereleaseVersions = false;
             Console.ForegroundColor = ConsoleColor.Green;
             foreach (string arg in args)
             {
-                if (arg.Equals("-noupdatehes"))
-                {
-                    UpdateManager.EnableAutoUpdates = false;
-                    Console.WriteLine("HellionExtendedServer: (Arg: -noupdatehes is set) Hellion Dedicated will not be auto-updated.");
-                }
+                if(arg.Equals("-noupdatehes"))
+                    noUpdateHes = true;
 
-                if (arg.Equals("-noupdatehellion"))
-                {
-                    SteamCMD.AutoUpdateHellion = false;
-                    Console.WriteLine("HellionExtendedServer: (Arg: -noupdatehellion is set) Hellion Dedicated will not be auto-updated.");
-                }                              
+                if(arg.Equals("-noupdatehellion"))
+                    noUpdateHellion = true;
+
+                if (arg.Equals("-usedevversion"))
+                    usePrereleaseVersions = true;
             }
+
+            if (usePrereleaseVersions || Config.Settings.EnableDevelopmentVersion)
+            {
+                Console.WriteLine("HellionExtendedServer: (Arg: -usedevversion is set) HES Will use Pre-releases versions");
+            }
+
+            if (noUpdateHes || !Config.Settings.EnableAutomaticUpdates)
+            {   
+                UpdateManager.EnableAutoUpdates = false;
+                Console.WriteLine("HellionExtendedServer: (Arg: -noupdatehes is set or option in HES config is enabled) HES will not be auto-updated.\r\n");
+            }
+
+            if (noUpdateHellion || !Config.Settings.EnableHellionAutomaticUpdates )
+            {
+                SteamCMD.AutoUpdateHellion = false;
+                Console.WriteLine("HellionExtendedServer: (Arg: -noupdatehellion is set) Hellion Dedicated will not be auto-updated.");
+            }
+
             Console.ResetColor();
 
             new FolderStructure().Build();
                                
-            updateManager = new UpdateManager(args);
+            updateManager = new UpdateManager();
 
             var program = new HES(args);
             program.Run(args);
@@ -143,10 +170,7 @@ namespace HellionExtendedServer
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
 
-
-
-            Console.Title = WindowTitle;
-                                          
+                                                  
             string configPath = Globals.GetFilePath(HESFileName.NLogConfig);
 
             LogManager.Configuration = new XmlLoggingConfiguration(configPath);
@@ -156,8 +180,13 @@ namespace HellionExtendedServer
             mainLogger = LogManager.GetCurrentClassLogger();
 
             mainLogger.Info($"Git Branch: {ThisAssembly.Git.Branch}");
-            mainLogger.Info($"Git Commit: {ThisAssembly.Git.Commit}");
-            mainLogger.Info($"Git SHA: {ThisAssembly.Git.Sha}");
+
+            if (debugMode)
+            {
+                mainLogger.Info($"Git Commit: {ThisAssembly.Git.Commit}");
+                mainLogger.Info($"Git SHA: {ThisAssembly.Git.Sha}");
+            }
+
             mainLogger.Info("Hellion Extended Server Initializing....");
         }
 
@@ -167,9 +196,7 @@ namespace HellionExtendedServer
         /// </summary>
         /// <param name="args"></param>
         private void Run(string[] args)
-        {
-           
-
+        {          
             m_localization = new Localization();
             m_localization.Load(m_config.Settings.CurrentLanguage.ToString().Substring(0, 2));
 
@@ -181,7 +208,8 @@ namespace HellionExtendedServer
 
             m_serverInstance = new ServerInstance();
 
-            bool autoStart = false;
+            bool autoStart = Config.Settings.AutoStartEnable;
+            Console.ForegroundColor = ConsoleColor.Green;
             foreach (string arg in args)
             {
                 if (arg.Equals("-nogui"))
@@ -191,22 +219,25 @@ namespace HellionExtendedServer
                     if (!m_form.Visible)
                         mainLogger.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
                 }
-
-                if (arg.Equals("-autostart"))
-                {
-                    autoStart = true;
-                    mainLogger.Info("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
-                }
+                autoStart = arg.Equals("-autostart");
             }
+            Console.ResetColor();
 
             if (m_useGui)
                 SetupGUI();
 
-            mainLogger.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
-
-            if (autoStart | Properties.Settings.Default.AutoStart)
+            if (autoStart)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("HellionExtendedServer: Arg: -autostart or HESGui's Autostart Checkbox was Checked)");
+                Console.ResetColor();
                 ServerInstance.Instance.Start();
+                
+            }
+            Console.Title = WindowTitle;
 
+            mainLogger.Info("HellionExtendedServer: Ready! Use /help for commands to use with HES.");
+           
             ReadConsoleCommands(args);
         }
 
@@ -269,15 +300,7 @@ namespace HellionExtendedServer
 
                     if (stringList[1] == "restart")
                     {
-                        var thisProcess = Process.GetCurrentProcess();
-                        var startInfo = new ProcessStartInfo();
-                        startInfo.FileName = thisProcess.ProcessName;
-                        startInfo.Arguments = string.Join(" ", commandLineArgs);
-                        startInfo.WindowStyle = thisProcess.StartInfo.WindowStyle;
-                        
-                        var proc = Process.Start(startInfo);
-
-                        thisProcess.Kill();
+                        Restart();
                         flag = true;
                     }
 
@@ -405,6 +428,27 @@ namespace HellionExtendedServer
                         Console.WriteLine(HES.m_localization.Sentences["BadSyntax"]);
                 }
             }
+        }
+
+        internal static void Restart(bool stopServer = true)
+        {
+            if (Server.IsRunning && stopServer == true)
+            {
+                if(ServerInstance.Instance != null)
+                    ServerInstance.Instance.Stop();
+
+                SpinWait.SpinUntil(() => !ServerInstance.Instance.IsRunning, 2000);
+            }
+
+            var thisProcess = Process.GetCurrentProcess();
+            var startInfo = new ProcessStartInfo();
+            startInfo.FileName = thisProcess.ProcessName;
+            startInfo.Arguments = string.Join(" ", CommandLineArgs);
+            startInfo.WindowStyle = thisProcess.StartInfo.WindowStyle;
+
+            var proc = Process.Start(startInfo);
+
+            thisProcess.Kill();
         }
 
         /// <summary>

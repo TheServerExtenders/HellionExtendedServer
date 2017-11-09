@@ -171,6 +171,46 @@ namespace HellionExtendedServer.Managers.Plugins
             }
         }
 
+        public List<Assembly> LoadPluginReferences(string pluginFolder)
+        {
+            List<Assembly> pluginReferences = new List<Assembly>();
+
+            try
+            {               
+                string[] subDirectories = Directory.GetDirectories(pluginFolder);
+                foreach (string path in subDirectories)
+                {
+                    string[] files = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
+                    foreach (string file in files)
+                    {
+                        try
+                        {
+                            if (IsValidAssembly(file))
+                            {
+                                Assembly pluginreference = Assembly.UnsafeLoadFrom(file);
+                                pluginReferences.Add(pluginreference);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"WARNING: '{Path.GetFileName(file)}' is not valid for plugin '{Path.GetDirectoryName(pluginFolder)}' Reference will not be loaded.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Failed to load plugin reference assembly '{Path.GetFileName(file)}' for plugin '{Path.GetDirectoryName(pluginFolder)}' Error: " + ex.ToString());
+                        }
+                    }
+                }
+                return pluginReferences;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load plugin references for {Path.GetDirectoryName(pluginFolder)} Error: " + ex.ToString());
+            }
+
+            return null;
+        }
+
         public List<PluginInfo> FindAllPlugins()
         {
             List<PluginInfo> foundPlugins = new List<PluginInfo>();
@@ -181,6 +221,7 @@ namespace HellionExtendedServer.Managers.Plugins
             foreach (String subDirectory in subDirectories)
             {
                 PluginInfo[] Plugins = FindPlugin(subDirectory);
+                LoadPluginReferences(subDirectory);
 
                 if (Plugins.Length > 0)foundPlugins.AddRange(Plugins);
             }
@@ -218,6 +259,7 @@ namespace HellionExtendedServer.Managers.Plugins
             Assembly libraryAssembly;
             try
             {
+
                 Console.WriteLine("Loading Plugin Located at " + library);
                 bytes = File.ReadAllBytes(library);
                 libraryAssembly = Assembly.Load(bytes);
@@ -320,6 +362,19 @@ namespace HellionExtendedServer.Managers.Plugins
             return plugin;
         }
 
+        // Utility method for loading plugin references
+        public bool IsValidAssembly(string path)
+        {
+            try
+            {
+                var assembly = AssemblyName.GetAssemblyName(path);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         #endregion Methods
     }
 }

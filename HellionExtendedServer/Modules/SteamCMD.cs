@@ -90,7 +90,7 @@ namespace HellionExtendedServer.Modules
                 return false;
             }
 
-            Log.Instance.Info("Hellion Dedicated has been successfully installed!");
+            Log.Instance.Info("Hellion Dedicated has been successfully installed or updated!");
 
             return true;
         }

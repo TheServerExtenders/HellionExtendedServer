@@ -13,7 +13,7 @@ namespace HellionExtendedServer.Managers.Event.ServerEvents
 {
     public class JoinEvent : GenericEvent
     {
-        public JoinEvent(EventID type, NetworkData data) : base(type,data)
+        public JoinEvent(EventID type, NetworkData data) : base(type, data)
         {
         }
 

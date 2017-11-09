@@ -187,7 +187,7 @@ namespace HellionExtendedServer.Managers.Plugins
                         {
                             if (IsValidAssembly(file))
                             {
-                                Assembly pluginreference = Assembly.UnsafeLoadFrom(file);
+                                Assembly pluginreference = Assembly.LoadFrom(file);
                                 pluginReferences.Add(pluginreference);
                             }
                             else

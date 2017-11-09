@@ -242,6 +242,7 @@
     <EmbeddedResource Include="Resources\GameServer_example.ini" />
     <EmbeddedResource Include="Resources\NLog.config" />
     <None Include="README.md" />
+    <EmbeddedResource Include="Resources\HellionExtendedServer.exe.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

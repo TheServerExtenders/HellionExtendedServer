@@ -76,6 +76,8 @@ namespace HellionExtendedServer
             CommandLineArgs = args;
             Console.Title = WindowTitle;
 
+            new FolderStructure().Build();
+
             m_config = new Config();
             debugMode = m_config.Settings.DebugMode;
 
@@ -141,7 +143,7 @@ namespace HellionExtendedServer
 
             Console.ResetColor();
 
-            new FolderStructure().Build();
+           
                                
             updateManager = new UpdateManager();
 
@@ -432,12 +434,19 @@ namespace HellionExtendedServer
 
         internal static void Restart(bool stopServer = true)
         {
-            if (Server.IsRunning && stopServer == true)
-            {
-                if(ServerInstance.Instance != null)
-                    ServerInstance.Instance.Stop();
 
-                SpinWait.SpinUntil(() => !ServerInstance.Instance.IsRunning, 2000);
+            if (Server.Instance != null)
+               
+            {
+                if (Server.IsRunning && stopServer == true)
+                {
+                    if (ServerInstance.Instance != null)
+                    {
+                        ServerInstance.Instance.Stop();
+                        SpinWait.SpinUntil(() => !ServerInstance.Instance.IsRunning, 2000);
+                    }
+                     
+                }                  
             }
 
             var thisProcess = Process.GetCurrentProcess();

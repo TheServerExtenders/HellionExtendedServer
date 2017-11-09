@@ -22,53 +22,5 @@ namespace HellionExtendedServer.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AutoStart {
-            get {
-                return ((bool)(this["AutoStart"]));
-            }
-            set {
-                this["AutoStart"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool DebugMode {
-            get {
-                return ((bool)(this["DebugMode"]));
-            }
-            set {
-                this["DebugMode"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AutoUpdateHes {
-            get {
-                return ((bool)(this["AutoUpdateHes"]));
-            }
-            set {
-                this["AutoUpdateHes"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AutoUpdateHellion {
-            get {
-                return ((bool)(this["AutoUpdateHellion"]));
-            }
-            set {
-                this["AutoUpdateHellion"] = value;
-            }
-        }
     }
 }

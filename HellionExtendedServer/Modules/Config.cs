@@ -137,6 +137,7 @@ namespace HellionExtendedServer.Modules
 
         public bool SaveConfiguration()
         {
+
             try
             {
                 using (MemoryStream ms = new MemoryStream())

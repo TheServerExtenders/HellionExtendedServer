@@ -312,7 +312,6 @@ namespace HellionExtendedServer
         {
             while (true)
             {
-
                 string cmd = Console.ReadLine();
 
                 if (cmd.Length > 1)
@@ -470,8 +469,6 @@ namespace HellionExtendedServer
                         }
                     }
 
-
-
                     if (stringList[1] == "start" || stringList[1] == "s")
                     {
                         if (!Server.IsRunning)
@@ -481,7 +478,7 @@ namespace HellionExtendedServer
                         flag = true;
                     }
 
-                    if (stringList[1] == "stop")
+                    if (stringList[1] == "stop" || stringList[1] == "ss")
                     {
                         if (Server.IsRunning)
                             ServerInstance.Instance.Stop();
@@ -574,9 +571,9 @@ namespace HellionExtendedServer
             {
                 SendKeys.SendWait(text);
 
-                if(!isKey)
+                if (!isKey)
                     SendKeys.SendWait("{Enter}");
-            }         
+            }
         }
 
         [DllImport("kernel32.dll", ExactSpelling = true)]
@@ -590,8 +587,6 @@ namespace HellionExtendedServer
         {
             SetForegroundWindow(GetConsoleWindow());
         }
-
-
 
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);

@@ -243,11 +243,18 @@ namespace HellionExtendedServer.Managers
             if(PluginManager.LoadedPlugins != null)
                 foreach (var plugin in PluginManager.LoadedPlugins)
                     PluginManager.ShutdownPlugin(plugin);
-            
-            PermissionManager.Save();
-            ServerWrapper.HellionDedi.StopServer();
-            m_serverThread.Join(60000);
-            m_serverThread.Abort();
+                   
+            try
+            {
+                PermissionManager.Save();
+                ServerWrapper.HellionDedi.StopServer();
+                m_serverThread.Join(60000);
+                m_serverThread.Abort();
+            }
+            catch (Exception)
+            {
+
+            }         
         }
 
         public void TextChatMessageListener(NetworkData data)

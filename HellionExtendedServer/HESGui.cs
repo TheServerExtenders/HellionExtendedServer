@@ -84,7 +84,7 @@ namespace HellionExtendedServer
 
         private void Instance_OnServerStopped(ZeroGravity.Server server)
         {
-            isRunning = false;
+            StatusBar.Text = "Server Stopped";
 
             this.Invoke(new MethodInvoker(delegate
             {
@@ -401,30 +401,42 @@ namespace HellionExtendedServer
 
         private void server_config_startserver_Click(object sender, EventArgs e)
         {
-            CheckForIllegalCrossThreadCalls = false;
-
-            if (!ServerInstance.Instance.IsRunning)
+            try
             {
-                StatusBar.Text = "Server Starting";
+                CheckForIllegalCrossThreadCalls = false;
 
-                HES.KeyPressSimulator("/s");               
-                AddChatLine("Starting Server!");
+                if (!ServerInstance.Instance.IsRunning)
+                {
+                    StatusBar.Text = "Server Starting";
+
+                    HES.KeyPressSimulator("/s");
+                    AddChatLine("Starting Server!");
+                }
+                else
+                    StatusBar.Text = "The server is already started!";
             }
-            else
-                StatusBar.Text = "The server is already started!";
+            catch (Exception)
+            {
+            }
+          
         }
 
         private void server_config_stopserver_Click(object sender, EventArgs e)
         {
-            if (ServerInstance.Instance.IsRunning)
+            try
             {
-                StatusBar.Text = "Server Stopping";
-                ServerInstance.Instance.Stop();
-                StatusBar.Text = "Server Stopped";
-            }
-            else
-                StatusBar.Text = "The server is already stopped!";
+                if (ServerInstance.Instance.IsRunning)
+                {
+                    StatusBar.Text = "Server Stopping";
+                    HES.KeyPressSimulator("/ss");
 
+                }
+                else
+                    StatusBar.Text = "The server is already stopped!";
+            }
+            catch (Exception)
+            {
+            }        
         }
 
 

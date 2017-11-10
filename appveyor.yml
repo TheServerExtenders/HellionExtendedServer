@@ -1,18 +1,3 @@
-branches:
-  # whitelist
-  only:
-    - master
-    - Development
-
-  # blacklist
-  except:
-    - gh-pages
-      
 build:
-  parallel: true
   project: HellionExtendedServer_Solution.sln      
-  include_nuget_references: true 
-  
-before_build:
-    - nuget install Microsoft.Net.Compilers
-    - nuget restore HellionExtendedServer_Solution.sln  
+

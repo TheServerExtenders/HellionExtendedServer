@@ -118,6 +118,13 @@ namespace HellionExtendedServer.Managers
                 {
                     ApplyUpdate();
                     Console.WriteLine("HellionExtendedServer:  Update has been applied. Please restart HellionExtendedServer.exe to finish the update!");
+
+                    if (ServerInstance.Instance != null)
+                        HES.Restart(ServerInstance.Instance.IsRunning);
+                    else
+                        HES.Restart(false);
+
+
                 }                                
             }
             catch (Exception ex)

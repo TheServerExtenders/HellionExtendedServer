@@ -3,7 +3,7 @@ An Extended Dedicated Server for Hellion http://www.playhellion.com
 
 [![Discord](https://discordapp.com/api/guilds/372869125925634049/widget.png?style=banner3)](https://discord.gg/Sr48Vbe)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/phdspum8g0d3ics9/branch/master?svg=true)](https://ci.appveyor.com/project/yungtechboy1/hellionextendedserver/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/generalwrex/hellionextendedserver?branch=master&svg=true)](https://ci.appveyor.com/project/generalwrex/hellionextendedserver)
 
 ### Websites
 ~~**Jenkins** - jenkins.hellionextendedserver.com:8080~~

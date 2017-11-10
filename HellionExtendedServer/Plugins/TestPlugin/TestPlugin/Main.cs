@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common.Plugins;
-using HellionExtendedServer.Managers;
+﻿using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Event;
 using HellionExtendedServer.Managers.Event.Player;
 using HellionExtendedServer.Managers.Plugins;
+using System;
 using ZeroGravity;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
@@ -15,7 +10,7 @@ using ZeroGravity.Objects;
 
 namespace TestPlugin
 {
-    [Plugin(API = "1.0.0", Author = "Yungtechboy1", Description = "Simple Test Plugin", Name = "Econ",Version = "1.0.0")]
+    [Plugin(API = "1.0.0", Author = "Yungtechboy1", Description = "Simple Test Plugin", Name = "Econ", Version = "1.0.0")]
     public class PluginMain : PluginBase
     {
         public PluginMain()

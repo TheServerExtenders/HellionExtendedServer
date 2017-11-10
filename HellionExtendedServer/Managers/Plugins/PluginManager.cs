@@ -1,14 +1,11 @@
-﻿using HellionExtendedServer.Common.Plugins;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using HellionExtendedServer.Common;
+﻿using HellionExtendedServer.Common;
+using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Event;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -94,8 +91,8 @@ namespace HellionExtendedServer.Managers.Plugins
                     //Now Look for Events... IN THE PLUGIN TYPE!!!!!!!
                     //Actually Just register them
                     //Events
-                    //Enable 
-                    //Enable Events 
+                    //Enable
+                    //Enable Events
                     foreach (EventListener el in Plugin.FoundEvents)
                     {
                         ServerInstance.Instance.EventHelper.RegisterEvent(el);
@@ -165,9 +162,7 @@ namespace HellionExtendedServer.Managers.Plugins
                         m_discoveredPlugins.Remove(Plugininfo);
                         return;
                     }
-
                 }
-
             }
         }
 
@@ -176,7 +171,7 @@ namespace HellionExtendedServer.Managers.Plugins
             List<Assembly> pluginReferences = new List<Assembly>();
 
             try
-            {               
+            {
                 string[] subDirectories = Directory.GetDirectories(pluginFolder);
                 foreach (string path in subDirectories)
                 {
@@ -223,12 +218,12 @@ namespace HellionExtendedServer.Managers.Plugins
                 PluginInfo[] Plugins = FindPlugin(subDirectory);
                 LoadPluginReferences(subDirectory);
 
-                if (Plugins.Length > 0)foundPlugins.AddRange(Plugins);
+                if (Plugins.Length > 0) foundPlugins.AddRange(Plugins);
             }
             if (HES.Dev)
-            { 
+            {
                 PluginInfo[] Plugins = FindPlugin(Environment.CurrentDirectory);
-                if (Plugins.Length > 0)foundPlugins.AddRange(Plugins);
+                if (Plugins.Length > 0) foundPlugins.AddRange(Plugins);
             }
 
             m_discoveredPlugins = foundPlugins;
@@ -259,7 +254,6 @@ namespace HellionExtendedServer.Managers.Plugins
             Assembly libraryAssembly;
             try
             {
-
                 Console.WriteLine("Loading Plugin Located at " + library);
                 bytes = File.ReadAllBytes(library);
                 libraryAssembly = Assembly.Load(bytes);
@@ -348,7 +342,6 @@ namespace HellionExtendedServer.Managers.Plugins
             {
                 Log.Instance.Error("Paramater had no lenght! Method Name: " + method.Name);
                 return plugin;
-
             }
             if (parameters[0].ParameterType.BaseType != typeof(Event.Event))
             {
@@ -375,6 +368,7 @@ namespace HellionExtendedServer.Managers.Plugins
                 return false;
             }
         }
+
         #endregion Methods
     }
 }

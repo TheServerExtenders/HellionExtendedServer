@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZeroGravity;
+﻿using ZeroGravity;
 using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
@@ -12,10 +7,8 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
     [Command(CommandName = "delperm", Description = "Add permission node to player", Usage = "Usage: /addperm <player> <permission.node.data>", Permission = "HES.OP.DELPERM")]
     public class DelPerms : Command
     {
-
         public DelPerms(Server svr) : base(svr)
         {
-
         }
 
         public override void runCommand(Player sender, string[] args)
@@ -37,7 +30,6 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
             GetPluginHelper.SendMessageToClient(sender, "Success! " + args[1] + " was removed from" + target.Name + "'s permission!");
         }
 
-
         public override void ConsolerunCommand(string[] args)
         {
             if (args.Length != 2)
@@ -56,6 +48,5 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
             ServerInstance.Instance.PermissionManager.SetPlayerPermission(p);
             GetPluginHelper.GetLogger.Info("Success! " + args[1] + " was removed from" + target.Name + "'s permission!");
         }
-
     }
 }

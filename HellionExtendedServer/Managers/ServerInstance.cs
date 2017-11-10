@@ -1,4 +1,10 @@
-﻿using HellionExtendedServer.ServerWrappers;
+﻿using HellionExtendedServer.Common;
+using HellionExtendedServer.GUI;
+using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.ServerEvents;
+using HellionExtendedServer.Managers.Plugins;
+using HellionExtendedServer.ServerWrappers;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -6,20 +12,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using HellionExtendedServer.Common;
-using HellionExtendedServer.Common.GameServerIni;
 using ZeroGravity;
-using HellionExtendedServer.Managers.Commands;
-using HellionExtendedServer.Managers.Event;
-using HellionExtendedServer.Managers.Event.ServerEvents;
-using HellionExtendedServer.Managers.Plugins;
-using ZeroGravity.Math;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
-using HellionExtendedServer.GUI;
-using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace HellionExtendedServer.Managers
 {
@@ -43,7 +38,8 @@ namespace HellionExtendedServer.Managers
 
         private bool isSaving = false;
         private Boolean m_isRunning;
-        #endregion Fieldss
+
+        #endregion Fields
 
         #region Properties
 
@@ -55,7 +51,7 @@ namespace HellionExtendedServer.Managers
         public CommandManager CommandManager { get { return m_commandManager; } }
         public EventHelper EventHelper { get { return m_eventhelper; } }
         public PermissionManager PermissionManager { get { return m_permissionmanager; } }
-        
+
         public static ServerInstance Instance { get { return m_serverInstance; } }
 
         public Boolean IsRunning
@@ -82,14 +78,17 @@ namespace HellionExtendedServer.Managers
         #endregion Properties
 
         #region Events
+
         public delegate void ServerRunningEvent(Server server);
+
         public event ServerRunningEvent OnServerRunning;
+
         public event ServerRunningEvent OnServerStopped;
-        #endregion
+
+        #endregion Events
 
         public ServerInstance()
         {
-                       
             m_launchedTime = DateTime.MinValue;
 
             m_serverThread = null;
@@ -161,10 +160,9 @@ namespace HellionExtendedServer.Managers
         // Test method, please don't change ;)
         public void Test()
         {
-            foreach ( SpaceObjectVessel vessel in m_server.AllVessels)
+            foreach (SpaceObjectVessel vessel in m_server.AllVessels)
             {
-                Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ",vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(),vessel.Velocity, vessel.AngularVelocity));
-                
+                Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ", vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(), vessel.Velocity, vessel.AngularVelocity));
             }
         }
 
@@ -190,7 +188,6 @@ namespace HellionExtendedServer.Managers
             await ServerWrapper.HellionDedi.StartServer(serverArgs);
             m_serverWrapper.Init();
 
-
             while (ServerWrapper.HellionDedi.Server == null)
             {
                 await Task.Delay(25);
@@ -212,7 +209,6 @@ namespace HellionExtendedServer.Managers
                 Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
 
-
             Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
@@ -230,7 +226,6 @@ namespace HellionExtendedServer.Managers
             EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
             //Command Listner
 
-
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 
             HES.PrintHelp();
@@ -240,10 +235,10 @@ namespace HellionExtendedServer.Managers
 
         public void Stop()
         {
-            if(PluginManager.LoadedPlugins != null)
+            if (PluginManager.LoadedPlugins != null)
                 foreach (var plugin in PluginManager.LoadedPlugins)
                     PluginManager.ShutdownPlugin(plugin);
-                   
+
             try
             {
                 PermissionManager.Save();
@@ -253,8 +248,7 @@ namespace HellionExtendedServer.Managers
             }
             catch (Exception)
             {
-
-            }         
+            }
         }
 
         public void TextChatMessageListener(NetworkData data)
@@ -267,24 +261,21 @@ namespace HellionExtendedServer.Managers
                 Player player1 = Server.GetPlayer(textChatMessage.Sender);
                 textChatMessage.Name = player1.Name;
 
-                string[] chatCommandArray = Msg.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                string[] chatCommandArray = Msg.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 string command = chatCommandArray.First();
                 //Send to COmmand Manager
                 if (chatCommandArray.Length > 1)
                 {
-                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/",""), chatCommandArray.Skip(1).ToArray(),player1);
+                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/", ""), chatCommandArray.Skip(1).ToArray(), player1);
                 }
                 else
                 {
-                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/", ""), new String[] {}, player1);
-
+                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/", ""), new String[] { }, player1);
                 }
 
                 return;
             }
-                Server.TextChatMessageListener(data);
-
-
+            Server.TextChatMessageListener(data);
         }
 
         #endregion Methods

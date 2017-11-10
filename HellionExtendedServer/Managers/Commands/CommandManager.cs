@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BulletSharp.SoftBody;
-using HellionExtendedServer.Common;
+﻿using HellionExtendedServer.Common;
 using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Commands.Vanilla_Commands;
 using HellionExtendedServer.Managers.Plugins;
+using System;
+using System.Collections.Generic;
 using ZeroGravity;
 using ZeroGravity.Objects;
 
@@ -33,7 +29,7 @@ namespace HellionExtendedServer.Managers.Commands
                 return;
             }
             PermissionAttribute pa = Attribute.GetCustomAttribute(cmdclass.GetType(), typeof(PermissionAttribute), true) as PermissionAttribute;
-            if (pa != null)ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
+            if (pa != null) ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
             CommandAttribute pluginAttribute = Attribute.GetCustomAttribute(cmdclass.GetType(), typeof(CommandAttribute), true) as CommandAttribute;
             if (pluginAttribute != null)
             {
@@ -50,12 +46,14 @@ namespace HellionExtendedServer.Managers.Commands
                 return;
             }
             Console.WriteLine("Loaded Command /" + cmdclass.Command_Name);
-            commandDictionary[cmdclass.Command_Name] =  cmdclass.GetType();
+            commandDictionary[cmdclass.Command_Name] = cmdclass.GetType();
         }
+
         public void AddCommand(Command cmdclass)
         {
             AddCommand(cmdclass, null);
         }
+
         public void RemoveCommand(String cmdclass)
         {
             if (cmdclass == null) return;
@@ -68,7 +66,7 @@ namespace HellionExtendedServer.Managers.Commands
             //TODO check Permmissions
             if (!commandDictionary.ContainsKey(cmd)) return false;
             Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server });
-            if (c == null) {return false;}
+            if (c == null) { return false; }
             /*CommandAttribute pluginAttribute = Attribute.GetCustomAttribute(c.GetType(), typeof(CommandAttribute), true) as CommandAttribute;
             if (pluginAttribute != null)
             {
@@ -83,14 +81,14 @@ namespace HellionExtendedServer.Managers.Commands
             Log.Instance.Debug("Console Command Ran!");
             return true;
         }
-        
+
         public void HandlePlayerCommand(string cmd, string[] args, Player sender)
         {
-            Console.WriteLine(String.Format("Handling String /{0} with arge: {1}", cmd, String.Join(" ",args)));
-            foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins)pi.MainClass.OnCommand(sender,cmd,args);    
+            Console.WriteLine(String.Format("Handling String /{0} with arge: {1}", cmd, String.Join(" ", args)));
+            foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins) pi.MainClass.OnCommand(sender, cmd, args);
             //TODO check Permissions
             if (!commandDictionary.ContainsKey(cmd)) return;
-            Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server});
+            Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server });
             if (c == null) return;
             CommandAttribute pluginAttribute = Attribute.GetCustomAttribute(c.GetType(), typeof(CommandAttribute), true) as CommandAttribute;
             if (pluginAttribute != null)
@@ -105,10 +103,10 @@ namespace HellionExtendedServer.Managers.Commands
             //TODO Send error!
             //Checking Perms
             //Todo make sure this is working correctly
-            if (!ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender,c.Permissions))
+            if (!ServerInstance.Instance.PermissionManager.PlayerHasPerm(sender, c.Permissions))
             {
                 //Error!
-                new PluginHelper(Server.Instance).SendMessageToClient(sender,"Error! you do not have permission to access that command!");
+                new PluginHelper(Server.Instance).SendMessageToClient(sender, "Error! you do not have permission to access that command!");
                 return;
             }
             c.runCommand(sender, args);
@@ -122,6 +120,5 @@ namespace HellionExtendedServer.Managers.Commands
             AddCommand(new AddPerms(ServerInstance.Instance.Server));
             AddCommand(new DelPerms(ServerInstance.Instance.Server));
         }
-
     }
 }

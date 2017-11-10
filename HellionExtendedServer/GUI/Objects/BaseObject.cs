@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ZeroGravity.Objects;
-using ZeroGravity.ShipComponents;
-using ZeroGravity.Network;
+﻿using System.ComponentModel;
 using ZeroGravity.Math;
+using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.GUI.Objects
 {
@@ -17,7 +9,6 @@ namespace HellionExtendedServer.GUI.Objects
     /// </summary>
     public abstract class BaseObject
     {
-       
         public BaseObject(SpaceObject parent)
         {
             SpaceObject = parent;
@@ -41,13 +32,11 @@ namespace HellionExtendedServer.GUI.Objects
 
                 SpaceObject.Position.Set(vector.X, vector.Y, vector.Z);
             }
-            
         }
 
         [ReadOnly(true)]
         [Category("Space Object")]
         public virtual Vector3D Velocity => SpaceObject.Velocity;
-
 
         public Vector3D StringToVector(string _value)
         {
@@ -67,6 +56,5 @@ namespace HellionExtendedServer.GUI.Objects
 
             return new Vector3D(x, y, z);
         }
-
     }
 }

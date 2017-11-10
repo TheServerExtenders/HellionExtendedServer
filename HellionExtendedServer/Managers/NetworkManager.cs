@@ -1,9 +1,6 @@
-﻿using HellionExtendedServer;
-using HellionExtendedServer.Common;
+﻿using HellionExtendedServer.Common;
 using NLog;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using ZeroGravity;
 using ZeroGravity.Helpers;
 using ZeroGravity.Network;
@@ -15,9 +12,11 @@ namespace HellionExtendedServer.Managers
     public class NetworkManager
     {
         #region Fields
+
         private static NetworkManager m_networkManager;
         internal NetworkController m_network;
         private static readonly Logger chatlogger = LogManager.GetLogger("chatlog");
+
         #endregion Fields
 
         #region Properties
@@ -25,11 +24,11 @@ namespace HellionExtendedServer.Managers
         public static NetworkManager Instance { get { return m_networkManager; } }
         internal NetworkController NetContoller { get { return m_network; } }
         public ThreadSafeDictionary<long, Client> ClientList { get { return m_network.clientList; } }
+
         #endregion Properties
 
         public NetworkManager(NetworkController networkController)
         {
-
             m_networkManager = this;
             // ISSUE: method pointer
             networkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(TextChatMessageListener));
@@ -67,7 +66,6 @@ namespace HellionExtendedServer.Managers
                 Log.Instance.Error(ex, "Hellion Extended Server [LOGOUT ERROR] : " + ex.InnerException.ToString());
                 throw;
             }
-           
         }
 
         private void PlayerOnServerListener(NetworkData data)
@@ -109,7 +107,7 @@ namespace HellionExtendedServer.Managers
             try
             {
                 TextChatMessage textChatMessage = data as TextChatMessage;
-                              
+
                 chatlogger.Info("(" + textChatMessage.Sender + ")" + textChatMessage.Name + ": " + textChatMessage.MessageText);
             }
             catch (Exception ex)
@@ -131,7 +129,6 @@ namespace HellionExtendedServer.Managers
             textChatMessage.MessageText = msg;
             try
             {
-                
                 m_network.SendToAllClients(textChatMessage, (textChatMessage).Sender);
             }
             catch (Exception)
@@ -141,11 +138,11 @@ namespace HellionExtendedServer.Managers
 
             if (printtoGui)
                 HES.GUI.AddChatLine(String.Format("{0} - {1}: {2}", DateTime.Now.ToLocalTime(), textChatMessage.Name, msg));
-          
+
             if (printToConsole)
             {
                 chatlogger.Info((string)textChatMessage.Name + ": " + msg);
-            }          
+            }
         }
 
         public void MessageToClient(string msg, string SenderName, string ReceiverName)
@@ -191,7 +188,6 @@ namespace HellionExtendedServer.Managers
                     player = client.Value.Player;
                     return true;
                 }
-                
             }
             return false;
         }

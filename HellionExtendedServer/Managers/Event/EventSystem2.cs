@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common;
-using HellionExtendedServer.Managers.Event.Player;
-using ZeroGravity;
-using ZeroGravity.Helpers;
+﻿using HellionExtendedServer.Common;
+using System;
 using ZeroGravity.Network;
 
 namespace HellionExtendedServer.Managers.Event
@@ -15,6 +7,7 @@ namespace HellionExtendedServer.Managers.Event
     public class EventSystem2 : EventSystem
     {
         private EventHelper EH;
+
         public EventSystem2(EventHelper eh)
         {
             Log.Instance.Info("PACKET FOR 1111111111111");
@@ -24,11 +17,10 @@ namespace HellionExtendedServer.Managers.Event
 
         public new void AddListener(Type group, NetworkDataDelegate function)
         {
-
             Log.Instance.Info("PACKET FOR dddddaaaaaaaaaaaaddddddd!");
             EH.ES2.AddListener(group, function);
         }
-        
+
         public new void RemoveListener(Type group, NetworkDataDelegate function)
         {
             Log.Instance.Info("PACKET FOR BPOIIIIIIIII");
@@ -40,6 +32,7 @@ namespace HellionExtendedServer.Managers.Event
             Log.Instance.Info("PACKET FOR INVOTE!");
             EH.MassEventHandeler(data);
         }
+
         /*
         public new void Invoke(NetworkData data)
         {
@@ -55,7 +48,6 @@ namespace HellionExtendedServer.Managers.Event
 
         public new void AddListener(InternalEventType group, InternalEventsDelegate function)
         {
-
             Log.Instance.Info("PACKET FOR ADDDDDDDDDDDDD!");
             EH.ES2.AddListener(group, function);
         }

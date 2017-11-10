@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -74,7 +73,8 @@ namespace HellionExtendedServer.Modules
             "Used for automatic updates and releasing Hes's resources after a set time.")]
         public bool EnableAutomaticUpdates { get; set; }
 
-        bool usePreReleaseVersions = false;
+        private bool usePreReleaseVersions = false;
+
         [Category("Development")]
         [DisplayName("Enable Development Version (Restart Required)- (Default: false )")]
         [Description("Change to true if you would like to use Development versions (I.E. PreReleases).\r\n" +
@@ -101,8 +101,6 @@ namespace HellionExtendedServer.Modules
         [Description("How often should HES check for updates, in minutes.\r\n" +
             "Used for automatic updates and releasing Hes's resources after a set time.")]
         public int CheckUpdatesTime { get; set; }
-
-
     }
 
     /// <summary>
@@ -126,8 +124,6 @@ namespace HellionExtendedServer.Modules
             }
         }
 
-
-
         public Config()
         {
             Instance = this;
@@ -137,7 +133,6 @@ namespace HellionExtendedServer.Modules
 
         public bool SaveConfiguration()
         {
-
             try
             {
                 using (MemoryStream ms = new MemoryStream())
@@ -147,7 +142,7 @@ namespace HellionExtendedServer.Modules
                     serializer.Serialize(writer, _settings);
                     writer.Flush();
 
-                    File.WriteAllBytes(FileName, ms.ToArray());                   
+                    File.WriteAllBytes(FileName, ms.ToArray());
                 }
 
                 WriteComments();
@@ -167,16 +162,15 @@ namespace HellionExtendedServer.Modules
                         {
                             HES.Restart(true);
                         }
-
                     }
                 }
-
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("HellionExtendedServer:  Configuration Save Failed! (SaveConfiguration):" + ex.ToString());
             }
+
             return false;
         }
 
@@ -185,7 +179,7 @@ namespace HellionExtendedServer.Modules
             if (!File.Exists(FileName))
             {
                 Console.WriteLine("HellionExtendedServer:  HES Config does not exist, creating one from defaults.");
-                SaveConfiguration();              
+                SaveConfiguration();
                 return true;
             }
 
@@ -241,7 +235,6 @@ namespace HellionExtendedServer.Modules
                             DescriptionAttribute description = (DescriptionAttribute)property.GetCustomAttribute(typeof(DescriptionAttribute));
 
                             parent.InsertBefore(doc.CreateComment(description.Description), child);
-
                         }
                     }
                 }
@@ -252,7 +245,6 @@ namespace HellionExtendedServer.Modules
                 Console.WriteLine("HellionExtendedServer:  Configuration Save Failed! (WriteComments)" + ex.ToString());
             }
         }
-
 
         public enum Language
         {

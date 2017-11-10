@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common;
+﻿using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers.Event.Player;
-using ZeroGravity;
-using ZeroGravity.Data;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using ZeroGravity.Helpers;
 using ZeroGravity.Network;
-using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
 
 namespace HellionExtendedServer.Managers.Event
 {
@@ -88,7 +81,6 @@ namespace HellionExtendedServer.Managers.Event
         TurretShootingMessage,
         UnsubscribeFromObjectsRequest,
         VoiceCommDataMessage
-
     };
 
     public class EventHelper
@@ -116,7 +108,6 @@ namespace HellionExtendedServer.Managers.Event
                 NetworkManager.Instance.NetContoller.EventSystem.AddListener(entry.Key, MassEventHandeler);
                 //Listen for Everything!
             }
-
         }
 
         public ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>
@@ -145,9 +136,7 @@ namespace HellionExtendedServer.Managers.Event
             }
 
             return null;
-
         }
-
 
         public void MassEventHandeler(NetworkData data)
         {
@@ -176,7 +165,7 @@ namespace HellionExtendedServer.Managers.Event
                 ExecuteEvent(new GenericEvent(EventID.DynamicObjectStatsMessage, data));
             else if (data is EnvironmentReadyMessage) ExecuteEvent(new GenericEvent(EventID.EnvironmentReadyMessage, data));
             //else if (data is GetDeletedCharactersRequest)
-                //ExecuteEvent(new GenericEvent(EventID.GetDeletedCharactersRequest, data));
+            //ExecuteEvent(new GenericEvent(EventID.GetDeletedCharactersRequest, data));
             else if (data is InitializeSpaceObjectMessage)
                 ExecuteEvent(new GenericEvent(EventID.InitializeSpaceObjectMessage, data));
             else if (data is KillPlayerMessage) ExecuteEvent(new GenericEvent(EventID.KillPlayerMessage, data));
@@ -192,7 +181,7 @@ namespace HellionExtendedServer.Managers.Event
             //else if (data is MarkAsLoggedInRequest) ExecuteEvent(new GenericEvent(EventID.MarkAsLoggedInRequest, data));
             //else if (data is MarkAsLoggedOutRequest) ExecuteEvent(new GenericEvent(EventID.MarkAsLoggedOutRequest, data));
             //else if (data is MoveCharacterToLimboRequest)
-                //ExecuteEvent(new GenericEvent(EventID.MoveCharacterToLimboRequest, data));
+            //ExecuteEvent(new GenericEvent(EventID.MoveCharacterToLimboRequest, data));
             else if (data is MoveCorpseObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveCorpseObectMessage, data));
             else if (data is MoveDynamicObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveDynamicObectMessage, data));
             else if (data is MovementMessage) ExecuteEvent(new GenericEvent(EventID.MovementMessage, data));
@@ -231,25 +220,24 @@ namespace HellionExtendedServer.Managers.Event
             else if (data is VoiceCommDataMessage) ExecuteEvent(new GenericEvent(EventID.VoiceCommDataMessage, data));
         }
 
-
-    public void RegisterEvent(EventListener e)
-    {
-        RegiteredEvents.Add(e);
-        //TODO notify of Regerstration
-    }
-
-    public void ExecuteEvent(GenericEvent e)
-    {
-        foreach (EventListener evnt in RegiteredEvents)
+        public void RegisterEvent(EventListener e)
         {
-            if (e.GetEventType == evnt.GetEventType)
+            RegiteredEvents.Add(e);
+            //TODO notify of Regerstration
+        }
+
+        public void ExecuteEvent(GenericEvent e)
+        {
+            foreach (EventListener evnt in RegiteredEvents)
             {
-                if (!e.IsCanceled || e.IsCanceled && evnt.IgnoreCanceledEvent)
+                if (e.GetEventType == evnt.GetEventType)
                 {
-                    evnt.Execute(e);
+                    if (!e.IsCanceled || e.IsCanceled && evnt.IgnoreCanceledEvent)
+                    {
+                        evnt.Execute(e);
+                    }
                 }
             }
         }
     }
-}
 }

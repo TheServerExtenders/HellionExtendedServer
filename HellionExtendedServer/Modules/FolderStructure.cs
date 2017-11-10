@@ -63,7 +63,6 @@ namespace HellionExtendedServer
                         if (!Directory.Exists(path))
                             Directory.CreateDirectory(path);
 
-
                         //TODO if a config file already exists
                         if (!File.Exists(Path.Combine(path, fileName)))
                         {

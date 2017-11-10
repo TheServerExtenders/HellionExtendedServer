@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common;
-using HellionExtendedServer.Managers.Event.Player;
-using ZeroGravity;
+﻿using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity.Network;
 
 namespace HellionExtendedServer.Managers.Event.ServerEvents

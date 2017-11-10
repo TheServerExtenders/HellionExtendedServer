@@ -55,7 +55,7 @@ namespace HellionExtendedServer
                 @"Welcome to HES! Auto updates have now been implemented!" +
                 "Check out the enabled Options under HES Config!";
 
-            isRunning = ServerInstance.Instance.IsRunning;                 
+            isRunning = ServerInstance.Instance.IsRunning;
         }
 
         private void DisableControls(bool disable = true)
@@ -418,7 +418,6 @@ namespace HellionExtendedServer
             catch (Exception)
             {
             }
-          
         }
 
         private void server_config_stopserver_Click(object sender, EventArgs e)
@@ -429,16 +428,14 @@ namespace HellionExtendedServer
                 {
                     StatusBar.Text = "Server Stopping";
                     HES.KeyPressSimulator("/ss");
-
                 }
                 else
                     StatusBar.Text = "The server is already stopped!";
             }
             catch (Exception)
             {
-            }        
+            }
         }
-
 
         #endregion Server Control
 

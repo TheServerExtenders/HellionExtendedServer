@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace HellionExtendedServer.Common.GameServerIni
 {
@@ -22,7 +16,6 @@ namespace HellionExtendedServer.Common.GameServerIni
         public string Line;
         public bool Valid;
 
-     
         public Setting()
         {
             Name = string.Empty;

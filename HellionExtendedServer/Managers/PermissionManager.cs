@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers
@@ -32,16 +29,17 @@ namespace HellionExtendedServer.Managers
 
         public bool PlayerHasPerm(Player p, string perm)
         {
-            if (!CheckPerm(perm,p)) return true;
+            if (!CheckPerm(perm, p)) return true;
             Permission permission = GetPlayerPermission(p);
             if (permission.HasPerm(perm)) return true;
             return false;
         }
+
         public bool CheckPerm(string perm, Player p = null)
         {
             PermissionAttribute pa;
             if (PermsDictionary.TryGetValue(perm.ToLower(), out pa))
-            {   
+            {
                 if (pa.Default.ToLower() == "default") return false;
                 if (p != null)
                 {
@@ -90,7 +88,6 @@ namespace HellionExtendedServer.Managers
             perms.DelPerm(perm);
         }
 
-        
         public void AddPlayerToGroup(Player p, string group)
         {
             Permission perms = GetPlayerPermission(p);
@@ -102,7 +99,7 @@ namespace HellionExtendedServer.Managers
             Permission perms = GetPlayerPermission(p);
             perms.DelGroup(group);
         }
-        
+
         public Permission GetPlayerPermission(Player p)
         {
             return GetPermission(p.GUID);

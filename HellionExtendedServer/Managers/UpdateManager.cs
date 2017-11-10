@@ -69,7 +69,7 @@ namespace HellionExtendedServer.Managers
             catch (Exception ex)
             {
                 Console.WriteLine("HellionExtendedServer:  Update Failed (CheckForUpdates)" + ex.ToString());
-            }       
+            }
         }
 
         public bool DownloadLatestRelease(bool getDevelopmentVersion = false)
@@ -81,11 +81,11 @@ namespace HellionExtendedServer.Managers
                 WebClient client = new WebClient();
                 client.DownloadDataCompleted += new DownloadDataCompletedEventHandler(ReleaseDownloaded);
 
-                if(getDevelopmentVersion)
+                if (getDevelopmentVersion)
                     client.DownloadDataAsync(new Uri(m_developmentRelease.Assets.FirstOrDefault().BrowserDownloadUrl));
                 else
                     client.DownloadDataAsync(new Uri(m_currentRelease.Assets.FirstOrDefault().BrowserDownloadUrl));
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -123,9 +123,7 @@ namespace HellionExtendedServer.Managers
                         HES.Restart(ServerInstance.Instance.IsRunning);
                     else
                         HES.Restart(false);
-
-
-                }                                
+                }
             }
             catch (Exception ex)
             {
@@ -202,7 +200,7 @@ namespace HellionExtendedServer.Managers
                 }
 
                 if (checkedVersion > HES.Version || forceUpdate)
-                {                                       
+                {
                     Console.WriteLine($"HellionExtendedServer:  A new {devText} version of Hellion Extended Server has been detected.\r\n");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"Name: { localRelease.Assets.First().Name }");
@@ -211,14 +209,12 @@ namespace HellionExtendedServer.Managers
                     Console.WriteLine($"Published Date: { localRelease.Assets.First().CreatedAt }\r\n");
                     Console.ResetColor();
 
-
                     if (!EnableAutoUpdates)
-                    {                     
+                    {
                         Console.WriteLine("Would you like to see the changes? (y/n)");
 
                         if (Console.ReadKey().Key == ConsoleKey.Y)
                         {
-
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.WriteLine("\r\nChanges:\r\n" + localRelease.Body);
                             Console.ResetColor();
@@ -242,13 +238,12 @@ namespace HellionExtendedServer.Managers
                                     DownloadLatestRelease(true);
                                     return true;
                                 }
-
-                            }else if( Console.ReadKey().Key == ConsoleKey.N)
+                            }
+                            else if (Console.ReadKey().Key == ConsoleKey.N)
                             {
                                 Console.WriteLine($"Canceling this {devText} update for now");
                                 return false;
                             }
-
                         }
                         else
                         {
@@ -261,7 +256,7 @@ namespace HellionExtendedServer.Managers
                                 return true;
                             }
                         }
-                     
+
                         Console.WriteLine("HellionExtendedServer:  Skipping update.. We'll ask next time you restart HES!");
                     }
                     else
@@ -284,7 +279,7 @@ namespace HellionExtendedServer.Managers
         }
 
         public async Task GetLatestReleaseInfo()
-        {        
+        {
             try
             {
                 m_currentRelease = await _git.Repository.Release.GetLatest("HellionCommunity", "HellionExtendedServer").ConfigureAwait(false);
@@ -293,10 +288,7 @@ namespace HellionExtendedServer.Managers
                 {
                     var releases = await _git.Repository.Release.GetAll("HellionCommunity", "HellionExtendedServer").ConfigureAwait(false);
                     m_developmentRelease = releases.FirstOrDefault(x => x.Prerelease == true);
-                    
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -305,8 +297,11 @@ namespace HellionExtendedServer.Managers
         }
 
         public delegate void UpdateEventHandler(Release release);
+
         public event UpdateEventHandler OnUpdateChecked;
+
         public event UpdateEventHandler OnUpdateDownloaded;
+
         public event UpdateEventHandler OnUpdateApplied;
     }
 }

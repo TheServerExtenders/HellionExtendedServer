@@ -1,9 +1,9 @@
 ﻿using HellionExtendedServer.Common.Plugins;
+using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using HellionExtendedServer.Managers.Commands;
-using HellionExtendedServer.Managers.Event;
 
 namespace HellionExtendedServer.Managers.Plugins
 {
@@ -48,7 +48,7 @@ namespace HellionExtendedServer.Managers.Plugins
             }
 
             // If one is null, but not both, return false.
-            if (((object) obj1 == null) || ((object) obj2 == null))
+            if (((object)obj1 == null) || ((object)obj2 == null))
             {
                 return false;
             }
@@ -64,7 +64,7 @@ namespace HellionExtendedServer.Managers.Plugins
         {
             if (obj is PluginInfo)
             {
-                return this == (PluginInfo) obj;
+                return this == (PluginInfo)obj;
             }
             return false;
         }
@@ -75,7 +75,7 @@ namespace HellionExtendedServer.Managers.Plugins
             int value = 0;
             for (int i = 0; i < by.GetLength(0); i++)
             {
-                value += (int) (by[i] & 0xffL) << (8 * i);
+                value += (int)(by[i] & 0xffL) << (8 * i);
             }
             return value;
         }

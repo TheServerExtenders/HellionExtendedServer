@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using HellionExtendedServer.Common;
-using System.Threading;
-using System.Diagnostics;
 
 namespace HellionExtendedServer
 {
@@ -52,20 +44,20 @@ namespace HellionExtendedServer
 
         private static void CreateMiniDump(UnhandledExceptionEventArgs e)
         {
-           Console.WriteLine("Creating Dump");
+            Console.WriteLine("Creating Dump");
             //Back Slashes for windows and C# right???
             //Bug... Maybe
-            
+
             String path = @"HES\Dump";
             if (!Directory.Exists(path)) System.IO.Directory.CreateDirectory(path);
             String now = DateTime.UtcNow.ToString("yyyy_MM_dd__HH_mm_ss");
-            using (FileStream fs = new FileStream(String.Format( "HES\\Dump\\UnhandledDump_{0}.dmp",now), FileMode.Create))
+            using (FileStream fs = new FileStream(String.Format("HES\\Dump\\UnhandledDump_{0}.dmp", now), FileMode.Create))
             {
                 using (System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
                 {
                     //TODO later remove Try Statement
                     try
-                    { 
+                    {
                         MiniDumpWriteDump(process.Handle,
                             process.Id,
                             fs.SafeFileHandle.DangerousGetHandle(),
@@ -81,7 +73,7 @@ namespace HellionExtendedServer
                 }
             }
 
-            Console.WriteLine("Dump File Created at > "+ String.Format("HES\\Dump\\UnhandledDump_{0}.dmp", now));
+            Console.WriteLine("Dump File Created at > " + String.Format("HES\\Dump\\UnhandledDump_{0}.dmp", now));
         }
     }
 }

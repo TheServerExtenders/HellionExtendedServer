@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Xml.Serialization;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace HellionExtendedServer.Common.Plugins
 {
@@ -10,22 +10,30 @@ namespace HellionExtendedServer.Common.Plugins
     public class PluginBaseConfig
     {
         #region Fields
+
         protected String m_configFile;
         protected PluginBase m_plugin;
         protected Object[] m_settings = new Object[] { };
         protected readonly Object _lockObj = new Object();
-        #endregion
+
+        #endregion Fields
 
         #region Events
+
         public event ConfigEventHandler ConfigLoaded;
+
         public event ConfigEventHandler ConfigSaved;
-        #endregion
+
+        #endregion Events
 
         #region Properties
+
         public virtual Object[] Settings { get { return m_settings; } set { m_settings = value; } }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         public PluginBaseConfig(PluginBase plugin)
         {
             m_plugin = plugin;
@@ -84,6 +92,7 @@ namespace HellionExtendedServer.Common.Plugins
                 ConfigLoaded();
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 }

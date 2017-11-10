@@ -76,12 +76,12 @@ namespace HellionExtendedServer
         private static void Main(string[] args)
         {
             ThisProcess = Process.GetCurrentProcess();
-           
+
             CommandLineArgs = args;
             Console.Title = WindowTitle;
 
             new FolderStructure().Build();
-          
+
             m_config = new Config();
             debugMode = m_config.Settings.DebugMode;
 
@@ -166,7 +166,6 @@ namespace HellionExtendedServer
 
                 return Assembly.LoadFrom(dllFullPath);
             };
-
 
             // This is for args that should be used before HES loads
             bool noUpdateHes = false;

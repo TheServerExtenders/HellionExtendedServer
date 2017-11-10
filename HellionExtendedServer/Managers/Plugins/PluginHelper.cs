@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common;
+﻿using HellionExtendedServer.Common;
 using NLog;
+using System;
 using ZeroGravity;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
@@ -16,7 +12,7 @@ namespace HellionExtendedServer.Managers.Plugins
         private Server svr;
 
         public Server GetServer { get { return svr; } }
-        public Logger GetLogger{ get { return Log.Instance; } }
+        public Logger GetLogger { get { return Log.Instance; } }
 
         public PluginHelper(Server server)
         {
@@ -32,6 +28,7 @@ namespace HellionExtendedServer.Managers.Plugins
             packet.MessageText = message;
             GetServer.NetworkController.SendToGameClient(p.GUID, packet);
         }
+
         public void SendMessageToClient(Player p, String message)
         {
             SendMessageToClient(p, message, "Server");
@@ -53,6 +50,7 @@ namespace HellionExtendedServer.Managers.Plugins
             }
             return null;
         }
+
         public Player getPlayerFromGuid(long guid)
         {
             foreach (Player player in ServerInstance.Instance.Server.AllPlayers)
@@ -66,7 +64,7 @@ namespace HellionExtendedServer.Managers.Plugins
         {
             Player found = null;
             int delta = int.MaxValue;
-            foreach(Player player in ServerInstance.Instance.Server.AllPlayers)
+            foreach (Player player in ServerInstance.Instance.Server.AllPlayers)
             {
                 if (player.Name.ToLower().StartsWith(name))
                 {
@@ -84,6 +82,5 @@ namespace HellionExtendedServer.Managers.Plugins
             }
             return found;
         }
-
     }
 }

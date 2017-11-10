@@ -1,13 +1,12 @@
-﻿using System;
+﻿using HellionExtendedServer.Common;
+using HellionExtendedServer.Managers;
+using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using ZeroGravity;
-using HellionExtendedServer.Managers;
-using System.Net.Sockets;
-using HellionExtendedServer.Common;
-using System.Diagnostics;
 using System.Threading.Tasks;
+using ZeroGravity;
 
 namespace HellionExtendedServer.ServerWrappers
 {
@@ -61,7 +60,7 @@ namespace HellionExtendedServer.ServerWrappers
 
             try
             {
-                m_closeSocketListeners = Assembly.GetType("ZeroGravity.Network.NetworkController").GetMethod("OnApplicationQuit", 
+                m_closeSocketListeners = Assembly.GetType("ZeroGravity.Network.NetworkController").GetMethod("OnApplicationQuit",
                     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
             }
             catch (ArgumentException ex)
@@ -77,7 +76,7 @@ namespace HellionExtendedServer.ServerWrappers
             try
             {
                 Log.Instance.Info(HES.Localization.Sentences["ShuttingDown"]);
-               
+
                 if (Server.PersistenceSaveInterval > 0.0)
                 {
                     //ServerInstance.Instance.Save();
@@ -88,9 +87,9 @@ namespace HellionExtendedServer.ServerWrappers
                     Persistence.Save();
                     saveTime.Stop();
                     Log.Instance.Info(
-                        string.Format(HES.Localization.Sentences["SavedUniverseTime"], 
-                        saveTime.Elapsed.Milliseconds, 
-                        string.Format((string)Persistence.PersistanceFileName, 
+                        string.Format(HES.Localization.Sentences["SavedUniverseTime"],
+                        saveTime.Elapsed.Milliseconds,
+                        string.Format((string)Persistence.PersistanceFileName,
                         DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss"))));
                 }
 
@@ -108,8 +107,6 @@ namespace HellionExtendedServer.ServerWrappers
                     }
                 }
                 Server.Instance.NetworkController.clientList.Clear();
-
-                
 
                 Dbg.Destroy();
 
@@ -129,18 +126,13 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-
                 Log.Instance.Error(ex, "Hellion Extended Server [SHUTDOWN ERROR] : " + ex.Message);
             }
-            
         }
-
 
         private async Task StartServerProxy()
         {
-          
         }
-
 
         /// <summary>
         /// Starts Hellion Dedicated in its own thread
@@ -220,7 +212,6 @@ namespace HellionExtendedServer.ServerWrappers
                 Log.Instance.Fatal("Hellion Extended Server [UNHANDLED EXCEPTION] : " + ex.ToString());
                 m_isRunning = false;
             }
-            
         }
 
         /// <summary>
@@ -230,7 +221,6 @@ namespace HellionExtendedServer.ServerWrappers
         /// <param name="args"></param>
         private void Start(Object[] args)
         {
-
             try
             {
                 Server.Properties = new ZeroGravity.Properties(Server.ConfigDir + "GameServer.ini");
@@ -250,13 +240,11 @@ namespace HellionExtendedServer.ServerWrappers
             }
 
             try
-            {           
-               
+            {
                 m_server.MainLoop();
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
-
             }
             catch (TypeInitializationException ex)
             {
@@ -264,11 +252,9 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (Exception ex)
             {
-
                 string inner = "";
                 if (ex.InnerException != null)
                     inner = "\r\n InnerException " + ex.InnerException.StackTrace;
-
 
                 Log.Instance.Fatal(ex, "Hellion Extended Server [START MAINLOOP EXCEPTION] :  " + ex.ToString() + inner);
             }

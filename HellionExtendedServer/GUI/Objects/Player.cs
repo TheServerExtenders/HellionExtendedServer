@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel;
-using ZeroGravity;
 using ZeroGravity.Math;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
-using HellionExtendedServer;
 
 namespace HellionExtendedServer.GUI.Objects
 {
@@ -72,7 +70,7 @@ namespace HellionExtendedServer.GUI.Objects
             get { return base.Position; }
             set
             {
-                CurrentPlayer.ModifyLocalPositionAndRotation(StringToVector(value), CurrentPlayer.LocalRotation);           
+                CurrentPlayer.ModifyLocalPositionAndRotation(StringToVector(value), CurrentPlayer.LocalRotation);
             }
         }
 
@@ -84,7 +82,6 @@ namespace HellionExtendedServer.GUI.Objects
             {
                 CurrentPlayer.ModifyLocalPositionAndRotation(SpaceObject.Position, StringToQuat(value));
             }
-
         }
 
         public QuaternionD StringToQuat(string _value)
@@ -105,7 +102,6 @@ namespace HellionExtendedServer.GUI.Objects
 
             if (!double.TryParse(args[3], out double w))
                 return CurrentPlayer.LocalRotation;
-
 
             return new QuaternionD(x, y, z, w);
         }

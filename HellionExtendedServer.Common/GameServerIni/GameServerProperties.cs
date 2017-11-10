@@ -47,7 +47,6 @@ namespace HellionExtendedServer.Common.GameServerIni
 
                     File.Copy(m_exampleFileName, m_fileName);
                 }
-                   
             }
 
             if (!File.Exists(m_originalFileName))
@@ -82,7 +81,7 @@ namespace HellionExtendedServer.Common.GameServerIni
                         else
                             newSetting = setting;
 
-                        if(newSetting.Valid)
+                        if (newSetting.Valid)
                             Console.WriteLine($"enabled:{newSetting.Enabled} name:{newSetting.Name} valid:{newSetting.Valid}");
 
                         outSettings.Add(newSetting);
@@ -129,11 +128,11 @@ namespace HellionExtendedServer.Common.GameServerIni
 
                     // set the new setting to have the values of the default setting
                     var newSetting = defaultSetting;
-                  
+
                     // if the values of the default setting and the current setting
                     // are not the same, and the setting contains an '=' sign
                     if (setting.Enabled)
-                    {                
+                    {
                         // set the new value to the current value
                         newSetting.Value = setting.Value;
                         // pull if the line was orginally disabled ( starts with a '#' )
@@ -148,7 +147,6 @@ namespace HellionExtendedServer.Common.GameServerIni
                         // if the values are the same, then just add the default value to the list
                         tmp.Add(defaultSetting);
                     }
-
                 }
 
                 return tmp;
@@ -163,7 +161,7 @@ namespace HellionExtendedServer.Common.GameServerIni
 
         public List<Setting> LoadDefaults()
         {
-            return  GameServerINI.ParseDefaultSettings();           
+            return GameServerINI.ParseDefaultSettings();
         }
     }
 }

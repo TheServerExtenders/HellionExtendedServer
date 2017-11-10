@@ -27,7 +27,7 @@ namespace HellionExtendedServer.Modules
         public bool GetSteamCMD()
         {
             if (!AutoUpdateHellion)
-            {              
+            {
                 if (!File.Exists("HELLION_Dedicated.exe"))
                 {
                     Log.Instance.Warn("Hellion Dedicated wasn't found.");
@@ -35,7 +35,6 @@ namespace HellionExtendedServer.Modules
                     Log.Instance.Info("Press enter to close.");
                     Console.ReadLine();
                     Environment.Exit(0);
-
                 }
 
                 return false;
@@ -91,7 +90,7 @@ namespace HellionExtendedServer.Modules
 
                     Console.WriteLine(line);
                     Thread.Sleep(100);
-                }              
+                }
             }
             catch (Exception)
             {

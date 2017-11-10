@@ -272,23 +272,19 @@ namespace HellionExtendedServer.Common.GameServerIni
 
         public Setting GetAsSetting()
         {
-
             setting.Value = Value;
-
-           
 
             return setting;
         }
 
         public GameServerProperty SetFromSetting(Setting value)
         {
-
             sName = value.Name;
             sDisplayName = new CultureInfo("en-US").TextInfo.ToTitleCase(value.Name.Replace("_", " ")) + " (Default: " + value.DefaultValue + ")";
             sCategory = value.Category;
             sDescription = value.Description;
             type = value.Type;
-            objValue = value.Value;            
+            objValue = value.Value;
 
             this.setting = value;
 

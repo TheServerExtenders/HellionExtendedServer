@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 
 namespace HellionExtendedServer.Common
 {
     #region Server Name Enums
+
     public enum ServerFolderName
     {
         Base,
-        Data       
+        Data
     }
 
     /// <summary>
@@ -18,9 +18,11 @@ namespace HellionExtendedServer.Common
     {
         GameServerINI
     }
-    #endregion
+
+    #endregion Server Name Enums
 
     #region HES Name Enums
+
     public enum HESFolderName
     {
         Hes,
@@ -40,25 +42,33 @@ namespace HellionExtendedServer.Common
         NLogConfig,
         Config
     }
-    #endregion
+
+    #endregion HES Name Enums
 
     public static class Globals
     {
         #region Server Folder Name Fields
+
         public static readonly string ServerBaseFolderName = "";
         public static readonly string ServerDataFolderName = "Data";
-        #endregion
 
-        #region Server File Name Fields 
+        #endregion Server Folder Name Fields
+
+        #region Server File Name Fields
+
         public static readonly string GameServerINIFileName = "GameServer.ini";
-        #endregion
+
+        #endregion Server File Name Fields
 
         #region Hes File Name Fields
+
         public static readonly string HESConfigFileName = "Config.cfg";
         public static readonly string NLogConfigFileName = "NLog.config";
-        #endregion
+
+        #endregion Hes File Name Fields
 
         #region Hes Folder Names Fields
+
         public static readonly string HESRootFolderName = "Hes";
         public static readonly string HESBinariesFolderName = "bin";
         public static readonly string HESConfigFolderName = "config";
@@ -66,9 +76,11 @@ namespace HellionExtendedServer.Common
         public static readonly string HESLogsFolderName = "logs";
         public static readonly string HESPluginsFolderName = "plugins";
         public static readonly string HESUpdatesFolderName = "updates";
-        #endregion
+
+        #endregion Hes Folder Names Fields
 
         #region FilePath Methods
+
         public static string GetFilePath(ServerFileName serverFileName, bool fullPath = true)
         {
             string file = "";
@@ -96,9 +108,11 @@ namespace HellionExtendedServer.Common
             }
             return file;
         }
-        #endregion
+
+        #endregion FilePath Methods
 
         #region FolderPath Methods
+
         public static string GetFolderPath(ServerFolderName serverFolderName, bool fullPath = false)
         {
             string fullBasePath = Environment.CurrentDirectory;
@@ -155,6 +169,7 @@ namespace HellionExtendedServer.Common
             }
             return fullPath ? Path.Combine(fullBasePath, path) : path;
         }
-        #endregion
+
+        #endregion FolderPath Methods
     }
 }

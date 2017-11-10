@@ -18,6 +18,8 @@ using ZeroGravity.Network;
 using ZeroGravity.Objects;
 using HellionExtendedServer.GUI;
 using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace HellionExtendedServer.Managers
 {
@@ -42,7 +44,6 @@ namespace HellionExtendedServer.Managers
         private bool isSaving = false;
         private Boolean m_isRunning;
         #endregion Fieldss
-
 
         #region Properties
 
@@ -109,7 +110,6 @@ namespace HellionExtendedServer.Managers
 
             m_gameServerIni = new GameServerIni();
             m_gameServerIni.Load();
-
         }
 
         #region Methods
@@ -171,16 +171,13 @@ namespace HellionExtendedServer.Managers
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
-        public void Start(int wait = 0)
+        public async void Start()
         {
-            if(m_assembly == null)
+            if (m_assembly == null)
             {
                 Console.WriteLine($"HELLION_Dedicated.exe does not exist.\r\n Cannot start the server.");
                 return;
             }
-
-            if (wait > 0)
-                Thread.Sleep(wait);
 
             if (Server.IsRunning)
                 return;
@@ -190,10 +187,15 @@ namespace HellionExtendedServer.Managers
                     "",
                 };
 
-            m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
+            await ServerWrapper.HellionDedi.StartServer(serverArgs);
             m_serverWrapper.Init();
-         
-            Thread.Sleep(5000);
+
+
+            while (ServerWrapper.HellionDedi.Server == null)
+            {
+                await Task.Delay(25);
+            }
+
             m_server = ServerWrapper.HellionDedi.Server;
             OnServerRunning?.Invoke(m_server);
 
@@ -225,7 +227,7 @@ namespace HellionExtendedServer.Managers
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
             //TODO load Server Event Listeners
-            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"),typeof(JoinEvent),EventID.PlayerSpawnRequest));
+            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
             //Command Listner
 
 

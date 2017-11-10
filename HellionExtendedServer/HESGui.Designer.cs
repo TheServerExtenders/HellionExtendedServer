@@ -38,6 +38,9 @@
             this.serverconfig_properties = new System.Windows.Forms.PropertyGrid();
             this.HESConfig = new System.Windows.Forms.TabPage();
             this.hesconfig_properties = new System.Windows.Forms.PropertyGrid();
+            this.serverconfig_checkForUpdates = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.server_hesNewsLabel = new System.Windows.Forms.Label();
             this.server_config_reload = new System.Windows.Forms.Button();
             this.server_config_setdefaults = new System.Windows.Forms.Button();
             this.server_config_cancel = new System.Windows.Forms.Button();
@@ -81,9 +84,7 @@
             this.plugins_pluginManager_tab = new System.Windows.Forms.TabPage();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.StatusBar = new System.Windows.Forms.ToolStripStatusLabel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.server_hesNewsLabel = new System.Windows.Forms.Label();
-            this.serverconfig_checkForUpdates = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.Tabs.SuspendLayout();
             this.ServerTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ServerContainer)).BeginInit();
@@ -93,6 +94,7 @@
             this.server_server_Tabs.SuspendLayout();
             this.ServerConfig.SuspendLayout();
             this.HESConfig.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.ChatTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ChatPlayerContainer)).BeginInit();
             this.ChatPlayerContainer.Panel1.SuspendLayout();
@@ -136,7 +138,6 @@
             this.PluginsTab.SuspendLayout();
             this.plugins_tabControl.SuspendLayout();
             this.statusStrip.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Tabs
@@ -188,7 +189,7 @@
             this.ServerContainer.Panel2.Controls.Add(this.server_config_stopserver);
             this.ServerContainer.Panel2.Controls.Add(this.server_config_startserver);
             this.ServerContainer.Size = new System.Drawing.Size(766, 463);
-            this.ServerContainer.SplitterDistance = 370;
+            this.ServerContainer.SplitterDistance = 369;
             this.ServerContainer.TabIndex = 3;
             // 
             // server_server_Tabs
@@ -199,7 +200,7 @@
             this.server_server_Tabs.Location = new System.Drawing.Point(0, 0);
             this.server_server_Tabs.Name = "server_server_Tabs";
             this.server_server_Tabs.SelectedIndex = 0;
-            this.server_server_Tabs.Size = new System.Drawing.Size(766, 370);
+            this.server_server_Tabs.Size = new System.Drawing.Size(766, 369);
             this.server_server_Tabs.TabIndex = 0;
             // 
             // ServerConfig
@@ -208,7 +209,7 @@
             this.ServerConfig.Location = new System.Drawing.Point(4, 22);
             this.ServerConfig.Name = "ServerConfig";
             this.ServerConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.ServerConfig.Size = new System.Drawing.Size(758, 344);
+            this.ServerConfig.Size = new System.Drawing.Size(758, 343);
             this.ServerConfig.TabIndex = 0;
             this.ServerConfig.Text = "Server Config";
             this.ServerConfig.UseVisualStyleBackColor = true;
@@ -222,7 +223,7 @@
             this.serverconfig_properties.Location = new System.Drawing.Point(3, 3);
             this.serverconfig_properties.Name = "serverconfig_properties";
             this.serverconfig_properties.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.serverconfig_properties.Size = new System.Drawing.Size(752, 338);
+            this.serverconfig_properties.Size = new System.Drawing.Size(752, 337);
             this.serverconfig_properties.TabIndex = 1;
             this.serverconfig_properties.ViewBorderColor = System.Drawing.SystemColors.ControlLight;
             // 
@@ -232,7 +233,7 @@
             this.HESConfig.Location = new System.Drawing.Point(4, 22);
             this.HESConfig.Name = "HESConfig";
             this.HESConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.HESConfig.Size = new System.Drawing.Size(758, 359);
+            this.HESConfig.Size = new System.Drawing.Size(758, 343);
             this.HESConfig.TabIndex = 1;
             this.HESConfig.Text = "HES Config";
             this.HESConfig.UseVisualStyleBackColor = true;
@@ -246,14 +247,47 @@
             this.hesconfig_properties.Location = new System.Drawing.Point(3, 3);
             this.hesconfig_properties.Name = "hesconfig_properties";
             this.hesconfig_properties.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.hesconfig_properties.Size = new System.Drawing.Size(752, 353);
+            this.hesconfig_properties.Size = new System.Drawing.Size(752, 337);
             this.hesconfig_properties.TabIndex = 2;
             this.hesconfig_properties.ViewBorderColor = System.Drawing.SystemColors.ControlLight;
+            // 
+            // serverconfig_checkForUpdates
+            // 
+            this.serverconfig_checkForUpdates.Location = new System.Drawing.Point(39, 9);
+            this.serverconfig_checkForUpdates.Name = "serverconfig_checkForUpdates";
+            this.serverconfig_checkForUpdates.Size = new System.Drawing.Size(111, 23);
+            this.serverconfig_checkForUpdates.TabIndex = 8;
+            this.serverconfig_checkForUpdates.Text = "Check For Update";
+            this.serverconfig_checkForUpdates.UseVisualStyleBackColor = true;
+            this.serverconfig_checkForUpdates.Click += new System.EventHandler(this.serverconfig_checkForUpdates_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.server_hesNewsLabel);
+            this.groupBox1.Location = new System.Drawing.Point(183, 9);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(373, 78);
+            this.groupBox1.TabIndex = 7;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "News About HES";
+            // 
+            // server_hesNewsLabel
+            // 
+            this.server_hesNewsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.server_hesNewsLabel.Location = new System.Drawing.Point(3, 16);
+            this.server_hesNewsLabel.Name = "server_hesNewsLabel";
+            this.server_hesNewsLabel.Size = new System.Drawing.Size(367, 59);
+            this.server_hesNewsLabel.TabIndex = 0;
+            this.server_hesNewsLabel.Text = "Configuration options for HES have been moved to the Server tab\r\nunder the HES Co" +
+    "nfig subtab.\r\n";
             // 
             // server_config_reload
             // 
             this.server_config_reload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.server_config_reload.Location = new System.Drawing.Point(562, 62);
+            this.server_config_reload.Location = new System.Drawing.Point(562, 63);
             this.server_config_reload.Name = "server_config_reload";
             this.server_config_reload.Size = new System.Drawing.Size(106, 23);
             this.server_config_reload.TabIndex = 6;
@@ -264,7 +298,7 @@
             // server_config_setdefaults
             // 
             this.server_config_setdefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.server_config_setdefaults.Location = new System.Drawing.Point(562, 14);
+            this.server_config_setdefaults.Location = new System.Drawing.Point(562, 15);
             this.server_config_setdefaults.Name = "server_config_setdefaults";
             this.server_config_setdefaults.Size = new System.Drawing.Size(106, 23);
             this.server_config_setdefaults.TabIndex = 4;
@@ -275,7 +309,7 @@
             // server_config_cancel
             // 
             this.server_config_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.server_config_cancel.Location = new System.Drawing.Point(674, 62);
+            this.server_config_cancel.Location = new System.Drawing.Point(674, 63);
             this.server_config_cancel.Name = "server_config_cancel";
             this.server_config_cancel.Size = new System.Drawing.Size(85, 23);
             this.server_config_cancel.TabIndex = 3;
@@ -286,7 +320,7 @@
             // server_config_save
             // 
             this.server_config_save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.server_config_save.Location = new System.Drawing.Point(674, 14);
+            this.server_config_save.Location = new System.Drawing.Point(674, 15);
             this.server_config_save.Name = "server_config_save";
             this.server_config_save.Size = new System.Drawing.Size(85, 23);
             this.server_config_save.TabIndex = 1;
@@ -297,7 +331,7 @@
             // server_config_stopserver
             // 
             this.server_config_stopserver.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.server_config_stopserver.Location = new System.Drawing.Point(96, 60);
+            this.server_config_stopserver.Location = new System.Drawing.Point(96, 61);
             this.server_config_stopserver.Name = "server_config_stopserver";
             this.server_config_stopserver.Size = new System.Drawing.Size(81, 23);
             this.server_config_stopserver.TabIndex = 1;
@@ -308,7 +342,7 @@
             // server_config_startserver
             // 
             this.server_config_startserver.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.server_config_startserver.Location = new System.Drawing.Point(7, 60);
+            this.server_config_startserver.Location = new System.Drawing.Point(7, 61);
             this.server_config_startserver.Name = "server_config_startserver";
             this.server_config_startserver.Size = new System.Drawing.Size(83, 23);
             this.server_config_startserver.TabIndex = 0;
@@ -755,39 +789,6 @@
             this.StatusBar.Name = "StatusBar";
             this.StatusBar.Size = new System.Drawing.Size(0, 17);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.server_hesNewsLabel);
-            this.groupBox1.Location = new System.Drawing.Point(183, 9);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(373, 77);
-            this.groupBox1.TabIndex = 7;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "News About HES";
-            // 
-            // server_hesNewsLabel
-            // 
-            this.server_hesNewsLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.server_hesNewsLabel.Location = new System.Drawing.Point(3, 16);
-            this.server_hesNewsLabel.Name = "server_hesNewsLabel";
-            this.server_hesNewsLabel.Size = new System.Drawing.Size(367, 58);
-            this.server_hesNewsLabel.TabIndex = 0;
-            this.server_hesNewsLabel.Text = "Configuration options for HES have been moved to the Server tab\r\nunder the HES Co" +
-    "nfig subtab.\r\n";
-            // 
-            // serverconfig_checkForUpdates
-            // 
-            this.serverconfig_checkForUpdates.Location = new System.Drawing.Point(39, 9);
-            this.serverconfig_checkForUpdates.Name = "serverconfig_checkForUpdates";
-            this.serverconfig_checkForUpdates.Size = new System.Drawing.Size(111, 23);
-            this.serverconfig_checkForUpdates.TabIndex = 8;
-            this.serverconfig_checkForUpdates.Text = "Check For Update";
-            this.serverconfig_checkForUpdates.UseVisualStyleBackColor = true;
-            this.serverconfig_checkForUpdates.Click += new System.EventHandler(this.serverconfig_checkForUpdates_Click);
-            // 
             // HESGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -809,6 +810,7 @@
             this.server_server_Tabs.ResumeLayout(false);
             this.ServerConfig.ResumeLayout(false);
             this.HESConfig.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.ChatTab.ResumeLayout(false);
             this.ChatPlayerContainer.Panel1.ResumeLayout(false);
             this.ChatPlayerContainer.Panel2.ResumeLayout(false);
@@ -857,7 +859,6 @@
             this.plugins_tabControl.ResumeLayout(false);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -919,6 +920,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label server_hesNewsLabel;
         private System.Windows.Forms.Button serverconfig_checkForUpdates;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

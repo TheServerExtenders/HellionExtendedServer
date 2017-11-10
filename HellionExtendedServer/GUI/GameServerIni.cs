@@ -17,7 +17,6 @@ namespace HellionExtendedServer.GUI
         public static string m_fileName = "GameServer.ini";
         private static string m_originalFileName = "hes\\config\\GameServer.ini.original";
         private static string m_backupFileName = "hes\\config\\GameServer.ini.backup";
-        private static string m_exampleFileName = "hes\\config\\GameServer_example.ini";
 
         public Dictionary<string, string> Settings = new Dictionary<string, string>();
 
@@ -462,10 +461,9 @@ namespace HellionExtendedServer.GUI
                 }
                 else
                 {
-                    Log.Instance.Warn("GameServer.Ini wasn't found! Creating one from the GameServer_example.ini made on " +
-                       File.GetLastWriteTime(m_exampleFileName));
-
-                    File.Copy(m_exampleFileName, m_fileName);
+                    LoadDefaults();
+                    SetSettings();
+                    Save(true);
                 }
 
             }

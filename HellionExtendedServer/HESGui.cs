@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
@@ -29,8 +28,6 @@ namespace HellionExtendedServer
             ServerInstance.Instance.OnServerRunning += Instance_OnServerRunning;
             ServerInstance.Instance.OnServerStopped += Instance_OnServerStopped;
 
-           
-
             ServerInstance.Instance.GameServerConfig.Load();
             serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
             hesconfig_properties.SelectedObject = Config.Instance.Settings;
@@ -47,7 +44,6 @@ namespace HellionExtendedServer
                     System.Windows.Forms.MessageBoxIcon.Exclamation);
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    
                 }
             }
 
@@ -55,11 +51,11 @@ namespace HellionExtendedServer
             UpdateManager.Instance.OnUpdateDownloaded += new UpdateManager.UpdateEventHandler(Instance_OnUpdateDownloaded);
             UpdateManager.Instance.OnUpdateApplied += new UpdateManager.UpdateEventHandler(Instance_OnUpdateApplied);
 
-            server_hesNewsLabel.Text = 
-                @"Welcome to HES! Auto updates have now been implemented!\r\n" +
+            server_hesNewsLabel.Text =
+                @"Welcome to HES! Auto updates have now been implemented!" +
                 "Check out the enabled Options under HES Config!";
 
-            isRunning = ServerInstance.Instance.IsRunning;
+            isRunning = ServerInstance.Instance.IsRunning;                 
         }
 
         private void DisableControls(bool disable = true)
@@ -175,7 +171,7 @@ namespace HellionExtendedServer
 
         private void Instance_OnServerRunning(ZeroGravity.Server server)
         {
-            isRunning = true;
+            StatusBar.Text = "Server Started!";
             Invoke(new MethodInvoker(delegate
             {
                 DisableControls(false);
@@ -372,7 +368,7 @@ namespace HellionExtendedServer
                 Config.Instance.Settings = new Settings();
                 hesconfig_properties.SelectedObject = Config.Instance.Settings;
                 hesconfig_properties.Refresh();
-                StatusBar.Text = "HES Config Defaults loaded. Don't forget to save!";              
+                StatusBar.Text = "HES Config Defaults loaded. Don't forget to save!";
             }
         }
 
@@ -405,39 +401,32 @@ namespace HellionExtendedServer
 
         private void server_config_startserver_Click(object sender, EventArgs e)
         {
-            try
+            CheckForIllegalCrossThreadCalls = false;
+
+            if (!ServerInstance.Instance.IsRunning)
             {
-                if (!ZeroGravity.Server.IsRunning)
-                {
-                    ServerInstance.Instance.Start();
-                    StatusBar.Text = "Server Starting";
-                }
-                else
-                    StatusBar.Text = "The server is already running!";
-            }           
-            catch (System.Reflection.ReflectionTypeLoadException ex)
-            {
-                foreach (Exception exception in ex.LoaderExceptions)
-                    Console.WriteLine(exception.ToString());
-                
+                StatusBar.Text = "Server Starting";
+
+                HES.KeyPressSimulator("/s");               
+                AddChatLine("Starting Server!");
             }
-            catch(Exception exception)
-            {
-                Console.WriteLine(exception.ToString());
-            }
-           
+            else
+                StatusBar.Text = "The server is already started!";
         }
 
         private void server_config_stopserver_Click(object sender, EventArgs e)
         {
-            if (ZeroGravity.Server.IsRunning)
+            if (ServerInstance.Instance.IsRunning)
             {
-                Task.Run(() => ServerInstance.Instance.Stop());
                 StatusBar.Text = "Server Stopping";
+                ServerInstance.Instance.Stop();
+                StatusBar.Text = "Server Stopped";
             }
             else
                 StatusBar.Text = "The server is already stopped!";
+
         }
+
 
         #endregion Server Control
 
@@ -554,10 +543,10 @@ namespace HellionExtendedServer
                 $"Release Published {release.Assets.First().CreatedAt.ToLocalTime()}\r\n" +
                 $"Release Description:\r\n\r\n" +
                 $"{release.Body}\r\n\r\n" +
-                $"Would you like to update now?", 
-                "HES Updater", 
+                $"Would you like to update now?",
+                "HES Updater",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-            if(result == DialogResult.Yes)
+            if (result == DialogResult.Yes)
             {
                 UpdateManager.Instance.DownloadLatestRelease(Config.Instance.Settings.EnableDevelopmentVersion);
             }
@@ -593,9 +582,5 @@ namespace HellionExtendedServer
                 StatusBar.Text = "HES needs to be restarted before you can use the new features!";
             }
         }
-
-
-
-
     }
 }

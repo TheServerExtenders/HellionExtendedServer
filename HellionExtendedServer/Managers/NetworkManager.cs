@@ -17,7 +17,7 @@ namespace HellionExtendedServer.Managers
         #region Fields
         private static NetworkManager m_networkManager;
         internal NetworkController m_network;
-        private static readonly Logger chatlogger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger chatlogger = LogManager.GetLogger("chatlog");
         #endregion Fields
 
         #region Properties
@@ -141,12 +141,11 @@ namespace HellionExtendedServer.Managers
 
             if (printtoGui)
                 HES.GUI.AddChatLine(String.Format("{0} - {1}: {2}", DateTime.Now.ToLocalTime(), textChatMessage.Name, msg));
-
-            if (!printToConsole)
-                return;
-            chatlogger.Info((string)textChatMessage.Name + ": " + msg);
-
-            
+          
+            if (printToConsole)
+            {
+                chatlogger.Info((string)textChatMessage.Name + ": " + msg);
+            }          
         }
 
         public void MessageToClient(string msg, string SenderName, string ReceiverName)

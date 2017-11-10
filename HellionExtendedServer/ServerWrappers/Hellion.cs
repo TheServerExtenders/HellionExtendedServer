@@ -7,6 +7,7 @@ using HellionExtendedServer.Managers;
 using System.Net.Sockets;
 using HellionExtendedServer.Common;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace HellionExtendedServer.ServerWrappers
 {
@@ -134,12 +135,19 @@ namespace HellionExtendedServer.ServerWrappers
             
         }
 
+
+        private async Task StartServerProxy()
+        {
+          
+        }
+
+
         /// <summary>
         /// Starts Hellion Dedicated in its own thread
         /// </summary>
         /// <param name="args">command line arg passthrough</param>
         /// <returns>the thread!</returns>
-        public Thread StartServer(Object args)
+        public async Task<Thread> StartServer(Object args)
         {
             Log.Instance.Info(HES.Localization.Sentences["LoadingDedicated"]);
 
@@ -165,11 +173,19 @@ namespace HellionExtendedServer.ServerWrappers
 
             try
             {
+                while (m_instance.Server == null)
+                {
+                    await Task.Delay(500);
+                }
+
                 // wait 8 seconds before accessing the variable to make sure its not null
-                Thread.Sleep(8000);
+                // Thread.Sleep(8000);
 
                 // Waits for the world to initialize before hooking into the class
-                SpinWait.SpinUntil(() => m_instance.Server.WorldInitialized);
+                while (!m_instance.Server.WorldInitialized)
+                {
+                    await Task.Delay(500);
+                }
             }
             catch (NullReferenceException)
             {

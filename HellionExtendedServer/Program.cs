@@ -76,15 +76,12 @@ namespace HellionExtendedServer
         private static void Main(string[] args)
         {
             ThisProcess = Process.GetCurrentProcess();
-
-            LogManager.Configuration = CreateNLogConfiguration();
-            new Log();
-
+           
             CommandLineArgs = args;
             Console.Title = WindowTitle;
 
             new FolderStructure().Build();
-
+          
             m_config = new Config();
             debugMode = m_config.Settings.DebugMode;
 
@@ -170,6 +167,7 @@ namespace HellionExtendedServer
                 return Assembly.LoadFrom(dllFullPath);
             };
 
+
             // This is for args that should be used before HES loads
             bool noUpdateHes = false;
             bool noUpdateHellion = false;
@@ -233,7 +231,8 @@ namespace HellionExtendedServer
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashDump.CurrentDomain_UnhandledException);
 
-            string configPath = Globals.GetFilePath(HESFileName.NLogConfig);
+            LogManager.Configuration = CreateNLogConfiguration();
+            new Log();
 
             mainLogger = LogManager.GetCurrentClassLogger();
 
@@ -259,6 +258,12 @@ namespace HellionExtendedServer
             m_localization.Load(m_config.Settings.CurrentLanguage.ToString().Substring(0, 2));
 
             new SteamCMD().GetSteamCMD();
+
+            if (SteamCMD.NeedsRestart)
+            {
+                Console.WriteLine("SteamCMD Requested a restart of HES, Restarting...");
+                Restart(false);
+            }
 
             mainLogger.Info("Hellion Extended Server v" + Version + " Initialized.");
 

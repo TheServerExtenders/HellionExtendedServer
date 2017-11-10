@@ -17,6 +17,8 @@ namespace HellionExtendedServer.Modules
 
         public static bool AutoUpdateHellion = true;
 
+        internal static bool NeedsRestart = false;
+
         public SteamCMD()
         {
             Log.Instance.Info("Running SteamCMD Checks..");
@@ -78,11 +80,18 @@ namespace HellionExtendedServer.Modules
                 };
                 Process steamCmd = Process.Start(steamCmdinfo);
 
+                NeedsRestart = false;
+
                 while (!steamCmd.HasExited)
                 {
-                    Console.WriteLine(steamCmd.StandardOutput.ReadLine());
+                    var line = steamCmd.StandardOutput.ReadLine();
+
+                    if (line == "Success! App '598850' fully installed.")
+                        NeedsRestart = true;
+
+                    Console.WriteLine(line);
                     Thread.Sleep(100);
-                }
+                }              
             }
             catch (Exception)
             {

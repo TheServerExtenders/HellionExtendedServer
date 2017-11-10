@@ -145,6 +145,7 @@
     <Compile Include="GUI\Objects\BaseObject.cs" />
     <Compile Include="Managers\Event\Events\JoinEvent.cs" />
     <Compile Include="Managers\Event\ServerEvents\JoinEvent.cs" />
+    <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Modules\CrashDump.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GUI\Forms\Updater\UpdateForm.cs">

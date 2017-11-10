@@ -6,6 +6,8 @@ using ZeroGravity;
 using HellionExtendedServer.Managers;
 using System.Net.Sockets;
 using HellionExtendedServer.Common;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace HellionExtendedServer.ServerWrappers
 {
@@ -54,7 +56,7 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (ArgumentException ex)
             {
-                Log.Instance.Fatal(ex.ToString());
+                Log.Instance.Fatal(ex, "Hellion Extended Server [REFLECTION ERROR] : " + ex.Message);
             }
 
             try
@@ -64,47 +66,88 @@ namespace HellionExtendedServer.ServerWrappers
             }
             catch (ArgumentException ex)
             {
-                Log.Instance.Fatal(ex.ToString());
-            }           
+                Log.Instance.Fatal(ex, "Hellion Extended Server [REFLECTION ERROR] : " + ex.Message);
+            }
         }
 
         public void StopServer()
         {
+            bool isSaving = false;
+
             try
             {
                 Log.Instance.Info(HES.Localization.Sentences["ShuttingDown"]);
                
                 if (Server.PersistenceSaveInterval > 0.0)
                 {
-                    ServerInstance.Instance.Save();
-                    Log.Instance.Info(HES.Localization.Sentences["SavingUniverse"]);
+                    //ServerInstance.Instance.Save();
+                    isSaving = true;
+                    Stopwatch saveTime = new Stopwatch();
+                    saveTime.Start();
+                    Console.WriteLine(HES.Localization.Sentences["SavingUniverse"]);
+                    Persistence.Save();
+                    saveTime.Stop();
+                    Log.Instance.Info(
+                        string.Format(HES.Localization.Sentences["SavedUniverseTime"], 
+                        saveTime.Elapsed.Milliseconds, 
+                        string.Format((string)Persistence.PersistanceFileName, 
+                        DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss"))));
                 }
 
                 m_closeSocketListeners.Invoke(Server.Instance.NetworkController, null);
 
-                Server.IsRunning = false;
+                Log.Instance.Info("Logging out all clients...");
+                foreach (var client in Server.Instance.NetworkController.clientList)
+                {
+                    client.Value.Thread.Stop();
+
+                    if (client.Value.Player != null)
+                    {
+                        client.Value.Player.LogoutDisconnectReset();
+                        client.Value.Player.DiconnectFromNetworkContoller();
+                    }
+                }
+                Server.Instance.NetworkController.clientList.Clear();
+
+                
 
                 Dbg.Destroy();
+
+                Log.Instance.Info("Ending the Server loop...");
+
                 Server.MainLoopEnded.WaitOne(5000);
+
+                Log.Instance.Info("Loop ended.");
 
                 ServerInstance.Instance.IsRunning = false;
 
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
                 Log.Instance.Info(HES.Localization.Sentences["SuccessShutdown"]);
+                Server.IsRunning = false;
             }
             catch (Exception ex)
             {
 
-                Log.Instance.Error("Hellion Extended Server [SHUTDOWN ERROR] : " + ex.ToString());
+                Log.Instance.Error(ex, "Hellion Extended Server [SHUTDOWN ERROR] : " + ex.Message);
             }
             
         }
+
+
+        private async Task StartServerProxy()
+        {
+          
+        }
+
 
         /// <summary>
         /// Starts Hellion Dedicated in its own thread
         /// </summary>
         /// <param name="args">command line arg passthrough</param>
         /// <returns>the thread!</returns>
-        public Thread StartServer(Object args)
+        public async Task<Thread> StartServer(Object args)
         {
             Log.Instance.Info(HES.Localization.Sentences["LoadingDedicated"]);
 
@@ -116,12 +159,13 @@ namespace HellionExtendedServer.ServerWrappers
 
             try
             {
+                GC.Collect();
                 // Start the thread!
                 serverThread.Start(args);
             }
             catch (Exception ex)
             {
-                Log.Instance.Fatal("Hellion Extended Server [SERVER THREAD ERROR] : " + ex.ToString());
+                Log.Instance.Fatal(ex, "Hellion Extended Server [SERVER THREAD ERROR] : " + ex.Message);
                 return null;
             }
 
@@ -129,11 +173,19 @@ namespace HellionExtendedServer.ServerWrappers
 
             try
             {
+                while (m_instance.Server == null)
+                {
+                    await Task.Delay(500);
+                }
+
                 // wait 8 seconds before accessing the variable to make sure its not null
-                Thread.Sleep(8000);
+                // Thread.Sleep(8000);
 
                 // Waits for the world to initialize before hooking into the class
-                SpinWait.SpinUntil(() => m_instance.Server.WorldInitialized);
+                while (!m_instance.Server.WorldInitialized)
+                {
+                    await Task.Delay(500);
+                }
             }
             catch (NullReferenceException)
             {
@@ -166,8 +218,9 @@ namespace HellionExtendedServer.ServerWrappers
             catch (Exception ex)
             {
                 Log.Instance.Fatal("Hellion Extended Server [UNHANDLED EXCEPTION] : " + ex.ToString());
+                m_isRunning = false;
             }
-            m_isRunning = false;
+            
         }
 
         /// <summary>
@@ -177,21 +230,47 @@ namespace HellionExtendedServer.ServerWrappers
         /// <param name="args"></param>
         private void Start(Object[] args)
         {
+
             try
             {
                 Server.Properties = new ZeroGravity.Properties(Server.ConfigDir + "GameServer.ini");
-
-                m_server = new Server();
-
-                m_server.MainLoop();
-            }
-            catch (TypeInitializationException ex)
-            {
-                Log.Instance.Fatal("[REPORT THE FOLLOWING TO GITHUB ISSUES] Could Not Initialize Server! : [FATAL ERROR]" + ex.ToString());
             }
             catch (Exception ex)
             {
-                Log.Instance.Fatal("Hellion Extended Server [START EXCEPTION] :  " + ex.Message);
+                Log.Instance.Fatal(ex, "Hellion Extended Server [GAMESERVERINI PROPERTIES ERROR] :  " + ex.Message);
+            }
+
+            try
+            {
+                m_server = new Server();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance.Fatal(ex, "Hellion Extended Server [NEW SERVER INSTANCE ERROR] :  " + ex.Message);
+            }
+
+            try
+            {           
+               
+                m_server.MainLoop();
+            }
+            catch(ArgumentException ex)
+            {
+
+            }
+            catch (TypeInitializationException ex)
+            {
+                Log.Instance.Fatal(ex, "[REPORT THE FOLLOWING TO GITHUB ISSUES] Could Not Initialize Server! : [FATAL ERROR]" + ex.ToString());
+            }
+            catch (Exception ex)
+            {
+
+                string inner = "";
+                if (ex.InnerException != null)
+                    inner = "\r\n InnerException " + ex.InnerException.StackTrace;
+
+
+                Log.Instance.Fatal(ex, "Hellion Extended Server [START MAINLOOP EXCEPTION] :  " + ex.ToString() + inner);
             }
         }
 

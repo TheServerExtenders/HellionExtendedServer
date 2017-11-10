@@ -33,10 +33,7 @@ namespace HellionExtendedServer.Managers.Commands
                 return;
             }
             PermissionAttribute pa = Attribute.GetCustomAttribute(cmdclass.GetType(), typeof(PermissionAttribute), true) as PermissionAttribute;
-            if (pa != null)
-            {
-                    ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
-            }
+            if (pa != null)ServerInstance.Instance.PermissionManager.AddPermissionAttribute(pa);
             CommandAttribute pluginAttribute = Attribute.GetCustomAttribute(cmdclass.GetType(), typeof(CommandAttribute), true) as CommandAttribute;
             if (pluginAttribute != null)
             {
@@ -67,11 +64,11 @@ namespace HellionExtendedServer.Managers.Commands
 
         public bool HandleConsoleCommand(string cmd, string[] args)
         {
-            Console.WriteLine(String.Format("Handeling Console Cmd /{0} with arge: {1}", cmd, String.Join(" ", args)));
+            Console.WriteLine(String.Format("Handling Console Command /{0} with arg: {1}", cmd, String.Join(" ", args)));
             //TODO check Permmissions
             if (!commandDictionary.ContainsKey(cmd)) return false;
             Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server });
-            if (c == null) return false;
+            if (c == null) {return false;}
             /*CommandAttribute pluginAttribute = Attribute.GetCustomAttribute(c.GetType(), typeof(CommandAttribute), true) as CommandAttribute;
             if (pluginAttribute != null)
             {
@@ -86,10 +83,12 @@ namespace HellionExtendedServer.Managers.Commands
             Log.Instance.Debug("Console Command Ran!");
             return true;
         }
+        
         public void HandlePlayerCommand(string cmd, string[] args, Player sender)
         {
-            Console.WriteLine(String.Format("Handeling String /{0} with arge: {1}", cmd, String.Join(" ",args)));
-            //TODO check Permmissions
+            Console.WriteLine(String.Format("Handling String /{0} with arge: {1}", cmd, String.Join(" ",args)));
+            foreach (PluginInfo pi in ServerInstance.Instance.PluginManager.LoadedPlugins)pi.MainClass.OnCommand(sender,cmd,args);    
+            //TODO check Permissions
             if (!commandDictionary.ContainsKey(cmd)) return;
             Command c = (Command)Activator.CreateInstance(commandDictionary[cmd], new object[] { ServerInstance.Instance.Server});
             if (c == null) return;

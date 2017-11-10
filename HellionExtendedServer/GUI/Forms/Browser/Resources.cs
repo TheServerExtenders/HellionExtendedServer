@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace HellionExtendedServer.Managers.Plugins.Browser
+namespace HellionExtendedServer.GUI.Forms.Browser
 {
     public class PluginFile
     {
@@ -74,7 +74,7 @@ namespace HellionExtendedServer.Managers.Plugins.Browser
 
                     Console.WriteLine("NewDL: " + DownloadURL);
 
-                    PluginBrowser.DownloadPlugin(plugin.Name + ".zip", DownloadURL);
+                    //PluginBrowser.DownloadPlugin(plugin.Name + ".zip", DownloadURL);
                 }
             }
             catch (Exception ex)

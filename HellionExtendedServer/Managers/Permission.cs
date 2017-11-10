@@ -38,7 +38,7 @@ namespace HellionExtendedServer.Managers
                         valid = true;
                         continue;
                     }
-                    if (a[z] == "*")return true;//Insta Valid!
+                    if (a[z] == "*") return true; //Insta Valid!
                     break;
                 }
                 if (valid) return true;
@@ -47,6 +47,7 @@ namespace HellionExtendedServer.Managers
             //Basic
             //return Perms.Contains(perm.ToLower());
         }
+
         public Boolean IsOP()
         {
             return OP;
@@ -66,6 +67,7 @@ namespace HellionExtendedServer.Managers
         {
             if (Perms.Contains(perm.ToLower())) Perms.Remove(perm.ToLower());
         }
+
         public void AddGroup(String group)
         {
             if (!Groups.Contains(group.ToLower())) Groups.Add(group.ToLower());
@@ -75,7 +77,5 @@ namespace HellionExtendedServer.Managers
         {
             if (Groups.Contains(group.ToLower())) Groups.Remove(group.ToLower());
         }
-
-
     }
 }

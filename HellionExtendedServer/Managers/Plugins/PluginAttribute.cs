@@ -15,5 +15,6 @@ namespace HellionExtendedServer.Managers.Plugins
         public string Description;
         public string Author;
         public string API;
+        public string[] Alliais;
     }
 }

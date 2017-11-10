@@ -1,20 +1,19 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using HellionExtendedServer.Common;
-using HellionExtendedServer.Managers;
-using HellionExtendedServer.Managers.Commands;
+﻿using HellionExtendedServer.Managers;
 using HellionExtendedServer.Managers.Plugins;
 using NLog;
+using System;
+using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.Player;
 using ZeroGravity;
+using ZeroGravity.Network;
 using ZeroGravity.Objects;
-
 
 namespace HellionExtendedServer.Common.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
         #region Fields
+
         protected String m_directory;
         protected Server m_server;
         protected String m_version;
@@ -22,15 +21,18 @@ namespace HellionExtendedServer.Common.Plugins
         protected String m_author;
         protected String m_name;
         protected String m_api;
+        protected String[] m_aillias;
         protected Guid m_id;
         protected PluginHelper m_plugin_helper;
         protected Boolean isenabled = false;
 
         //protected LogInstance m_log;
         protected PluginBaseConfig m_config;
-        #endregion
+
+        #endregion Fields
 
         #region Properties
+
         public virtual Boolean Enabled { get { return isenabled; } internal set { isenabled = value; } }
         public virtual Guid Id { get { return m_id; } internal set { m_id = value; } }
         public virtual String GetName { get { return m_name; } internal set { m_name = value; } }
@@ -39,15 +41,19 @@ namespace HellionExtendedServer.Common.Plugins
         public virtual String Author { get { return m_author; } internal set { m_author = value; } }
         public virtual String Directory { get { return m_directory; } internal set { m_directory = value; } }
         public virtual String API { get { return m_api; } internal set { m_api = value; } }
+        public virtual String[] Aillias { get { return m_aillias; } internal set { m_aillias = value; } }
         public virtual Server GetServer { get { return m_server; } }
         public virtual PluginHelper GetPluginHelper { get { return m_plugin_helper; } }
 
         //public virtual LogInstance PluginLog { get { return m_log; } }
         public virtual PluginBaseConfig Config { get { return m_config; } }
+
         public Logger GetLogger { get { return Log.Instance; } }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         public PluginBase()
         {
             m_server = ServerInstance.Instance.Server;
@@ -64,11 +70,13 @@ namespace HellionExtendedServer.Common.Plugins
 
             m_plugin_helper = new PluginHelper(m_server);
         }
+
         public virtual void Init(String modDirectory)
+            => Init();
+
+        public virtual void Init()
         {
             Enabled = true;
-            m_directory = modDirectory;
-            m_server = ServerInstance.Instance.Server;
             if (m_server == null)
             {
                 //ERROR! No Server Running!
@@ -84,12 +92,13 @@ namespace HellionExtendedServer.Common.Plugins
                 Description = pluginAttribute.Description;
                 Author = pluginAttribute.Author;
                 API = pluginAttribute.API;
+                Aillias = pluginAttribute.Alliais;
             }
             else
             {
                 Enabled = false;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error! No Plugin Attribute Found!");
+                Console.WriteLine("Plugin Invalid! No Plugin Attribute Found!");
                 Console.ResetColor();
                 return;
             }
@@ -102,30 +111,51 @@ namespace HellionExtendedServer.Common.Plugins
         {
             DisablePlugin();
         }
+
         public void OnLoad()
         {
-
         }
 
         public void DisablePlugin(bool remove = true)
         {
             Enabled = true;
             OnDisable();
-            if(remove)ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
+            if (remove) ServerInstance.Instance.PluginManager.ShutdownPlugin(GetName);
         }
+
         public virtual void OnEnable()
         {
-
         }
+
         public virtual void OnDisable()
         {
-
         }
+
         public virtual void OnCommand(Player p, String command, String[] args)
         {
-
         }
 
-        #endregion
+        public virtual void OnConsoleCommand(String command, String[] args)
+        {
+        }
+
+        public Type AA = typeof(PlayerSpawnRequest);
+        
+        [HESEvent(EventType = EventID.PlayerSpawnRequest)]
+        public void PlayerJoinEvent(GenericEvent evnt)
+        {
+            dynamic e = Convert.ChangeType(evnt.Data,AA);
+            if (e == null)
+            {
+                Console.WriteLine("ERROR! #4543 PLZ TELL YUNG TO FIX ME!!!!!");
+                return;
+            }
+            PlayerSpawnRequest ev = e.Method();
+            Player p = GetPluginHelper.getPlayerFromGuid(ev.Sender);
+            String name = p == null ? "M/A" : p.Name;
+            Console.WriteLine("Player Spawn Info: GUID {0} Name {1} Type of Spawn {2} " ,ev.Sender, name,ev.SpawnType);
+        }
+
+        #endregion Methods
     }
 }

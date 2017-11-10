@@ -42,7 +42,7 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
 
             GetPluginHelper.GetLogger.Info(String.Format("==== Help Page ===="));
 
-            int i = 1;
+
             foreach (CommandAttribute command1 in commands)
             {
                 GetPluginHelper.GetLogger.Info("/" + command1.CommandName + ": " + command1.Description);

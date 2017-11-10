@@ -1,0 +1,14 @@
+branches:
+  # whitelist
+  only:
+    - master
+    - Development
+
+  # blacklist
+  except:
+    - gh-pages
+    
+build:
+  parallel: true
+  project: HellionExtendedServer_Solution.sln      
+  include_nuget_references: true 

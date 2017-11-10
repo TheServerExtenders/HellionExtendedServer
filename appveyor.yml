@@ -14,4 +14,5 @@ build:
   include_nuget_references: true 
   
 before_build:
+    - nuget install Microsoft.Net.Compilers
     - nuget restore HellionExtendedServer_Solution.sln  

@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Managers.Plugins;
-using ZeroGravity;
+﻿using ZeroGravity;
 using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
 {
-    [Permission(Default = "op",PermissionName = "HES.OP.ADDPERM")]
+    [Permission(Default = "op", PermissionName = "HES.OP.ADDPERM")]
     [Command(CommandName = "addperm", Description = "Add permission node to player", Usage = "Usage: /addperm <player> <permission.node.data>", Permission = "HES.OP.ADDPERM")]
     public class AddPerms : Command
     {
-
         public AddPerms(Server svr) : base(svr)
         {
-
         }
 
         public override void runCommand(Player sender, string[] args)
@@ -35,9 +27,8 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
             Permission p = ServerInstance.Instance.PermissionManager.GetPlayerPermission(target);
             p.AddPerm(args[1]);
             ServerInstance.Instance.PermissionManager.SetPlayerPermission(p);
-            GetPluginHelper.SendMessageToClient(sender,"Success! "+args[1]+" to "+target.Name+"'s permission!");
+            GetPluginHelper.SendMessageToClient(sender, "Success! " + args[1] + " to " + target.Name + "'s permission!");
         }
-
 
         public override void ConsolerunCommand(string[] args)
         {
@@ -58,6 +49,5 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
             GetPluginHelper.GetLogger.Info("Success! " + args[1] + " to " + target.Name + "'s permission!");
             p.HasPerm("HES.Test");
         }
-
     }
 }

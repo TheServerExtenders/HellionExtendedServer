@@ -1,20 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers
 {
     public class PermissionManager
     {
-        
-        protected readonly string SaveFile = "HES/PlayerPerms.json";
-        protected Dictionary<long,Permission> PermissionFactory = new Dictionary<long, Permission>();
-        protected Dictionary<string, PermissionAttribute> PermsDictionary = new Dictionary<string, PermissionAttribute>();
+        private readonly string SaveFile = "HES/PlayerPerms.json";
+        private readonly Dictionary<long, Permission> PermissionFactory = new Dictionary<long, Permission>();
+        private readonly Dictionary<string, PermissionAttribute> PermsDictionary = new Dictionary<string, PermissionAttribute>();
 
         public PermissionManager()
         {
@@ -26,19 +22,30 @@ namespace HellionExtendedServer.Managers
             PermsDictionary[value.PermissionName.ToLower()] = value;
         }
 
+        public void DelPermissionAttribute(PermissionAttribute value)
+        {
+            PermsDictionary.Remove(value.PermissionName.ToLower());
+        }
+
         public bool PlayerHasPerm(Player p, string perm)
         {
-            if (!CheckPerm(perm)) return true;
+            if (!CheckPerm(perm, p)) return true;
             Permission permission = GetPlayerPermission(p);
-            if(permission.HasPerm(perm))return true;
+            if (permission.HasPerm(perm)) return true;
             return false;
         }
-        public bool CheckPerm(string perm)
+
+        public bool CheckPerm(string perm, Player p = null)
         {
-            if (PermsDictionary.ContainsKey(perm.ToLower()))
+            PermissionAttribute pa;
+            if (PermsDictionary.TryGetValue(perm.ToLower(), out pa))
             {
-                PermissionAttribute pa = PermsDictionary[perm.ToLower()];
                 if (pa.Default.ToLower() == "default") return false;
+                if (p != null)
+                {
+                    Permission permission = GetPlayerPermission(p);
+                    if (permission.OP && pa.Default.ToLower() == "OP") return true;
+                }
             }
             return true;
         }
@@ -68,6 +75,31 @@ namespace HellionExtendedServer.Managers
         {
             PermissionFactory[p.GUID] = p;
         }
+
+        public void AddToPlayerPermission(Player p, string perm)
+        {
+            Permission perms = GetPlayerPermission(p);
+            perms.AddPerm(perm);
+        }
+
+        public void RemovePermissionFromPlayer(Player p, string perm)
+        {
+            Permission perms = GetPlayerPermission(p);
+            perms.DelPerm(perm);
+        }
+
+        public void AddPlayerToGroup(Player p, string group)
+        {
+            Permission perms = GetPlayerPermission(p);
+            perms.AddGroup(group);
+        }
+
+        public void RemovePlayerFromGroup(Player p, string group)
+        {
+            Permission perms = GetPlayerPermission(p);
+            perms.DelGroup(group);
+        }
+
         public Permission GetPlayerPermission(Player p)
         {
             return GetPermission(p.GUID);
@@ -80,9 +112,8 @@ namespace HellionExtendedServer.Managers
                 return PermissionFactory[guid];
             }
             Permission p = new Permission(guid);
-            PermissionFactory.Add(guid,p);
+            PermissionFactory.Add(guid, p);
             return p;
         }
-
     }
 }

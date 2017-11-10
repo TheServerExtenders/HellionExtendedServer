@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common.Plugins;
+﻿using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Plugins;
+using System;
 using ZeroGravity;
 using ZeroGravity.Objects;
 
@@ -27,16 +23,19 @@ namespace HellionExtendedServer.Managers.Commands
             get { return c_usage_message; }
             internal set { c_usage_message = value; }
         }
+
         public String Description
         {
             get { return c_description; }
             internal set { c_description = value; }
         }
+
         public String Permissions
         {
             get { return c_permission; }
             internal set { c_permission = value; }
         }
+
         public String Command_Name
         {
             get { return c_command; }
@@ -76,8 +75,11 @@ namespace HellionExtendedServer.Managers.Commands
 
         public virtual void runCommand(Player sender, string[] args)
         {
-
         }
+
+        /**
+         * Gets Main calss associated with Command
+         */
 
         public void ReloadPlugin()
         {
@@ -96,9 +98,9 @@ namespace HellionExtendedServer.Managers.Commands
                 }
             }
         }
+
         public virtual void ConsolerunCommand(string[] args)
         {
-
         }
 
         public static String GetCommandPermission(Type commandtype)
@@ -115,11 +117,12 @@ namespace HellionExtendedServer.Managers.Commands
             }
             return null;
         }
+
         public static CommandAttribute GetCommandAttribute(Type commandtype)
         {
             foreach (Attribute attribute in commandtype.GetCustomAttributes(true))
             {
-                if (attribute is CommandAttribute)return attribute as CommandAttribute;
+                if (attribute is CommandAttribute) return attribute as CommandAttribute;
             }
             return null;
         }
@@ -131,6 +134,6 @@ namespace HellionExtendedServer.Managers.Commands
             return this.MemberwiseClone();
         }
 
-        #endregion
+        #endregion ICloneable Members
     }
 }

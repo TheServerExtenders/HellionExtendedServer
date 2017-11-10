@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common.Plugins;
-using HellionExtendedServer.Managers.Plugins;
 using ZeroGravity;
-using ZeroGravity.Network;
 using ZeroGravity.Objects;
 
 namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
@@ -14,10 +8,8 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
     [Command(CommandName = "status", Description = "Returns the current status of the server", Usage = "Usage: /status", Permission = "HES.Status")]
     public class Status : Command
     {
-
         public Status(Server svr) : base(svr)
         {
-
         }
 
         public override void runCommand(Player sender, string[] args)
@@ -41,6 +33,5 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
                 Console.WriteLine(ex.ToString());
             }
         }
-        
     }
 }

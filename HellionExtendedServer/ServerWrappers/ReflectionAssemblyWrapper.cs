@@ -1,8 +1,7 @@
-﻿using System;
-using System.Reflection;
-using HellionExtendedServer.Managers;
+﻿using HellionExtendedServer.Common;
+using System;
 using System.Diagnostics;
-using HellionExtendedServer.Common;
+using System.Reflection;
 
 // Helper class to ease reflecting of the server
 
@@ -11,12 +10,16 @@ namespace HellionExtendedServer.ServerWrappers
     public class ReflectionAssemblyWrapper
     {
         #region Fields
+
         protected static Assembly m_assembly;
-        #endregion
+
+        #endregion Fields
 
         #region Properties
+
         public static Assembly Assembly { get { return m_assembly; } }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
 
@@ -24,24 +27,29 @@ namespace HellionExtendedServer.ServerWrappers
         {
             m_assembly = assembly;
         }
-        #endregion
+
+        #endregion Methods
     }
 
     public abstract class ReflectionClassWrapper
     {
         #region Fields
+
         protected String m_namespace;
         protected String m_class;
         protected Type m_classType;
         protected Assembly m_assembly;
 
-        #endregion
+        #endregion Fields
 
         #region Properties
+
         public abstract String ClassName { get; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         protected ReflectionClassWrapper(Assembly Assembly, String Namespace)
         {
             m_assembly = Assembly;
@@ -49,25 +57,33 @@ namespace HellionExtendedServer.ServerWrappers
             m_classType = Assembly.GetType(Namespace + "." + ClassName);
         }
 
-        public virtual void Init() { }
-        #endregion
+        public virtual void Init()
+        {
+        }
+
+        #endregion Methods
     }
 
     public class ReflectionMember
     {
         #region Fields
+
         protected Type m_classType;
         protected String m_signature;
         protected String m_className;
         protected MemberInfo[] m_members;
-        #endregion
+
+        #endregion Fields
 
         #region Properties
+
         public String ClassName { get { return m_className; } }
         public String Signature { get { return m_signature; } }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         protected ReflectionMember(String signature, String className, Type classType)
         {
             m_signature = signature;
@@ -79,16 +95,20 @@ namespace HellionExtendedServer.ServerWrappers
                 throw new ArgumentException(String.Format("Reflection Error: Signature {0} not found in {1}", signature, className));
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 
     public class ReflectionField : ReflectionMember
     {
         #region Fields
+
         protected FieldInfo m_field;
-        #endregion
+
+        #endregion Fields
 
         #region Methods
+
         internal ReflectionField(String signature, String className, Type classType)
             : base(signature, className, classType)
         {
@@ -109,21 +129,24 @@ namespace HellionExtendedServer.ServerWrappers
         {
             m_field.SetValue(obj, value);
         }
-        #endregion
+
+        #endregion Methods
     }
 
     public class ReflectionProperty : ReflectionMember
     {
         #region Fields
+
         protected PropertyInfo m_property;
-        #endregion
+
+        #endregion Fields
 
         #region Methods
+
         internal ReflectionProperty(String signature, String className, Type classType)
             : base(signature, className, classType)
         {
             m_property = classType.GetProperty(signature, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
-
 
             if (m_property == null)
             {
@@ -140,12 +163,14 @@ namespace HellionExtendedServer.ServerWrappers
         {
             m_property.SetValue(obj, value);
         }
-        #endregion
+
+        #endregion Methods
     }
 
     public class ReflectionMethod : ReflectionMember
     {
         #region Methods
+
         private MethodInfo Get(Object[] parameters)
         {
             Type[] argTypes = new Type[parameters.Length];
@@ -210,7 +235,6 @@ namespace HellionExtendedServer.ServerWrappers
             return null;
         }
 
-
         public Object Call(Object obj, Object[] parameters)
         {
             if (parameters == null)
@@ -222,7 +246,7 @@ namespace HellionExtendedServer.ServerWrappers
 
             if (methodInfo == null)
             {
-               Log.Instance.Fatal(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
+                Log.Instance.Fatal(String.Format("Overloaded method not found for {0}.{1} with argument types: {2}. Stack Trace: {3}", ClassName, Signature, parameters.ToString(), (new StackTrace()).ToString()));
                 return null;
             }
 
@@ -268,8 +292,8 @@ namespace HellionExtendedServer.ServerWrappers
         internal ReflectionMethod(String signature, String className, Type classType)
             : base(signature, className, classType)
         {
-
         }
-        #endregion
+
+        #endregion Methods
     }
 }

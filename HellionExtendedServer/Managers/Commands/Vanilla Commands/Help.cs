@@ -1,13 +1,7 @@
-﻿using System;
+﻿using HellionExtendedServer.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HellionExtendedServer.Common;
-using HellionExtendedServer.Managers;
-using HellionExtendedServer.Managers.Commands;
-using HellionExtendedServer.Managers.Plugins;
-using NLog;
 using ZeroGravity;
 using ZeroGravity.Objects;
 
@@ -19,10 +13,8 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
         Permission = "HES.help")]
     public class Help : Command
     {
-
         public Help(Server svr) : base(svr)
         {
-
         }
 
         public override void ConsolerunCommand(string[] args)
@@ -42,7 +34,6 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
 
             GetPluginHelper.GetLogger.Info(String.Format("==== Help Page ===="));
 
-            int i = 1;
             foreach (CommandAttribute command1 in commands)
             {
                 GetPluginHelper.GetLogger.Info("/" + command1.CommandName + ": " + command1.Description);
@@ -91,4 +82,3 @@ namespace HellionExtendedServer.Managers.Commands.Vanilla_Commands
         }
     }
 }
-

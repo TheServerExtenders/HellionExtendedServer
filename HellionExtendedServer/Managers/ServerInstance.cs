@@ -1,4 +1,10 @@
-﻿using HellionExtendedServer.ServerWrappers;
+﻿using HellionExtendedServer.Common;
+using HellionExtendedServer.GUI;
+using HellionExtendedServer.Managers.Commands;
+using HellionExtendedServer.Managers.Event;
+using HellionExtendedServer.Managers.Event.ServerEvents;
+using HellionExtendedServer.Managers.Plugins;
+using HellionExtendedServer.ServerWrappers;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -6,17 +12,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using HellionExtendedServer.Common;
-using HellionExtendedServer.Common.Components;
 using ZeroGravity;
-using HellionExtendedServer.Managers.Commands;
-using HellionExtendedServer.Managers.Event;
-using HellionExtendedServer.Managers.Event.ServerEvents;
-using HellionExtendedServer.Managers.Plugins;
-using ZeroGravity.Math;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
-using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
 
 namespace HellionExtendedServer.Managers
 {
@@ -40,20 +38,19 @@ namespace HellionExtendedServer.Managers
 
         private bool isSaving = false;
         private Boolean m_isRunning;
-        #endregion Fieldss
 
+        #endregion Fields
 
         #region Properties
 
         public TimeSpan Uptime { get { return DateTime.Now - m_launchedTime; } }
         public Assembly Assembly { get { return m_assembly; } }
         public Server Server { get { return m_server; } }
-        public GameServerIni Config { get { return m_gameServerIni; } }
+        public GameServerIni GameServerConfig => m_gameServerIni;
         public PluginManager PluginManager { get { return m_pluginManager; } }
         public CommandManager CommandManager { get { return m_commandManager; } }
         public EventHelper EventHelper { get { return m_eventhelper; } }
         public PermissionManager PermissionManager { get { return m_permissionmanager; } }
-        
 
         public static ServerInstance Instance { get { return m_serverInstance; } }
 
@@ -69,17 +66,11 @@ namespace HellionExtendedServer.Managers
                 m_isRunning = value;
                 if (m_isRunning)
                 {
-                    if (OnServerRunning != null)
-                    {
-                        OnServerRunning(m_server);
-                    }
+                    OnServerRunning?.Invoke(m_server);
                 }
                 else
                 {
-                    if (OnServerStopped != null)
-                    {
-                        OnServerStopped(m_server);
-                    }
+                    OnServerStopped?.Invoke(m_server);
                 }
             }
         }
@@ -87,23 +78,37 @@ namespace HellionExtendedServer.Managers
         #endregion Properties
 
         #region Events
+
         public delegate void ServerRunningEvent(Server server);
+
         public event ServerRunningEvent OnServerRunning;
+
         public event ServerRunningEvent OnServerStopped;
-        #endregion
+
+        #endregion Events
 
         public ServerInstance()
         {
-                       
             m_launchedTime = DateTime.MinValue;
 
             m_serverThread = null;
             m_serverInstance = this;
 
-            m_assembly = Assembly.LoadFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe"));
-            m_serverWrapper = new ServerWrapper(m_assembly);
+            string gameExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HELLION_Dedicated.exe");
+
+            if (System.IO.File.Exists(gameExePath))
+            {
+                m_assembly = Assembly.LoadFile(gameExePath);
+                m_serverWrapper = new ServerWrapper(m_assembly);
+            }
+            else
+                Console.WriteLine($"HELLION_Dedicated.exe not detected at {gameExePath}.\r\n Press any key to close.");
+
+            //m_gameServerProperties = new GameServerProperties();
+            //m_gameServerProperties.Load();
 
             m_gameServerIni = new GameServerIni();
+            m_gameServerIni.Load();
         }
 
         #region Methods
@@ -155,22 +160,22 @@ namespace HellionExtendedServer.Managers
         // Test method, please don't change ;)
         public void Test()
         {
-
-           foreach( SpaceObjectVessel vessel in m_server.AllVessels)
+            foreach (SpaceObjectVessel vessel in m_server.AllVessels)
             {
-                Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ",vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(),vessel.Velocity, vessel.AngularVelocity));
-                
+                Console.WriteLine(String.Format("Ship ({0}) Pos: {1} | Angles: {2} | Velocity: {3} | AngularVelocity: {4} ", vessel.GUID, vessel.Position.ToString(), vessel.Rotation.ToString(), vessel.Velocity, vessel.AngularVelocity));
             }
-
         }
 
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
-        public void Start(int wait = 0)
+        public async void Start()
         {
-            if (wait > 0)
-                Thread.Sleep(wait);
+            if (m_assembly == null)
+            {
+                Console.WriteLine($"HELLION_Dedicated.exe does not exist.\r\n Cannot start the server.");
+                return;
+            }
 
             if (Server.IsRunning)
                 return;
@@ -180,13 +185,16 @@ namespace HellionExtendedServer.Managers
                     "",
                 };
 
-            m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
-
+            await ServerWrapper.HellionDedi.StartServer(serverArgs);
             m_serverWrapper.Init();
 
-            Thread.Sleep(5000);
+            while (ServerWrapper.HellionDedi.Server == null)
+            {
+                await Task.Delay(25);
+            }
 
             m_server = ServerWrapper.HellionDedi.Server;
+            OnServerRunning?.Invoke(m_server);
 
             if (IsRunning)
             {
@@ -200,6 +208,7 @@ namespace HellionExtendedServer.Managers
 
                 Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
+
             Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
             Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
@@ -214,21 +223,32 @@ namespace HellionExtendedServer.Managers
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
             //TODO load Server Event Listeners
-            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"),typeof(JoinEvent),EventID.PlayerSpawnRequest));
+            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
             //Command Listner
-
 
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 
             HES.PrintHelp();
+
+            HES.KeyPressSimulator();
         }
 
         public void Stop()
         {
-            PluginManager.ShutdownAllPlugins();
-            ServerWrapper.HellionDedi.StopServer();
-            m_serverThread.Join(60000);
-            m_serverThread.Abort();
+            if (PluginManager.LoadedPlugins != null)
+                foreach (var plugin in PluginManager.LoadedPlugins)
+                    PluginManager.ShutdownPlugin(plugin);
+
+            try
+            {
+                PermissionManager.Save();
+                ServerWrapper.HellionDedi.StopServer();
+                m_serverThread.Join(60000);
+                m_serverThread.Abort();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void TextChatMessageListener(NetworkData data)
@@ -241,24 +261,21 @@ namespace HellionExtendedServer.Managers
                 Player player1 = Server.GetPlayer(textChatMessage.Sender);
                 textChatMessage.Name = player1.Name;
 
-                string[] chatCommandArray = Msg.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                string[] chatCommandArray = Msg.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 string command = chatCommandArray.First();
                 //Send to COmmand Manager
                 if (chatCommandArray.Length > 1)
                 {
-                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/",""), chatCommandArray.Skip(1).ToArray(),player1);
+                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/", ""), chatCommandArray.Skip(1).ToArray(), player1);
                 }
                 else
                 {
-                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/", ""), new String[] {}, player1);
-
+                    CommandManager.HandlePlayerCommand(chatCommandArray.First().Replace("/", ""), new String[] { }, player1);
                 }
 
                 return;
             }
-                Server.TextChatMessageListener(data);
-
-
+            Server.TextChatMessageListener(data);
         }
 
         #endregion Methods

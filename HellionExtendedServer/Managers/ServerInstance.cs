@@ -1,5 +1,4 @@
-﻿using HellionExtendedServer.Common;
-using HellionExtendedServer.GUI;
+﻿using HellionExtendedServer.GUI;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Event;
 using HellionExtendedServer.Managers.Event.ServerEvents;
@@ -169,7 +168,7 @@ namespace HellionExtendedServer.Managers
         /// <summary>
         /// The main start method that loads the controllers and prints information to the console
         /// </summary>
-        public async void Start()
+        public async void Start(bool fromGUI = false)
         {
             if (m_assembly == null)
             {
@@ -179,6 +178,12 @@ namespace HellionExtendedServer.Managers
 
             if (Server.IsRunning)
                 return;
+
+            if (fromGUI)
+            {
+                HES.KeyPressSimulator("/s");
+                return;
+            }
 
             String[] serverArgs = new String[]
                 {
@@ -190,10 +195,23 @@ namespace HellionExtendedServer.Managers
 
             while (ServerWrapper.HellionDedi.Server == null)
             {
-                await Task.Delay(25);
+                await Task.Delay(500);
             }
 
             m_server = ServerWrapper.HellionDedi.Server;
+
+            TimeSpan waitTime = TimeSpan.FromSeconds(10);
+
+            Console.WriteLine("");
+            Console.Write("Loading: [");
+            while (m_server.RunTime < waitTime)
+            {
+                Console.Write("-");
+                await Task.Delay(25);
+            }
+            Console.Write("] Loaded!");
+            Console.WriteLine("");
+
             OnServerRunning?.Invoke(m_server);
 
             if (IsRunning)
@@ -209,32 +227,41 @@ namespace HellionExtendedServer.Managers
                 Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
 
-            Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
-            Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
+
+            m_server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
+            m_server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
 
             new NetworkManager(m_server.NetworkController);
             //Load Permission
             m_permissionmanager = new PermissionManager();
-            //Load Events
-            m_eventhelper = new EventHelper();
+            //Load Events - Breaking the servers events
+            //m_eventhelper = new EventHelper();
             //Load Commands
             m_commandManager = new CommandManager();
             //Load Plugins!
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
-            //TODO load Server Event Listeners
-            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
+
+            
+            //TODO load Server Event Listeners, this is breaking the server's events
+            //EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
             //Command Listner
+
 
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 
             HES.PrintHelp();
 
-            HES.KeyPressSimulator();
         }
 
-        public void Stop()
+        public void Stop(bool fromGUI = false)
         {
+            if (fromGUI)
+            {
+                HES.KeyPressSimulator("/ss");
+                return;
+            }
+
             if (PluginManager.LoadedPlugins != null)
                 foreach (var plugin in PluginManager.LoadedPlugins)
                     PluginManager.ShutdownPlugin(plugin);

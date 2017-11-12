@@ -1,10 +1,10 @@
-﻿using HellionExtendedServer.Common;
-using HellionExtendedServer.Common.Plugins;
+﻿using HellionExtendedServer.Common.Plugins;
 using HellionExtendedServer.Managers.Commands;
 using HellionExtendedServer.Managers.Event;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace HellionExtendedServer.Managers.Plugins
@@ -56,7 +56,7 @@ namespace HellionExtendedServer.Managers.Plugins
             {
                 Plugin.MainClass = (PluginBase)Activator.CreateInstance(Plugin.MainClassType);
 
-                if (Plugin.MainClass != null)
+                if (Plugin.MainClass != null && Plugin.MainClassType.BaseType == typeof(PluginBase))
                 {
                     try
                     {
@@ -166,46 +166,6 @@ namespace HellionExtendedServer.Managers.Plugins
             }
         }
 
-        public List<Assembly> LoadPluginReferences(string pluginFolder)
-        {
-            List<Assembly> pluginReferences = new List<Assembly>();
-
-            try
-            {
-                string[] subDirectories = Directory.GetDirectories(pluginFolder);
-                foreach (string path in subDirectories)
-                {
-                    string[] files = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
-                    foreach (string file in files)
-                    {
-                        try
-                        {
-                            if (IsValidAssembly(file))
-                            {
-                                Assembly pluginreference = Assembly.LoadFrom(file);
-                                pluginReferences.Add(pluginreference);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"WARNING: '{Path.GetFileName(file)}' is not valid for plugin '{Path.GetDirectoryName(pluginFolder)}' Reference will not be loaded.");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Failed to load plugin reference assembly '{Path.GetFileName(file)}' for plugin '{Path.GetDirectoryName(pluginFolder)}' Error: " + ex.ToString());
-                        }
-                    }
-                }
-                return pluginReferences;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to load plugin references for {Path.GetDirectoryName(pluginFolder)} Error: " + ex.ToString());
-            }
-
-            return null;
-        }
-
         public List<PluginInfo> FindAllPlugins()
         {
             List<PluginInfo> foundPlugins = new List<PluginInfo>();
@@ -216,7 +176,6 @@ namespace HellionExtendedServer.Managers.Plugins
             foreach (String subDirectory in subDirectories)
             {
                 PluginInfo[] Plugins = FindPlugin(subDirectory);
-                LoadPluginReferences(subDirectory);
 
                 if (Plugins.Length > 0) foundPlugins.AddRange(Plugins);
             }
@@ -259,6 +218,26 @@ namespace HellionExtendedServer.Managers.Plugins
                 libraryAssembly = Assembly.Load(bytes);
                 //Bug Guid is Glitched Right Now
                 //Guid guid = new Guid(((GuidAttribute)libraryAssembly.GetCustomAttributes(typeof(GuidAttribute), true)[0]).Value);
+
+                var references = libraryAssembly.GetReferencedAssemblies();
+
+                var foundReferences = Directory.GetFiles(Path.GetDirectoryName(library), "*.dll", SearchOption.AllDirectories);
+
+                foreach (var _ref in references)
+                {
+                    string reference = foundReferences.Where((dll) => (dll.Contains(_ref.Name))).FirstOrDefault();
+
+                    if (string.IsNullOrEmpty(reference))
+                        continue;
+
+                    try
+                    {
+                        var assem = Assembly.LoadFrom(reference);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
 
                 bool plug = true;
                 PluginInfo plugin = new PluginInfo();
@@ -340,18 +319,18 @@ namespace HellionExtendedServer.Managers.Plugins
             ParameterInfo[] parameters = method.GetParameters();
             if (parameters.Length <= 0)
             {
-                Log.Instance.Error("Paramater had no lenght! Method Name: " + method.Name);
+                Log.Instance.Error("Parameter had no length! Method Name: " + method.Name);
                 return plugin;
             }
             if (parameters[0].ParameterType.BaseType != typeof(Event.Event))
             {
-                Log.Instance.Error("INVLAID Function Format! Event Expect but got " + parameters[0].Name);
+                Log.Instance.Error("INVALID Function Format! Event Expected but received " + parameters[0].Name);
                 return plugin;
             }
 
             EventListener el = new EventListener(method, plugin.MainClassType, eid);
             plugin.FoundEvents.Add(el);
-            Log.Instance.Info("Found Event Functon : " + parameters[0].ParameterType.Name + " For EventType : " + eid);
+            Log.Instance.Info("Found Event Function : " + parameters[0].ParameterType.Name + " For EventType : " + eid);
             return plugin;
         }
 

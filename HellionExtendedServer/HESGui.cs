@@ -23,6 +23,8 @@ namespace HellionExtendedServer
         {
             InitializeComponent();
 
+            Form.CheckForIllegalCrossThreadCalls = false;
+
             DisableControls();
 
             ServerInstance.Instance.OnServerRunning += Instance_OnServerRunning;
@@ -34,18 +36,6 @@ namespace HellionExtendedServer
 
             serverconfig_properties.Refresh();
 
-            if (Config.Instance.Settings.EnableDevelopmentVersion)
-            {
-                var result = MessageBox.Show(
-                    "Development Versions have been enabled.\r\n\r\n" +
-                    "You have selected to use HES's Development Versions",
-                    "Development Versions Enabled",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                }
-            }
 
             UpdateManager.Instance.OnUpdateChecked += new UpdateManager.UpdateEventHandler(Instance_OnUpdateChecked);
             UpdateManager.Instance.OnUpdateDownloaded += new UpdateManager.UpdateEventHandler(Instance_OnUpdateDownloaded);
@@ -403,14 +393,11 @@ namespace HellionExtendedServer
         {
             try
             {
-                CheckForIllegalCrossThreadCalls = false;
-
+                
                 if (!ServerInstance.Instance.IsRunning)
                 {
                     StatusBar.Text = "Server Starting";
-
-                    HES.KeyPressSimulator("/s");
-                    AddChatLine("Starting Server!");
+                    ServerInstance.Instance.Start(true);
                 }
                 else
                     StatusBar.Text = "The server is already started!";
@@ -427,7 +414,7 @@ namespace HellionExtendedServer
                 if (ServerInstance.Instance.IsRunning)
                 {
                     StatusBar.Text = "Server Stopping";
-                    HES.KeyPressSimulator("/ss");
+                    ServerInstance.Instance.Stop(true);
                 }
                 else
                     StatusBar.Text = "The server is already stopped!";

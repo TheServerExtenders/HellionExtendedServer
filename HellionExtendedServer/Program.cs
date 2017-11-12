@@ -1,5 +1,4 @@
-﻿using HellionExtendedServer.Common;
-using HellionExtendedServer.Managers;
+﻿using HellionExtendedServer.Managers;
 using HellionExtendedServer.Modules;
 using NLog;
 using NLog.Config;
@@ -153,8 +152,15 @@ namespace HellionExtendedServer
                     }
                 }
 
-                if (debugMode)
-                    Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding/Updating missing assembly.");
+                var foundReferences = Directory.GetFiles(Path.GetFullPath("Hes\\plugins"), "*.dll", SearchOption.AllDirectories);
+                string reference = foundReferences.Where((dll) => (dll.Contains(dllName))).FirstOrDefault();
+                if (!string.IsNullOrEmpty(reference))
+                {
+                    return Assembly.LoadFrom(reference);
+                }
+
+                //if (debugMode)
+                //Console.WriteLine($"The assembly '{dllName}' is missing or has been updated. Adding/Updating missing assembly.");
 
                 using (Stream s = Assembly.GetCallingAssembly().GetManifestResourceStream("HellionExtendedServer.Resources." + dllName))
                 {

@@ -86,7 +86,7 @@ namespace HellionExtendedServer.Managers.Event
     public class EventHelper
     {
         public EventSystem ES2;
-        protected List<EventListener> RegiteredEvents = new List<EventListener>();
+        protected List<EventListener> RegisteredEvents = new List<EventListener>();
 
         public EventHelper()
         {
@@ -97,7 +97,7 @@ namespace HellionExtendedServer.Managers.Event
             ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> networkDataGroups = GetCurrentListenersNetwork();
             if (networkDataGroups == null)
             {
-                Log.Instance.Error("Error starting EventHandeler! Could not find all events!");
+                Log.Instance.Error("Error starting Event Handler! Could not find all events!");
                 return;
             }
             List<Type> AddedTypes = new List<Type>();
@@ -222,13 +222,13 @@ namespace HellionExtendedServer.Managers.Event
 
         public void RegisterEvent(EventListener e)
         {
-            RegiteredEvents.Add(e);
+            RegisteredEvents.Add(e);
             //TODO notify of Regerstration
         }
 
         public void ExecuteEvent(GenericEvent e)
         {
-            foreach (EventListener evnt in RegiteredEvents)
+            foreach (EventListener evnt in RegisteredEvents)
             {
                 if (e.GetEventType == evnt.GetEventType)
                 {

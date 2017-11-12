@@ -250,9 +250,3 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-
-GameLibraries/
-/HellionExtendedServer/ReflectionWrappers/HellionClassWrappers/HellionServer.cs
-/HellionExtendedServer/ReflectionWrappers/HellionClassWrappers/ProgramClassWrapper.cs
-/HellionExtendedServer/ReflectionWrappers/HellionProgram.cs
-/HellionExtendedServer/ReflectionWrappers/ReflectionWrapperHelper.cs

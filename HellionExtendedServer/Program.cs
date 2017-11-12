@@ -13,6 +13,8 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using HellionExtendedServer.Timming;
 using ZeroGravity;
 using ZeroGravity.Objects;
 using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
@@ -27,6 +29,8 @@ namespace HellionExtendedServer
         #region Fields
 
         private static HES m_instance;
+        private static Maintimer m_timer;
+        private static Thread m_timmerthread;
         private static Config m_config;
         private static UpdateManager updateManager;
         private static Localization m_localization;
@@ -56,6 +60,8 @@ namespace HellionExtendedServer
                 return false;
             }
         }
+
+        public static Maintimer Timer = m_timer; 
 
         public static HES Instance => m_instance;
 
@@ -215,8 +221,8 @@ namespace HellionExtendedServer
             program.Run(args);
         }
 
-        #region Methods
-
+        #region Methods 
+        
         private static void SetupGUI()
         {
             if (uiThread != null)

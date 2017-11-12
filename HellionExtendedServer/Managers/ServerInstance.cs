@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using ZeroGravity;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
+using HellionExtendedServer.GUI;
+using HellionExtendedServer.Timming;
+using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
 
 namespace HellionExtendedServer.Managers
 {
@@ -26,32 +29,71 @@ namespace HellionExtendedServer.Managers
         private Assembly m_assembly;
         private DateTime m_launchedTime;
         private Server m_server;
+
         private ServerWrapper m_serverWrapper;
         private GameServerIni m_gameServerIni;
+
         private PluginManager m_pluginManager = null;
         private CommandManager m_commandManager;
         private PermissionManager m_permissionmanager;
         private EventHelper m_eventhelper = null;
+        private Thread m_timmerthread = null;
+        private Maintimer m_timmer = null;
 
         private static ServerInstance m_serverInstance;
 
         private bool isSaving = false;
         private Boolean m_isRunning;
 
+        #endregion Fieldss
+
         #endregion Fields
 
         #region Properties
 
-        public TimeSpan Uptime { get { return DateTime.Now - m_launchedTime; } }
-        public Assembly Assembly { get { return m_assembly; } }
-        public Server Server { get { return m_server; } }
-        public GameServerIni GameServerConfig => m_gameServerIni;
-        public PluginManager PluginManager { get { return m_pluginManager; } }
-        public CommandManager CommandManager { get { return m_commandManager; } }
-        public EventHelper EventHelper { get { return m_eventhelper; } }
-        public PermissionManager PermissionManager { get { return m_permissionmanager; } }
+        public TimeSpan Uptime
+        {
+            get { return DateTime.Now - m_launchedTime; }
+        }
 
-        public static ServerInstance Instance { get { return m_serverInstance; } }
+        public Assembly Assembly
+        {
+            get { return m_assembly; }
+        }
+
+        public Server Server
+        {
+            get { return m_server; }
+        }
+
+        //public GameServerProperties GameServerProperties { get { return m_gameServerProperties; } }
+        public GameServerIni GameServerConfig => m_gameServerIni;
+
+        public PluginManager PluginManager
+        {
+            get { return m_pluginManager; }
+        }
+
+        public CommandManager CommandManager
+        {
+            get { return m_commandManager; }
+        }
+
+        public EventHelper EventHelper
+        {
+            get { return m_eventhelper; }
+        }
+
+        public PermissionManager PermissionManager
+        {
+            get { return m_permissionmanager; }
+        }
+
+
+        public static ServerInstance Instance
+        {
+            get { return m_serverInstance; }
+        }
 
         public Boolean IsRunning
         {
@@ -144,7 +186,8 @@ namespace HellionExtendedServer.Managers
                         Persistence.Save();
                         saveTime.Stop();
 
-                        Log.Instance.Info(string.Format(HES.Localization.Sentences["SavedUniverseTime"], saveTime.Elapsed.Milliseconds, string.Format((string)Persistence.PersistanceFileName, DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss"))));
+                        Log.Instance.Info(string.Format(HES.Localization.Sentences["SavedUniverseTime"], saveTime.Elapsed.Milliseconds,
+                            string.Format((string) Persistence.PersistanceFileName, DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm-ss"))));
                         isSaving = false;
                     });
                 }
@@ -186,9 +229,9 @@ namespace HellionExtendedServer.Managers
             }
 
             String[] serverArgs = new String[]
-                {
-                    "",
-                };
+            {
+                "",
+            };
 
             await ServerWrapper.HellionDedi.StartServer(serverArgs);
             m_serverWrapper.Init();
@@ -222,14 +265,20 @@ namespace HellionExtendedServer.Managers
                 stopwatch.Start();
                 Thread.Sleep(1);
                 stopwatch.Stop();
-                long num = (long)(1000.0 / stopwatch.Elapsed.TotalMilliseconds);
+                long num = (long) (1000.0 / stopwatch.Elapsed.TotalMilliseconds);
 
-                Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"), (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num, (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
+                Console.WriteLine(string.Format(HES.Localization.Sentences["ServerDesc"], DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.ffff"),
+                    (Server.NetworkController.ServerID <= 0L ? "Not yet assigned" : string.Concat(Server.NetworkController.ServerID)), 64, num,
+                    (64 > num ? " WARNING: Server ticks is larger than max tick" : ""), Server.ServerName));
             }
+            Server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener)); //Deletes Old Listener
+            Server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener)); //Referances New Listener
 
-
-            m_server.NetworkController.EventSystem.RemoveListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(Server.TextChatMessageListener));//Deletes Old Listener
-            m_server.NetworkController.EventSystem.AddListener(typeof(TextChatMessage), new EventSystem.NetworkDataDelegate(this.TextChatMessageListener));//Referances New Listener
+            //Load Timmer
+            m_timmer = new Maintimer();
+            m_timmerthread = new Thread(Maintimer.run);
+            m_timmerthread.Start();
+            m_timmer.RegisterEvent(new TestEvent());
 
             new NetworkManager(m_server.NetworkController);
             //Load Permission
@@ -241,12 +290,9 @@ namespace HellionExtendedServer.Managers
             //Load Plugins!
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
-
-            
-            //TODO load Server Event Listeners, this is breaking the server's events
-            //EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
+            //TODO load Server Event Listeners
+            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
             //Command Listner
-
 
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);
 

@@ -135,8 +135,8 @@ namespace HellionExtendedServer
 
                     if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
                     {
-                        if (sc_playerslist_listview.Items.ContainsKey(item.Name))
-                            sc_playerslist_listview.Items.RemoveByKey(item.Name);
+                        if (sc_playerslist_listview.Items.ContainsKey(_player.GUID.ToString()))
+                            sc_playerslist_listview.Items.RemoveByKey(_player.GUID.ToString());
                     }
                 }
 
@@ -152,10 +152,13 @@ namespace HellionExtendedServer
                             pc_players_listview.Items.RemoveByKey(_player.GUID.ToString());
                     }
                 }
+
+                sc_playerslist_listview.Refresh();
+                pc_players_listview.Refresh();
             }
             catch (Exception ex)
             {
-                Log.Instance.Error(ex, "Ignore this for now, dont report it!");
+
             }
         }
 

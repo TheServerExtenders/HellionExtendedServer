@@ -145,6 +145,8 @@
     <Compile Include="GUI\Objects\BaseObject.cs" />
     <Compile Include="HESStaticUtils.cs" />
     <Compile Include="Managers\Event\Events\JoinEvent.cs" />
+    <Compile Include="Managers\JenkinsManager.cs" />
+    <Compile Include="Managers\JenkinsValues.cs" />
     <Compile Include="Modules\CrashDump.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="GUI\Forms\Updater\UpdateForm.cs">

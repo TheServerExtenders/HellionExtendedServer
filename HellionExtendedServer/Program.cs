@@ -122,6 +122,7 @@ namespace HellionExtendedServer
 
             new FolderStructure().Build();
                                
+            //TODO Re-Enable with Jenkins Support
             updateManager = new UpdateManager(args);
 
             var program = new HES(args);
@@ -269,7 +270,8 @@ namespace HellionExtendedServer
 
                     if (stringList[1] == "checkupdate")
                     {
-                        updateManager.CheckForUpdates().GetAwaiter().GetResult();
+                        Console.WriteLine("Error! Command Disabled!");
+                        //updateManager.CheckForUpdates().GetAwaiter().GetResult();
                         flag = true;
                     }
 
@@ -289,7 +291,8 @@ namespace HellionExtendedServer
 
                     if (stringList[1] == "forceupdate")
                     {
-                        updateManager.CheckForUpdates(true).GetAwaiter().GetResult();
+                        Console.WriteLine("Error! Command Disabled!");
+                        //updateManager.CheckForUpdates(true).GetAwaiter().GetResult();
                         flag = true;
                     }
 

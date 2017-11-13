@@ -310,13 +310,14 @@ namespace HellionExtendedServer
 
             if (m_useGui)
                 SetupGUI();
-
-            m_selfHost = new HESSelfHost();
+          
 
             if (useWebApi)
+            {
+                m_selfHost = new HESSelfHost();
                 m_selfHost.Start();
-
-
+            }
+                
             if (autoStart)
             {
                 Console.ForegroundColor = ConsoleColor.Green;

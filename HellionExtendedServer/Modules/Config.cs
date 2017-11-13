@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
@@ -10,7 +11,7 @@ namespace HellionExtendedServer.Modules
     [Serializable]
     public class Settings
     {
-        public bool RestartNeeded = false;
+        public bool RestartNeeded;
 
         public Settings()
         {
@@ -26,8 +27,37 @@ namespace HellionExtendedServer.Modules
             CheckUpdatesTime = 60;
             CurrentLanguage = Config.Language.English;
 
-            usePreReleaseVersions = EnableDevelopmentVersion;
+
+
+            EnableWebAPI = false;
+            WebAPIEndpointName = "HellionExtendedServer";
+            WebAPIIP = "127.0.0.1";
+            WebAPIPort = 5555;
+
+            usePreReleaseVersions = false;
+
+            RestartNeeded = false;
         }
+
+        [Category("WebAPI")]
+        [DisplayName("Enable WebAPI (NOT READY YET)- (Default: False )")]
+        [Description("Enables or disables HES's built in WebAPI")]
+        public bool EnableWebAPI { get; set; }
+
+        [Category("WebAPI")]
+        [DisplayName("WebAPI Endpoint Name - (Default: HellionExtendedServer )")]
+        [Description("The IP of the WebAPI for clients to consume")]
+        public string WebAPIEndpointName { get; set; }
+
+        [Category("WebAPI")]
+        [DisplayName("WebAPI IP - (Default: 0.0.0.0 )")]
+        [Description("The IP of the WebAPI for clients to consume")]
+        public string WebAPIIP { get; set; }
+
+        [Category("WebAPI")]
+        [DisplayName("WebAPI Port - (Default: 5555 )")]
+        [Description("The Port of the WebAPI for clients to consume")]
+        public ushort WebAPIPort { get; set; }
 
         [Category("Development")]
         [DisplayName("Debug Mode - (Default: False )")]
@@ -74,7 +104,6 @@ namespace HellionExtendedServer.Modules
         public bool EnableAutomaticUpdates { get; set; }
 
         private bool usePreReleaseVersions = false;
-
         [Category("Development")]
         [DisplayName("Enable Development Version (Restart Required)- (Default: false )")]
         [Description("Change to true if you would like to use Development versions (I.E. PreReleases).\r\n" +
@@ -83,9 +112,11 @@ namespace HellionExtendedServer.Modules
         {
             get => usePreReleaseVersions;
             set
-            {
+            {          
+                if (value != usePreReleaseVersions)
+                    RestartNeeded = true;
+
                 usePreReleaseVersions = value;
-                RestartNeeded = true;
             }
         }
 
@@ -114,6 +145,8 @@ namespace HellionExtendedServer.Modules
 
         public static Config Instance;
 
+        public bool restartNeeded = false;
+
         public Settings Settings
         {
             get => _settings;
@@ -133,6 +166,7 @@ namespace HellionExtendedServer.Modules
 
         public bool SaveConfiguration()
         {
+           
             try
             {
                 using (MemoryStream ms = new MemoryStream())
@@ -154,14 +188,14 @@ namespace HellionExtendedServer.Modules
                         var result = System.Windows.Forms.MessageBox.Show(
                             "You must Restart HES for this change to take effect\r\n\r\n" +
                             "Would you like to restart now?\r\n" +
-                            "Note: If the server is running, it will be stopped before HES is restarted",
+                            "Note: If the server is running, it will be saved and stopped before HES is restarted",
                             "HES Restart Needed!",
                             System.Windows.Forms.MessageBoxButtons.YesNoCancel,
                             System.Windows.Forms.MessageBoxIcon.Exclamation);
                         if (result == System.Windows.Forms.DialogResult.Yes)
                         {
-                            HES.Restart(true);
-                        }
+                            HES.Restart();
+                        }                       
                     }
                 }
                 return true;

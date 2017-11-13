@@ -18,6 +18,7 @@ using HellionExtendedServer.Timming;
 using ZeroGravity;
 using ZeroGravity.Objects;
 using NetworkManager = HellionExtendedServer.Managers.NetworkManager;
+using HellionExtendedServer.WebAPI;
 
 namespace HellionExtendedServer
 {
@@ -41,6 +42,7 @@ namespace HellionExtendedServer
         private static Thread uiThread;
         private static Logger mainLogger;
         public static Process ThisProcess;
+        public static HESSelfHost m_selfHost;
         private static string[] CommandLineArgs;
         private static bool debugMode;
 
@@ -289,6 +291,7 @@ namespace HellionExtendedServer
 
             m_serverInstance = new ServerInstance();
 
+            bool useWebApi = Config.Settings.EnableWebAPI;
             bool autoStart = Config.Settings.AutoStartEnable;
             Console.ForegroundColor = ConsoleColor.Green;
             foreach (string arg in args)
@@ -301,11 +304,18 @@ namespace HellionExtendedServer
                         mainLogger.Info("HellionExtendedServer: (Arg: -nogui is set) GUI Disabled, use /showgui to Enable it for this session.");
                 }
                 autoStart = arg.Equals("-autostart");
+                useWebApi = arg.Equals("-usewebapi");
             }
             Console.ResetColor();
 
             if (m_useGui)
                 SetupGUI();
+
+            m_selfHost = new HESSelfHost();
+
+            if (useWebApi)
+                m_selfHost.Start();
+
 
             if (autoStart)
             {
@@ -519,13 +529,10 @@ namespace HellionExtendedServer
         {
             if (stopServer == true)
             {
-                if (Server.IsRunning)
+                if (ServerInstance.Instance != null && ServerInstance.Instance.IsRunning)
                 {
-                    if (ServerInstance.Instance != null)
-                    {
-                        ServerInstance.Instance.Stop();
-                    }
-                }
+                    ServerInstance.Instance.Stop();
+                }                      
             }
 
             var thisProcess = Process.GetCurrentProcess();
@@ -624,6 +631,9 @@ namespace HellionExtendedServer
             {
                 try
                 {
+                    if (m_selfHost != null)
+                        m_selfHost.Stop();
+
                     if (Server.IsRunning)
                         ServerInstance.Instance.Stop();
                     Console.WriteLine("STOPPING HELLION DEDICATED");

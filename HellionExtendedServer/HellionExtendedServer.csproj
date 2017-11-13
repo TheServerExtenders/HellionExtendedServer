@@ -223,8 +223,14 @@
     <Compile Include="Timming\Repeating_Task.cs" />
     <Compile Include="Timming\Repeating_Delayed_Task.cs" />
     <Compile Include="Timming\TestEvent.cs" />
-    <Compile Include="WebAPI\Controllers\ServerControl.cs" />
+    <Compile Include="WebAPI\Controllers\PlayersControlController.cs" />
+    <Compile Include="WebAPI\Controllers\ServerController.cs" />
     <Compile Include="WebAPI\HESSelfHost.cs" />
+    <Compile Include="WebAPI\Models\ErrorResult.cs" />
+    <Compile Include="WebAPI\Models\BaseResult.cs" />
+    <Compile Include="WebAPI\Models\ServerStatusResult.cs" />
+    <Compile Include="WebAPI\Models\PlayerResult.cs" />
+    <Compile Include="WebAPI\UtilityMethods.cs" />
     <EmbeddedResource Include="Resources\Octokit.dll" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="GUI\Forms\Updater\UpdateForm.resx">
@@ -288,7 +294,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GUI\Tabs\" />
-    <Folder Include="WebAPI\Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

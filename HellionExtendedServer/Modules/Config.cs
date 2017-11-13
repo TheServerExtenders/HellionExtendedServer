@@ -40,7 +40,7 @@ namespace HellionExtendedServer.Modules
         }
 
         [Category("WebAPI")]
-        [DisplayName("Enable WebAPI (NOT READY YET)- (Default: False )")]
+        [DisplayName("Enable WebAPI - (Default: False )")]
         [Description("Enables or disables HES's built in WebAPI")]
         public bool EnableWebAPI { get; set; }
 

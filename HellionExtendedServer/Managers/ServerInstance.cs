@@ -289,7 +289,7 @@ namespace HellionExtendedServer.Managers
             m_pluginManager = new PluginManager();
             PluginManager.InitializeAllPlugins();
             //TODO load Server Event Listeners
-            EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
+            //EventHelper.RegisterEvent(new EventListener(typeof(JoinEvent).GetMethod("PlayerSpawnRequest"), typeof(JoinEvent), EventID.PlayerSpawnRequest));
             //Command Listner
 
             Log.Instance.Info(HES.Localization.Sentences["ReadyForConnections"]);

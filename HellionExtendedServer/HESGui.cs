@@ -1,5 +1,4 @@
-﻿using HellionExtendedServer.Common;
-using HellionExtendedServer.GUI.Objects;
+﻿using HellionExtendedServer.GUI.Objects;
 using HellionExtendedServer.Managers;
 using HellionExtendedServer.Modules;
 using System;
@@ -14,11 +13,6 @@ namespace HellionExtendedServer
 {
     public partial class HESGui : Form
     {
-        private Timer ObjectManipulationRefreshTimer = new Timer();
-        private Timer PlayersRefreshTimer = new Timer();
-
-        private bool isRunning;
-
         public HESGui()
         {
             InitializeComponent();
@@ -27,16 +21,17 @@ namespace HellionExtendedServer
 
             DisableControls();
 
+            // Set server Start/Stop events
             ServerInstance.Instance.OnServerRunning += Instance_OnServerRunning;
             ServerInstance.Instance.OnServerStopped += Instance_OnServerStopped;
 
+            // Set the Config Tab Properties
             ServerInstance.Instance.GameServerConfig.Load();
             serverconfig_properties.SelectedObject = ServerInstance.Instance.GameServerConfig;
             hesconfig_properties.SelectedObject = Config.Instance.Settings;
-
             serverconfig_properties.Refresh();
 
-
+            // Set the updater events
             UpdateManager.Instance.OnUpdateChecked += new UpdateManager.UpdateEventHandler(Instance_OnUpdateChecked);
             UpdateManager.Instance.OnUpdateDownloaded += new UpdateManager.UpdateEventHandler(Instance_OnUpdateDownloaded);
             UpdateManager.Instance.OnUpdateApplied += new UpdateManager.UpdateEventHandler(Instance_OnUpdateApplied);
@@ -45,7 +40,6 @@ namespace HellionExtendedServer
                 @"Welcome to HES! Auto updates have now been implemented!" +
                 "Check out the enabled Options under HES Config!";
 
-            isRunning = ServerInstance.Instance.IsRunning;
         }
 
         private void DisableControls(bool disable = true)
@@ -90,78 +84,6 @@ namespace HellionExtendedServer
             }));
         }
 
-        public void UpdateChatPlayers()
-        {
-            try
-            {
-                if (ServerInstance.Instance.Server == null)
-                    return;
-
-                if (NetworkManager.Instance == null)
-                    return;
-
-                if (!ZeroGravity.Server.IsRunning)
-                    return;
-
-                sc_onlineplayers_label.Text = NetworkManager.Instance.ClientList.Count.ToString();
-
-                foreach (KeyValuePair<long, NetworkController.Client> client in NetworkManager.Instance.ClientList)
-                {
-                    if (client.Value == null)
-                        continue;
-
-                    if (client.Value.Player == null)
-                        continue;
-
-                    var player = client.Value.Player;
-
-                    var item = new ListViewItem();
-                    item.Name = player.GUID.ToString();
-                    item.Tag = client.Value;
-                    item.Text = $"{player.Name} ({player.SteamId})";
-
-                    if (!sc_playerslist_listview.Items.ContainsKey(item.Name))
-                        sc_playerslist_listview.Items.Add(item);
-
-                    if (!pc_players_listview.Items.ContainsKey(item.Name))
-                        pc_players_listview.Items.Add(item);
-                }
-
-                // chat players
-                foreach (ListViewItem item in sc_playerslist_listview.Items)
-                {
-                    var _client = item.Tag as NetworkController.Client;
-                    var _player = _client.Player;
-
-                    if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
-                    {
-                        if (sc_playerslist_listview.Items.ContainsKey(_player.GUID.ToString()))
-                            sc_playerslist_listview.Items.RemoveByKey(_player.GUID.ToString());
-                    }
-                }
-
-                // player control players
-                foreach (ListViewItem item in pc_players_listview.Items)
-                {
-                    var _client = item.Tag as NetworkController.Client;
-                    var _player = _client.Player;
-
-                    if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
-                    {
-                        if (pc_players_listview.Items.ContainsKey(_player.GUID.ToString()))
-                            pc_players_listview.Items.RemoveByKey(_player.GUID.ToString());
-                    }
-                }
-
-                sc_playerslist_listview.Refresh();
-                pc_players_listview.Refresh();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-
         private void Instance_OnServerRunning(ZeroGravity.Server server)
         {
             StatusBar.Text = "Server Started!";
@@ -193,6 +115,8 @@ namespace HellionExtendedServer
         #region Object Manipulation
 
         public List<MyPlayer> MyPlayers = new List<MyPlayer>();
+
+        private Timer ObjectManipulationRefreshTimer = new Timer();
 
         public void UpdatePlayersTree()
         {
@@ -297,6 +221,10 @@ namespace HellionExtendedServer
             return null;
         }
 
+        private void objectManipulation_grid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+        }
+
         #endregion Object Manipulation
 
         #region Server Control
@@ -396,7 +324,6 @@ namespace HellionExtendedServer
         {
             try
             {
-                
                 if (!ServerInstance.Instance.IsRunning)
                 {
                     StatusBar.Text = "Server Starting";
@@ -429,30 +356,7 @@ namespace HellionExtendedServer
 
         #endregion Server Control
 
-        #region Chat And Players
-
-        public void AddChatLine(string line)
-        {
-            if (cpc_chat_list.InvokeRequired)
-            {
-                cpc_chat_list.Invoke(new MethodInvoker(delegate
-                {
-                    cpc_chat_list.AppendText(line + Environment.NewLine);
-                }));
-
-                return;
-            }
-            else
-                cpc_chat_list.AppendText(line + Environment.NewLine);
-        }
-
-        private void cpc_players_kick_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void cpc_players_ban_Click(object sender, EventArgs e)
-        {
-        }
+        #region Chat
 
         private void cpc_messagebox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -474,44 +378,109 @@ namespace HellionExtendedServer
             }
         }
 
-        #endregion Chat And Players
-
-        private void Default_SettingsSaving(object sender, CancelEventArgs e)
+        public void AddChatLine(string line)
         {
-            StatusBar.Text = "GUI Settings Changed";
-        }
-
-        private void objectManipulation_grid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-        }
-
-        private void Tabs_Selected(object sender, TabControlEventArgs e)
-        {
-            ObjectManipulationRefreshTimer.Enabled = false;
-            PlayersRefreshTimer.Enabled = false;
-
-            switch (e.TabPageIndex)
+            if (cpc_chat_list.InvokeRequired)
             {
-                case 0:
-                    break;
+                cpc_chat_list.Invoke(new MethodInvoker(delegate
+                {
+                    cpc_chat_list.AppendText(line + Environment.NewLine);
+                }));
 
-                case 1:
-                    PlayersRefreshTimer.Enabled = true;
+                return;
+            }
+            else
+                cpc_chat_list.AppendText(line + Environment.NewLine);
+        }
 
-                    break;
+        #endregion Chat
 
-                case 2:
-                    PlayersRefreshTimer.Enabled = true;
-                    break;
+        #region Players
 
-                case 3:
-                    ObjectManipulationRefreshTimer.Enabled = true;
-                    break;
+        private Timer PlayersRefreshTimer = new Timer();
 
-                default:
-                    break;
+        public void UpdateChatPlayers()
+        {
+            try
+            {
+                if (ServerInstance.Instance.Server == null)
+                    return;
+
+                if (NetworkManager.Instance == null)
+                    return;
+
+                if (!ZeroGravity.Server.IsRunning)
+                    return;
+
+                sc_onlineplayers_label.Text = NetworkManager.Instance.ClientList.Count.ToString();
+
+                foreach (KeyValuePair<long, NetworkController.Client> client in NetworkManager.Instance.ClientList)
+                {
+                    if (client.Value == null)
+                        continue;
+
+                    if (client.Value.Player == null)
+                        continue;
+
+                    var player = client.Value.Player;
+
+                    var item = new ListViewItem();
+                    item.Name = player.GUID.ToString();
+                    item.Tag = client.Value;
+                    item.Text = $"{player.Name} ({player.SteamId})";
+
+                    if (!sc_playerslist_listview.Items.ContainsKey(item.Name))
+                        sc_playerslist_listview.Items.Add(item);
+
+                    if (!pc_players_listview.Items.ContainsKey(item.Name))
+                        pc_players_listview.Items.Add(item);
+                }
+
+                // chat players
+                foreach (ListViewItem item in sc_playerslist_listview.Items)
+                {
+                    var _client = item.Tag as NetworkController.Client;
+                    var _player = _client.Player;
+
+                    if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
+                    {
+                        if (sc_playerslist_listview.Items.ContainsKey(_player.GUID.ToString()))
+                            sc_playerslist_listview.Items.RemoveByKey(_player.GUID.ToString());
+                    }
+                }
+
+                // player control players
+                foreach (ListViewItem item in pc_players_listview.Items)
+                {
+                    var _client = item.Tag as NetworkController.Client;
+                    var _player = _client.Player;
+
+                    if (!NetworkManager.Instance.ClientList.Values.Contains(_client))
+                    {
+                        if (pc_players_listview.Items.ContainsKey(_player.GUID.ToString()))
+                            pc_players_listview.Items.RemoveByKey(_player.GUID.ToString());
+                    }
+                }
+
+                sc_playerslist_listview.Refresh();
+                pc_players_listview.Refresh();
+            }
+            catch (Exception ex)
+            {
             }
         }
+
+        private void cpc_players_kick_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void cpc_players_ban_Click(object sender, EventArgs e)
+        {
+        }
+
+        #endregion Players
+
+        #region Updates
 
         private async void serverconfig_checkForUpdates_Click(object sender, EventArgs e)
         {
@@ -581,5 +550,44 @@ namespace HellionExtendedServer
                 StatusBar.Text = "HES needs to be restarted before you can use the new features!";
             }
         }
+
+        #endregion Updates
+
+        #region General GUI
+
+        private void Default_SettingsSaving(object sender, CancelEventArgs e)
+        {
+            StatusBar.Text = "GUI Settings Changed";
+        }
+
+        private void Tabs_Selected(object sender, TabControlEventArgs e)
+        {
+            ObjectManipulationRefreshTimer.Enabled = false;
+            PlayersRefreshTimer.Enabled = false;
+
+            switch (e.TabPageIndex)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    PlayersRefreshTimer.Enabled = true;
+
+                    break;
+
+                case 2:
+                    PlayersRefreshTimer.Enabled = true;
+                    break;
+
+                case 3:
+                    ObjectManipulationRefreshTimer.Enabled = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        #endregion General GUI
     }
 }

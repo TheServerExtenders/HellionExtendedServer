@@ -47,8 +47,6 @@ namespace HellionExtendedServer.Managers
 
         #endregion Fieldss
 
-        #endregion Fields
-
         #region Properties
 
         public TimeSpan Uptime

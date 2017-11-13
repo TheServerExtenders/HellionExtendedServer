@@ -25,14 +25,13 @@ namespace HellionExtendedServer.WebAPI
         public HESSelfHost()
         {
             apiStarted = false;
-            apiStartLimit = 2;
+            apiStartLimit = 3;
         }
 
         
 
         public void Start()
         {
-
 
             if (startLimit >= apiStartLimit)
             {
@@ -78,9 +77,14 @@ namespace HellionExtendedServer.WebAPI
                     }
                     catch (AggregateException ex)
                     {
+                        if (!ex.InnerException.Message.Contains("HTTP could not register URL"))
+                            throw;
+
                         startLimit += 1;
 
-                        Log.Instance.Warn(ex, "WebAPI: You must run HellionExtendedServer in Administrator mode or run NetSH\r\n");
+                        Log.Instance.Warn(ex, "WebAPI: You must run HellionExtendedServer in Administrator to use the WebAPIHost\r\n");
+
+                        /*
 
                         Log.Instance.Info("WebAPI: HES can add the address using netsh for you, this will let the WebAPI work without needing administrator mode.");
 
@@ -94,7 +98,13 @@ namespace HellionExtendedServer.WebAPI
                             if (AddAddress(url))
                             {
                                 Log.Instance.Info("WebAPI: Address Added with NETSH!");
-                                Start();
+
+                                Log.Instance.Info("WebAPI: Would you like to try to start the WebAPI again? (y/n)\r\n");
+                                var key2 = Console.ReadKey();
+                                if (key2.Key == ConsoleKey.Y)
+                                {
+                                    Start();
+                                }
                             }
                             else
                             {
@@ -102,11 +112,11 @@ namespace HellionExtendedServer.WebAPI
                                 Log.Instance.Warn(ex, "WebAPI: You must run HellionExtendedServer in Administrator mode.");
                             }
                         }
+                        */
                     }
-                   
 
-                    Log.Instance.Info(string.Format("WebAPI: Server is running on {0}:{1}/api/{2}/.", ip, port, endPointName));
-
+                    if (apiStarted)
+                        Log.Instance.Info(string.Format("WebAPI: Server is running on {0}:{1}/api/{2}/.", ip, port, endPointName));
                 }
                 else
                 {
@@ -138,6 +148,7 @@ namespace HellionExtendedServer.WebAPI
                 ProcessStartInfo psi = new ProcessStartInfo("netsh", args);
                 psi.Verb = "runas";
                 psi.UseShellExecute = false;
+                psi.CreateNoWindow = true;
                 psi.RedirectStandardOutput = true;
                 psi.StandardOutputEncoding = Encoding.ASCII;
 
@@ -147,20 +158,27 @@ namespace HellionExtendedServer.WebAPI
                 {
                     var line = proc.StandardOutput.ReadLine();
 
+                    Console.WriteLine(line);
+
                     if (line == "URL reservation successfully added." || 
                         line == "Url reservation add failed, Error: 183")
+                    {
                         return true;
+                    }
 
+                    
                     Thread.Sleep(100);
                 }
          
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Instance.Error(ex, "WebApi: NETSH AddAddress error: " + ex.ToString());
                 return false;
             }
 
-            return true;
+
+            return false;
         }
 
         public static bool DeleteAddress(string address)

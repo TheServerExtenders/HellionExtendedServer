@@ -12,13 +12,24 @@ namespace HellionExtendedServer.Timming
         private static int m_tick = 0;
         private static bool m_run = true;
 
-        public Maintimer Instance;
-        
-        public static ThreadSafeList<ExecutableEvent> EList = new ThreadSafeList<ExecutableEvent>();     
-        public static bool Enabled => m_run;
-        public static int CurrentTick => m_tick;
-        
-        
+        public static Maintimer Instance;
+        private static readonly object Locker = new object();
+
+        public static ThreadSafeList<ExecutableEvent> EList = new ThreadSafeList<ExecutableEvent>();
+
+        public static bool Enabled
+        {
+            get { return m_run; }
+            set { m_run = value; }
+        }
+
+        public static int CurrentTick
+        {
+            get { return m_tick; }
+            set { m_tick = value; }
+        }
+
+
         public Maintimer()
         {
             Instance = this;
@@ -26,9 +37,12 @@ namespace HellionExtendedServer.Timming
 
         public void RegisterEvent(ExecutableEvent ev)
         {
-            EList.Add(ev);
+            lock (Locker)
+            {
+                EList.Add(ev);
+            }
         }
-        
+
         [STAThread]
         public static void run()
         {
@@ -37,10 +51,13 @@ namespace HellionExtendedServer.Timming
             {
                 Thread.Sleep(50);
                 //Pause for 1/20th of a second
-                m_tick++;
-                foreach (ExecutableEvent e in EList)
+                CurrentTick++;
+                lock (Locker)
                 {
-                    e.pre_run();
+                    foreach (ExecutableEvent e in EList)
+                    {
+                        e.pre_run();
+                    }
                 }
             }
         }

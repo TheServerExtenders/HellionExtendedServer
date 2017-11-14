@@ -267,6 +267,7 @@ namespace HellionExtendedServer.Managers
             //Load Timmer
             m_timmer = new Maintimer();
             m_timmerthread = new Thread(Maintimer.run);
+            m_timmerthread.IsBackground = true;
             m_timmerthread.Start();
             m_timmer.RegisterEvent(new TestEvent());
 

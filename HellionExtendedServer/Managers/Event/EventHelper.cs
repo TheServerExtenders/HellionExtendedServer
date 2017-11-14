@@ -88,13 +88,24 @@ namespace HellionExtendedServer.Managers.Event
         TurretShootingMessage,
         UnsubscribeFromObjectsRequest,
         VoiceCommDataMessage
-
     };
+
+    //TODO
+    //Create a tick class
+    /*
+     * Ticks every 3 Secs
+     * Looks for differenace between the 2 lists
+     * Removes those events that are now removed
+     * Adds those events that are now new
+     */
 
     public class EventHelper
     {
         public EventSystem ES2;
         protected List<EventListener> RegiteredEvents = new List<EventListener>();
+        private ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> Main_NDG;
+        private ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> Last_NDG;
+        private ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> Link_NDG;
 
         public EventHelper()
         {
@@ -111,12 +122,113 @@ namespace HellionExtendedServer.Managers.Event
             List<Type> AddedTypes = new List<Type>();
             foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> entry in networkDataGroups)
             {
+                EventSystem.NetworkDataDelegate v = entry.Value;
+                foreach (Delegate d in v.GetInvocationList())
+                {
+                    EventID eventid = EventID.None;
+                    Type data = entry.Key;
+                    //) eventid = 
+                    if (data == typeof(CharacterMovementMessage)) eventid = EventID.CharacterMovementMessage;
+                    else if (data == typeof(CheckConnectionMessage)) eventid = EventID.CheckConnectionMessage;
+                    //else if (data == typeof(CheckDeletedMessage)) eventid = EventID.CheckDeletedMessage;
+                    else if (data == typeof(CheckInMessage)) eventid = EventID.CheckInMessage;
+                    else if (data == typeof(CheckInRequest)) eventid = EventID.CheckInRequest;
+                    else if (data == typeof(CheckInResponse)) eventid = EventID.CheckInResponse;
+                    else if (data == typeof(CorpseStatsMessage)) eventid = EventID.CorpseStatsMessage;
+                    //else if (data == typeof(CreateCharacterRequest)) eventid = EventID.CreateCharacterRequest;
+                    //else if (data == typeof(CreateCharacterResponse)) eventid = EventID.CreateCharacterResponse;
+                    else if (data == typeof(DeleteCharacterRequest)) eventid = EventID.DeleteCharacterRequest;
+                    else if (data == typeof(DestroyObjectMessage)) eventid = EventID.DestroyObjectMessage;
+                    //else if (data == typeof(DestroyShipMessage)) eventid = EventID.DestroyShipMessage;
+                    else if (data == typeof(DistressCallRequest)) eventid = EventID.DistressCallRequest;
+                    else if (data == typeof(DistressCallResponse)) eventid = EventID.DistressCallResponse;
+                    else if (data == typeof(DynamicObjectsInfoMessage)) eventid = EventID.DynamicObjectsInfoMessage;
+                    else if (data == typeof(DynamicObjectStatsMessage)) eventid = EventID.DynamicObjectStatsMessage;
+                    else if (data == typeof(EnvironmentReadyMessage)) eventid = EventID.EnvironmentReadyMessage;
+                    //else if (data == typeof(GetDeletedCharactersRequest)) eventid = EventID.GetDeletedCharactersRequest;
+                    else if (data == typeof(InitializeSpaceObjectMessage)) eventid = EventID.InitializeSpaceObjectMessage;
+                    else if (data == typeof(KillPlayerMessage)) eventid = EventID.KillPlayerMessage;
+                    else if (data == typeof(LatencyTestMessage)) eventid = EventID.LatencyTestMessage;
+                    else if (data == typeof(LogInRequest)) eventid = EventID.LogInRequest;
+                    else if (data == typeof(LogInResponse)) eventid = EventID.LogInResponse;
+                    else if (data == typeof(LogOutRequest)) eventid = EventID.LogOutRequest;
+                    else if (data == typeof(LogOutResponse)) eventid = EventID.LogOutResponse;
+                    else if (data == typeof(MainServerGenericResponse)) eventid = EventID.MainServerGenericResponse;
+                    else if (data == typeof(ManeuverCourseRequest)) eventid = EventID.ManeuverCourseRequest;
+                    else if (data == typeof(ManeuverCourseResponse)) eventid = EventID.ManeuverCourseResponse;
+                    //else if (data == typeof(MarkAsLoggedInRequest)) eventid = EventID.MarkAsLoggedInRequest;
+                    //else if (data == typeof(MarkAsLoggedOutRequest)) eventid = EventID.MarkAsLoggedOutRequest;
+                    //else if (data == typeof(MoveCharacterToLimboRequest)) eventid = EventID.MoveCharacterToLimboRequest;
+                    else if (data == typeof(MoveCorpseObectMessage)) eventid = EventID.MoveCorpseObectMessage;
+                    else if (data == typeof(MoveDynamicObectMessage)) eventid = EventID.MoveDynamicObectMessage;
+                    else if (data == typeof(MovementMessage)) eventid = EventID.MovementMessage;
+                    else if (data == typeof(PlayerDrillingMessage)) eventid = EventID.PlayerDrillingMessage;
+                    else if (data == typeof(PlayerDrillingResponse)) eventid = EventID.PlayerDrillingResponse;
+                    else if (data == typeof(PlayerHitMessage)) eventid = EventID.PlayerHitMessage;
+                    else if (data == typeof(PlayerRespawnRequest)) eventid = EventID.PlayerRespawnRequest;
+                    else if (data == typeof(PlayerRespawnResponse)) eventid = EventID.PlayerRespawnResponse;
+                    else if (data == typeof(PlayerRoomMessage)) eventid = EventID.PlayerRoomMessage;
+                    else if (data == typeof(PlayerShootingMessage)) eventid = EventID.PlayerShootingMessage;
+                    else if (data == typeof(PlayersOnServerRequest)) eventid = EventID.PlayersOnServerRequest;
+                    else if (data == typeof(PlayersOnServerResponse)) eventid = EventID.PlayersOnServerResponse;
+                    else if (data == typeof(PlayerSpawnRequest)) eventid = EventID.PlayerSpawnRequest;
+                    else if (data == typeof(PlayerSpawnResponse)) eventid = EventID.PlayerSpawnResponse;
+                    else if (data == typeof(PlayerStatsMessage)) eventid = EventID.PlayerStatsMessage;
+                    else if (data == typeof(RefineResourceMessage)) eventid = EventID.RefineResourceMessage;
+                    else if (data == typeof(ResetBaseBuilding)) eventid = EventID.ResetBaseBuilding;
+                    else if (data == typeof(ResetServer)) eventid = EventID.ResetServer;
+                    else if (data == typeof(SaveGameMessage)) eventid = EventID.SaveGameMessage;
+                    else if (data == typeof(ServerShutDownMessage)) eventid = EventID.ServerShutDownMessage;
+                    else if (data == typeof(ServerStatusRequest)) eventid = EventID.ServerStatusRequest;
+                    else if (data == typeof(ServerStatusResponse)) eventid = EventID.ServerStatusResponse;
+                    else if (data == typeof(ShipCollisionMessage)) eventid = EventID.ShipCollisionMessage;
+                    else if (data == typeof(ShipStatsMessage)) eventid = EventID.ShipStatsMessage;
+                    else if (data == typeof(SignInRequest)) eventid = EventID.SignInRequest;
+                    else if (data == typeof(SignInResponse)) eventid = EventID.SignInResponse;
+                    else if (data == typeof(SpawnObjectsRequest)) eventid = EventID.SpawnObjectsRequest;
+                    else if (data == typeof(SpawnObjectsResponse)) eventid = EventID.SpawnObjectsResponse;
+                    else if (data == typeof(SubscribeToObjectsRequest)) eventid = EventID.SubscribeToObjectsRequest;
+                    else if (data == typeof(SuicideRequest)) eventid = EventID.SuicideRequest;
+                    else if (data == typeof(TextChatMessage)) eventid = EventID.TextChatMessage;
+                    else if (data == typeof(ToggleGodModeMessage)) eventid = EventID.ToggleGodModeMessage;
+                    else if (data == typeof(TransferResourceMessage)) eventid = EventID.TransferResourceMessage;
+                    else if (data == typeof(TurretShootingMessage)) eventid = EventID.TurretShootingMessage;
+                    else if (data == typeof(UnsubscribeFromObjectsRequest)) eventid = EventID.UnsubscribeFromObjectsRequest;
+                    else if (data == typeof(VoiceCommDataMessage)) eventid = EventID.VoiceCommDataMessage;
+
+                    RegisterEvent(new EventListener((EventSystem.NetworkDataDelegate) d, eventid));
+                    ES2.RemoveListener(entry.Key, (EventSystem.NetworkDataDelegate) d);
+                }
                 if (AddedTypes.Contains(entry.Key)) continue;
                 AddedTypes.Add(entry.Key);
-                NetworkManager.Instance.NetContoller.EventSystem.AddListener(entry.Key, MassEventHandeler);
+                ES2.AddListener(entry.Key, MassEventHandeler);
                 //Listen for Everything!
             }
+        }
 
+        public void Tick()
+        {
+            Main_NDG = GetCurrentListenersNetwork();
+            if (Last_NDG == null) return;
+            foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> m in Main_NDG)
+            {
+                foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> l in Last_NDG)
+                {
+                    //Same Key
+                    if (m.Key == l.Key)
+                    {
+                        foreach (Delegate mi in m.Value.GetInvocationList())
+                        {
+                            bool found = false;
+                            foreach (Delegate li in l.Value.GetInvocationList())
+                            {
+                                if (li == mi) found = true;
+                            }
+                            //If found
+                        }
+                    }
+                }
+            }
         }
 
         public ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>
@@ -145,7 +257,6 @@ namespace HellionExtendedServer.Managers.Event
             }
 
             return null;
-
         }
 
 
@@ -176,7 +287,7 @@ namespace HellionExtendedServer.Managers.Event
                 ExecuteEvent(new GenericEvent(EventID.DynamicObjectStatsMessage, data));
             else if (data is EnvironmentReadyMessage) ExecuteEvent(new GenericEvent(EventID.EnvironmentReadyMessage, data));
             //else if (data is GetDeletedCharactersRequest)
-                //ExecuteEvent(new GenericEvent(EventID.GetDeletedCharactersRequest, data));
+            //ExecuteEvent(new GenericEvent(EventID.GetDeletedCharactersRequest, data));
             else if (data is InitializeSpaceObjectMessage)
                 ExecuteEvent(new GenericEvent(EventID.InitializeSpaceObjectMessage, data));
             else if (data is KillPlayerMessage) ExecuteEvent(new GenericEvent(EventID.KillPlayerMessage, data));
@@ -192,7 +303,7 @@ namespace HellionExtendedServer.Managers.Event
             //else if (data is MarkAsLoggedInRequest) ExecuteEvent(new GenericEvent(EventID.MarkAsLoggedInRequest, data));
             //else if (data is MarkAsLoggedOutRequest) ExecuteEvent(new GenericEvent(EventID.MarkAsLoggedOutRequest, data));
             //else if (data is MoveCharacterToLimboRequest)
-                //ExecuteEvent(new GenericEvent(EventID.MoveCharacterToLimboRequest, data));
+            //ExecuteEvent(new GenericEvent(EventID.MoveCharacterToLimboRequest, data));
             else if (data is MoveCorpseObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveCorpseObectMessage, data));
             else if (data is MoveDynamicObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveDynamicObectMessage, data));
             else if (data is MovementMessage) ExecuteEvent(new GenericEvent(EventID.MovementMessage, data));
@@ -232,24 +343,24 @@ namespace HellionExtendedServer.Managers.Event
         }
 
 
-    public void RegisterEvent(EventListener e)
-    {
-        RegiteredEvents.Add(e);
-        //TODO notify of Regerstration
-    }
-
-    public void ExecuteEvent(GenericEvent e)
-    {
-        foreach (EventListener evnt in RegiteredEvents)
+        public void RegisterEvent(EventListener e)
         {
-            if (e.GetEventType == evnt.GetEventType)
+            RegiteredEvents.Add(e);
+            //TODO notify of Regerstration
+        }
+
+        public void ExecuteEvent(GenericEvent e)
+        {
+            foreach (EventListener evnt in RegiteredEvents)
             {
-                if (!e.IsCanceled || e.IsCanceled && evnt.IgnoreCanceledEvent)
+                if (e.GetEventType == evnt.GetEventType)
                 {
-                    evnt.Execute(e);
+                    if (!e.IsCanceled || e.IsCanceled && evnt.IgnoreCanceledEvent)
+                    {
+                        evnt.Execute(e);
+                    }
                 }
             }
         }
     }
-}
 }

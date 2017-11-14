@@ -76,3 +76,5 @@ TheCaptain
 Yungtechboy1
 
 If you would like to help, fork or message us!
+
+If you enjoy using Hellion Extended Server please consider [Supporting Us On Patreon!](https://www.patreon.com/bePatron?u=8380038) 

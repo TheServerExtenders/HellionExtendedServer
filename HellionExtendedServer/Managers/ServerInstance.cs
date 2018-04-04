@@ -239,10 +239,21 @@ namespace HellionExtendedServer.Managers
                 "",
             };
 
-            m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
+            try
+            {
+                Console.WriteLine("STARTING NMNNNNN");
+                m_serverThread = ServerWrapper.HellionDedi.StartServer(serverArgs);
 
-            m_serverWrapper.Init();
+                m_serverWrapper.Init();
 
+            }
+            catch (Exception e)
+            {
+                
+                Console.WriteLine(e);
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
+            }
             Thread.Sleep(5000);
 
             m_server = ServerWrapper.HellionDedi.Server;
@@ -276,6 +287,7 @@ namespace HellionExtendedServer.Managers
             m_permissionmanager = new PermissionManager();
             //Load Events
             m_eventhelper = new EventHelper();
+            Server.Instance.NetworkController.EventSystem = new EventSystem2(m_eventhelper);
             //Load Commands
             m_commandManager = new CommandManager();
             //Load Plugins!

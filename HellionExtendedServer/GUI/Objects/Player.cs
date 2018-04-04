@@ -47,17 +47,17 @@ namespace HellionExtendedServer.GUI.Objects
         [Category("Player Stats")]
         public float Health
         {
-            get
-            {
-                return CurrentPlayer.Health;
-            }
+            get { return CurrentPlayer.Health; }
             set
             {
                 var currentHealth = CurrentPlayer.Health;
 
                 if (value < currentHealth)
                 {
-                    CurrentPlayer.Stats.TakeDammage(currentHealth - value);
+                    PlayerDamage[] pd = new PlayerDamage[1];
+                    pd[0].Amount = currentHealth - value;
+                    pd[0].HurtType = HurtType.Suffocate;
+                    CurrentPlayer.Stats.TakeDamage(pd);
                 }
                 else if (value > currentHealth)
                 {
@@ -70,21 +70,14 @@ namespace HellionExtendedServer.GUI.Objects
         public override string Position
         {
             get { return base.Position; }
-            set
-            {
-                CurrentPlayer.ModifyLocalPositionAndRotation(StringToVector(value), CurrentPlayer.LocalRotation);           
-            }
+            set { CurrentPlayer.ModifyLocalPositionAndRotation(StringToVector(value), CurrentPlayer.LocalRotation); }
         }
 
         [Category("Space Object")]
         public string Rotation
         {
             get => CurrentPlayer.LocalRotation.ToString();
-            set
-            {
-                CurrentPlayer.ModifyLocalPositionAndRotation(SpaceObject.Position, StringToQuat(value));
-            }
-
+            set { CurrentPlayer.ModifyLocalPositionAndRotation(SpaceObject.Position, StringToQuat(value)); }
         }
 
         public QuaternionD StringToQuat(string _value)

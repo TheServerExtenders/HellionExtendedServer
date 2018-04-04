@@ -25,7 +25,8 @@ namespace HellionExtendedServer.Managers
         {
             ServicePointManager.DefaultConnectionLimit = 10;
 
-            CheckForUpdates().GetAwaiter().GetResult();
+            Console.WriteLine("WWWW");
+            //CheckForUpdates().GetAwaiter().GetResult();
         }
 
         public async Task CheckForUpdates(bool forceUpdate = false)

@@ -26,13 +26,13 @@ namespace HellionExtendedServer.Managers.Event
         {
 
             Log.Instance.Info("PACKET FOR dddddaaaaaaaaaaaaddddddd!");
-            EH.ES2.AddListener(group, function);
+            base.AddListener(group, function);
         }
         
         public new void RemoveListener(Type group, NetworkDataDelegate function)
         {
             Log.Instance.Info("PACKET FOR BPOIIIIIIIII");
-            EH.ES2.RemoveListener(group, function);
+            base.RemoveListener(group, function);
         }
 
         public void Invoke(NetworkData data)

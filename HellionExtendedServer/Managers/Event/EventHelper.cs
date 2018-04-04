@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -125,10 +126,21 @@ namespace HellionExtendedServer.Managers.Event
                 EventSystem.NetworkDataDelegate v = entry.Value;
                 foreach (Delegate d in v.GetInvocationList())
                 {
-                    EventID eventid = EventID.None;
-                    Type data = entry.Key;
-                    //) eventid = 
-                    if (data == typeof(CharacterMovementMessage)) eventid = EventID.CharacterMovementMessage;
+                    EventID eventid = GetEventIDFromKey(entry.Key);
+                    RegisterEvent(new EventListener((EventSystem.NetworkDataDelegate) d, eventid));
+                    ES2.RemoveListener(entry.Key, (EventSystem.NetworkDataDelegate) d);
+                }
+                if (AddedTypes.Contains(entry.Key)) continue;
+                AddedTypes.Add(entry.Key);
+                ES2.AddListener(entry.Key, MassEventHandeler);
+                //Listen for Everything!
+            }
+        }
+
+        public EventID GetEventIDFromKey(Type data)
+        {
+            EventID eventid = EventID.None;
+            if (data == typeof(CharacterMovementMessage)) eventid = EventID.CharacterMovementMessage;
                     else if (data == typeof(CheckConnectionMessage)) eventid = EventID.CheckConnectionMessage;
                     //else if (data == typeof(CheckDeletedMessage)) eventid = EventID.CheckDeletedMessage;
                     else if (data == typeof(CheckInMessage)) eventid = EventID.CheckInMessage;
@@ -195,21 +207,20 @@ namespace HellionExtendedServer.Managers.Event
                     else if (data == typeof(TurretShootingMessage)) eventid = EventID.TurretShootingMessage;
                     else if (data == typeof(UnsubscribeFromObjectsRequest)) eventid = EventID.UnsubscribeFromObjectsRequest;
                     else if (data == typeof(VoiceCommDataMessage)) eventid = EventID.VoiceCommDataMessage;
-
-                    RegisterEvent(new EventListener((EventSystem.NetworkDataDelegate) d, eventid));
-                    ES2.RemoveListener(entry.Key, (EventSystem.NetworkDataDelegate) d);
-                }
-                if (AddedTypes.Contains(entry.Key)) continue;
-                AddedTypes.Add(entry.Key);
-                ES2.AddListener(entry.Key, MassEventHandeler);
-                //Listen for Everything!
-            }
+            return eventid;
         }
+
+        public delegate void fl(NetworkData data);
 
         public void Tick()
         {
             Main_NDG = GetCurrentListenersNetwork();
-            if (Last_NDG == null) return;
+            if (Last_NDG == null)
+            {
+                Last_NDG = Main_NDG;
+                Main_NDG = null;
+                return;
+            }
             foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> m in Main_NDG)
             {
                 foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> l in Last_NDG)
@@ -222,13 +233,31 @@ namespace HellionExtendedServer.Managers.Event
                             bool found = false;
                             foreach (Delegate li in l.Value.GetInvocationList())
                             {
+                                int ilk = 0;
+                                Dictionary<int, EventSystem.NetworkDataDelegate> inlast = new Dictionary<int, EventSystem.NetworkDataDelegate>();
                                 if (li == mi) found = true;
+                                if (!found) inlast.Add(ilk++, (EventSystem.NetworkDataDelegate) li);
+                            }
+                            //mi was only in new
+                            //Need to add
+                            if (!found)
+                            {
+                                EventID eventid = GetEventIDFromKey(m.Key);
+                                RegisterEvent(new EventListener((EventSystem.NetworkDataDelegate) mi, eventid));
+                                ES2.RemoveListener(m.Key, (EventSystem.NetworkDataDelegate) mi);
+                                ES2.AddListener(m.Key,  VoidDelegate);
                             }
                             //If found
+                            //Then No need to add or delete
                         }
                     }
                 }
             }
+        }
+        
+        public void VoidDelegate(NetworkData data)
+        {
+            
         }
 
         public ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>

@@ -150,6 +150,7 @@ namespace HellionExtendedServer.ServerWrappers
         /// <returns>the thread!</returns>
         public Thread StartServer(Object args)
         {
+            Log.Instance.Info("SSSSSSSSSSSSSSSSS");
             Log.Instance.Info(HES.Localization.Sentences["LoadingDedicated"]);
 
             serverThread = new Thread(new ParameterizedThreadStart(this.ThreadStart));
@@ -192,6 +193,7 @@ namespace HellionExtendedServer.ServerWrappers
 
             // The server is now running, set the running field to true
             m_isRunning = m_instance.Server.WorldInitialized;
+            Log.Instance.Info("OK SO "+m_instance.Server.WorldInitialized);
 
             ServerInstance.Instance.IsRunning = true;
 

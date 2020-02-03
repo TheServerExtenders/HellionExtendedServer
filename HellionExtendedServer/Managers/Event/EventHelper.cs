@@ -1,9 +1,10 @@
 ﻿using HellionExtendedServer.Common;
 using HellionExtendedServer.Managers.Event.Player;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
-using ZeroGravity.Helpers;
+using ZeroGravity;
 using ZeroGravity.Network;
 
 namespace HellionExtendedServer.Managers.Event
@@ -94,7 +95,7 @@ namespace HellionExtendedServer.Managers.Event
 
             //Unregister All Listeners
             //Get All Listeners to Register
-            ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> networkDataGroups = GetCurrentListenersNetwork();
+            Dictionary<Type, EventSystem.NetworkDataDelegate> networkDataGroups = GetCurrentListenersNetwork();
             if (networkDataGroups == null)
             {
                 Log.Instance.Error("Error starting EventHandeler! Could not find all events!");
@@ -110,7 +111,7 @@ namespace HellionExtendedServer.Managers.Event
             }
         }
 
-        public ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>
+        public Dictionary<Type, EventSystem.NetworkDataDelegate>
             GetCurrentListenersNetwork()
         {
             //HACK
@@ -119,11 +120,9 @@ namespace HellionExtendedServer.Managers.Event
                 BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic;
                 FieldInfo mi =
                     NetworkManager.Instance.NetContoller.EventSystem.GetType().GetField("networkDataGroups", bf);
-                ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> a =
-                    (ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>)
-                    mi.GetValue(NetworkManager.Instance.NetContoller.EventSystem);
-                ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate> b =
-                    new ThreadSafeDictionary<Type, EventSystem.NetworkDataDelegate>();
+                ConcurrentDictionary<Type, EventSystem.NetworkDataDelegate> a =(ConcurrentDictionary<Type, EventSystem.NetworkDataDelegate>)mi.GetValue(NetworkManager.Instance.NetContoller.EventSystem);
+                Dictionary<Type, EventSystem.NetworkDataDelegate> b =
+                    new Dictionary<Type, EventSystem.NetworkDataDelegate>();
                 foreach (KeyValuePair<Type, EventSystem.NetworkDataDelegate> entry in a)
                 {
                     b.Add(entry.Key, entry.Value);
@@ -158,7 +157,7 @@ namespace HellionExtendedServer.Managers.Event
             else if (data is DestroyObjectMessage) ExecuteEvent(new GenericEvent(EventID.DestroyObjectMessage, data));
             //else if (data is DestroyShipMessage) ExecuteEvent(new GenericEvent(EventID.DestroyShipMessage, data));
             else if (data is DistressCallRequest) ExecuteEvent(new GenericEvent(EventID.DistressCallRequest, data));
-            else if (data is DistressCallResponse) ExecuteEvent(new GenericEvent(EventID.DistressCallResponse, data));
+           // else if (data is DistressCallResponse) ExecuteEvent(new GenericEvent(EventID.DistressCallResponse, data));
             else if (data is DynamicObjectsInfoMessage)
                 ExecuteEvent(new GenericEvent(EventID.DynamicObjectsInfoMessage, data));
             else if (data is DynamicObjectStatsMessage)
@@ -182,11 +181,11 @@ namespace HellionExtendedServer.Managers.Event
             //else if (data is MarkAsLoggedOutRequest) ExecuteEvent(new GenericEvent(EventID.MarkAsLoggedOutRequest, data));
             //else if (data is MoveCharacterToLimboRequest)
             //ExecuteEvent(new GenericEvent(EventID.MoveCharacterToLimboRequest, data));
-            else if (data is MoveCorpseObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveCorpseObectMessage, data));
-            else if (data is MoveDynamicObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveDynamicObectMessage, data));
+            //else if (data is MoveCorpseObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveCorpseObectMessage, data));
+            //else if (data is MoveDynamicObectMessage) ExecuteEvent(new GenericEvent(EventID.MoveDynamicObectMessage, data));
             else if (data is MovementMessage) ExecuteEvent(new GenericEvent(EventID.MovementMessage, data));
             else if (data is PlayerDrillingMessage) ExecuteEvent(new GenericEvent(EventID.PlayerDrillingMessage, data));
-            else if (data is PlayerDrillingResponse) ExecuteEvent(new GenericEvent(EventID.PlayerDrillingResponse, data));
+            //else if (data is PlayerDrillingResponse) ExecuteEvent(new GenericEvent(EventID.PlayerDrillingResponse, data));
             else if (data is PlayerHitMessage) ExecuteEvent(new GenericEvent(EventID.PlayerHitMessage, data));
             else if (data is PlayerRespawnRequest) ExecuteEvent(new GenericEvent(EventID.PlayerRespawnRequest, data));
             else if (data is PlayerRespawnResponse) ExecuteEvent(new GenericEvent(EventID.PlayerRespawnResponse, data));
@@ -213,7 +212,7 @@ namespace HellionExtendedServer.Managers.Event
             else if (data is SubscribeToObjectsRequest) ExecuteEvent(new GenericEvent(EventID.SubscribeToObjectsRequest, data));
             else if (data is SuicideRequest) ExecuteEvent(new GenericEvent(EventID.SuicideRequest, data));
             else if (data is TextChatMessage) ExecuteEvent(new GenericEvent(EventID.TextChatMessage, data));
-            else if (data is ToggleGodModeMessage) ExecuteEvent(new GenericEvent(EventID.ToggleGodModeMessage, data));
+            //else if (data is ToggleGodModeMessage) ExecuteEvent(new GenericEvent(EventID.ToggleGodModeMessage, data));
             else if (data is TransferResourceMessage) ExecuteEvent(new GenericEvent(EventID.TransferResourceMessage, data));
             else if (data is TurretShootingMessage) ExecuteEvent(new GenericEvent(EventID.TurretShootingMessage, data));
             else if (data is UnsubscribeFromObjectsRequest) ExecuteEvent(new GenericEvent(EventID.UnsubscribeFromObjectsRequest, data));

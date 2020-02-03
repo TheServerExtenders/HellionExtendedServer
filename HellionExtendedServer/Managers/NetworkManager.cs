@@ -1,8 +1,8 @@
 ﻿using HellionExtendedServer.Common;
 using NLog;
 using System;
+using System.Collections.Generic;
 using ZeroGravity;
-using ZeroGravity.Helpers;
 using ZeroGravity.Network;
 using ZeroGravity.Objects;
 using static ZeroGravity.Network.NetworkController;
@@ -23,7 +23,7 @@ namespace HellionExtendedServer.Managers
 
         public static NetworkManager Instance { get { return m_networkManager; } }
         internal NetworkController NetContoller { get { return m_network; } }
-        public ThreadSafeDictionary<long, Client> ClientList { get { return m_network.clientList; } }
+        public Dictionary<long, Client> ClientList { get { return m_network.ClientList; } }
 
         #endregion Properties
 

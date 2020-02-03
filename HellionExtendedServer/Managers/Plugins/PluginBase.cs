@@ -153,7 +153,7 @@ namespace HellionExtendedServer.Common.Plugins
             PlayerSpawnRequest ev = e.Method();
             Player p = GetPluginHelper.getPlayerFromGuid(ev.Sender);
             String name = p == null ? "M/A" : p.Name;
-            Console.WriteLine("Player Spawn Info: GUID {0} Name {1} Type of Spawn {2} ", ev.Sender, name, ev.SpawnType);
+            Console.WriteLine("Player Spawn Info: GUID {0} Name {1} Type of Spawn {2} ", ev.Sender, name, ev.SpawnSetupType);
         }
 
         #endregion Methods

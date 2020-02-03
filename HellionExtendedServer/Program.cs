@@ -1,5 +1,4 @@
-﻿using HellionExtendedServer.Common;
-using HellionExtendedServer.Managers;
+﻿using HellionExtendedServer.Managers;
 using HellionExtendedServer.Modules;
 using NLog;
 using NLog.Config;
@@ -22,7 +21,7 @@ namespace HellionExtendedServer
 {
     public class HES
     {
-        public static string ForGameVersion = "0.2.5";
+        public static string ForGameVersion = "Final";
         public static string CurrentGameVersion = ForGameVersion;
 
         #region Fields

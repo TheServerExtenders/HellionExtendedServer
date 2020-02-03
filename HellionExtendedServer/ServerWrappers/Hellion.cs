@@ -96,7 +96,7 @@ namespace HellionExtendedServer.ServerWrappers
                 m_closeSocketListeners.Invoke(Server.Instance.NetworkController, null);
 
                 Log.Instance.Info("Logging out all clients...");
-                foreach (var client in Server.Instance.NetworkController.clientList)
+                foreach (var client in Server.Instance.NetworkController.ClientList)
                 {
                     client.Value.Thread.Stop();
 
@@ -106,7 +106,7 @@ namespace HellionExtendedServer.ServerWrappers
                         client.Value.Player.DiconnectFromNetworkContoller();
                     }
                 }
-                Server.Instance.NetworkController.clientList.Clear();
+                Server.Instance.NetworkController.ClientList.Clear();
 
                 Dbg.Destroy();
 

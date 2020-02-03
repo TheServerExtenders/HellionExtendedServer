@@ -55,7 +55,7 @@ namespace HellionExtendedServer.GUI.Objects
 
                 if (value < currentHealth)
                 {
-                    CurrentPlayer.Stats.TakeDammage(currentHealth - value);
+                    CurrentPlayer.Stats.TakeDamage(currentHealth - value);
                 }
                 else if (value > currentHealth)
                 {
